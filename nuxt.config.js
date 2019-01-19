@@ -1,3 +1,7 @@
+import blogs from './contents/todo'
+
+const path = require('path')
+
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 const pkg = require('./package')
 
@@ -69,6 +73,20 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
+
+      config.module.rules.push({
+        test: /\.md$/,
+        loader: 'frontmatter-markdown-loader',
+        include: path.resolve(__dirname, 'contents'),
+        options: {
+          vue: {
+            root: 'dynamicMarkdown'
+          }
+        }
+      })
     }
+  },
+  generate: {
+    routes: blogs.map(blog => `/todo/${blog}`)
   }
 }
