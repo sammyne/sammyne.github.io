@@ -34,6 +34,7 @@
     "eslint-plugin-standard": ">=4.0.0",
     "eslint-plugin-vue": "^5.0.0",
     "frontmatter-markdown-loader": "^1.5.2",
+    "highlight.js": "^9.13.1",
     "nodemon": "^1.18.9",
     "prettier": "1.14.3",
     "stylus": "^0.54.5",
