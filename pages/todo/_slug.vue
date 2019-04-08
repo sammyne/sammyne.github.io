@@ -8,7 +8,7 @@
       <v-card-text>{{ md.vue.render }}</v-card-text>
       <v-card-text>{{ JSON.stringify(md,null,'' ) }}</v-card-text>
       -->
-      <v-markdown :render-func="md.vue.render" :static-render-funcs="md.vue.staticRenderFns"></v-markdown>
+      <v-markdown :render-func="md.vue.render" :static-render-funcs="md.vue.staticRenderFns"/>
 
       <v-card-text>{{ md.html }}</v-card-text>
     </v-card>
