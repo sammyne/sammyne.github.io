@@ -19,6 +19,10 @@ export default {
         {
           name: '主页',
           link: '/todo/to-do'
+        },
+        {
+          name: 'Todo',
+          link: '/todo'
         }
       ]
     }
