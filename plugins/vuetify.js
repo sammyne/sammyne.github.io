@@ -1,8 +1,13 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
+import Vuetify, { VLayout, VList } from 'vuetify/lib'
 import colors from 'vuetify/es5/util/colors'
 
+// import the component for customizing tag for v-data-iterator
 Vue.use(Vuetify, {
+  components: {
+    VLayout,
+    VList
+  },
   theme: {
     primary: '#121212', // a color that is not in the material colors palette
     accent: colors.grey.darken3,

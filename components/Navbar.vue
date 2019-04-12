@@ -18,7 +18,7 @@ export default {
       panels: [
         {
           name: '主页',
-          link: '/todo/to-do'
+          link: '/'
         },
         {
           name: 'Todo',

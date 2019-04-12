@@ -16,6 +16,8 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
-    'no-multiple-empty-lines': 'off'
+    'no-multiple-empty-lines': 'off',
+    'no-console': 'off',
+    yoda: 'off'
   }
 }
