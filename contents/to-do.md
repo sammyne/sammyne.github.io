@@ -3,6 +3,8 @@ title: 'to-do'
 author: 'sammyne'
 ---
 
+[[toc]]
+
 # Hello Todo
 
 ```go

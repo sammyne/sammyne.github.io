@@ -4885,6 +4885,11 @@ markdown-it-anchor@^5.0.2:
   resolved "https://registry.npm.taobao.org/markdown-it-anchor/download/markdown-it-anchor-5.0.2.tgz#cdd917a05b7bf92fb736a6dae3385c6d0d0fa552"
   integrity sha1-zdkXoFt7+S+3Nqba4zhcbQ0PpVI=
 
+markdown-it-toc-done-right@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npm.taobao.org/markdown-it-toc-done-right/download/markdown-it-toc-done-right-3.0.1.tgz#a262e2703a85e12b0d8b6faecf07f6db4a778674"
+  integrity sha1-omLicDqF4SsNi2+uzwf220p3hnQ=
+
 markdown-it@^8.4.2:
   version "8.4.2"
   resolved "https://registry.npm.taobao.org/markdown-it/download/markdown-it-8.4.2.tgz#386f98998dc15a37722aa7722084f4020bdd9b54"
