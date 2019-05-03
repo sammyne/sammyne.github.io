@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuetify, { VLayout, VList } from 'vuetify/lib'
 // import colors from 'vuetify/es5/util/colors'
 
+import '@mdi/font/css/materialdesignicons.css'
 import 'highlight.js/styles/github.css'
 
 // import the component for customizing tag for v-data-iterator
@@ -10,6 +11,7 @@ Vue.use(Vuetify, {
     VLayout,
     VList
   },
+  iconfont: 'mdi',
   options: {
     customProperties: true
   }

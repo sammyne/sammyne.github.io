@@ -2,7 +2,7 @@
   <v-layout row justify-center>
     <v-flex sm10>
       <v-data-iterator
-        :items="todos"
+        :items="formattedTodos"
         :pagination.sync="pagination"
         :content-props="{'two-line':true}"
         rows-per-page-text="每页个数"
@@ -12,11 +12,15 @@
           <v-subheader class="headline">待办清单</v-subheader>
         </template>
         <template #item="{item, index}">
-          <v-list-tile :key="item" inset>
+          <v-list-tile :key="item.link" inset>
             <v-list-tile-content>
-              <v-list-tile-title>{{ item }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ item }}</v-list-tile-sub-title>
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn icon ripple :to="item.link">
+                <v-icon color="primary">mdi-open-in-new</v-icon>
+              </v-btn>
+            </v-list-tile-action>
           </v-list-tile>
           <v-divider v-if="!isLast(index)" :key="index"/>
         </template>
@@ -38,10 +42,16 @@ export default {
       todos
     }
   },
+  computed: {
+    formattedTodos() {
+      return this.todos.map(todo => ({ title: todo, link: `/todo/${todo}` }))
+    }
+  },
   methods: {
     isLast(i) {
       return (
-        i === todos.length - 1 || 0 === (i + 1) % this.pagination.rowPerPage
+        i === this.todos.length - 1 ||
+        0 === (i + 1) % this.pagination.rowPerPage
       )
     }
   }
