@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify, { VLayout, VList } from 'vuetify/lib'
-import colors from 'vuetify/es5/util/colors'
+// import colors from 'vuetify/es5/util/colors'
 
 import 'highlight.js/styles/github.css'
 
@@ -10,6 +10,10 @@ Vue.use(Vuetify, {
     VLayout,
     VList
   },
+  options: {
+    customProperties: true
+  }
+  /*
   theme: {
     primary: '#121212', // a color that is not in the material colors palette
     accent: colors.grey.darken3,
@@ -19,4 +23,5 @@ Vue.use(Vuetify, {
     error: colors.deepOrange.accent4,
     success: colors.green.accent3
   }
+  */
 })

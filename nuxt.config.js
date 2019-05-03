@@ -1,7 +1,7 @@
 import blogs from './contents/todo'
 const path = require('path')
-const hljs = require('highlight.js') // https://highlightjs.org/
 
+const hljs = require('highlight.js') // https://highlightjs.org/
 const md = require('markdown-it')({
   highlight(str, lang) {
     if (lang && hljs.getLanguage(lang)) {
@@ -17,7 +17,12 @@ const md = require('markdown-it')({
     return (
       '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
     )
-  }
+  },
+  linkify: true
+}).use(require('markdown-it-anchor'), {
+  permalink: true,
+  // permalinkBefore: true
+  permalinkClass: 'header-anchor primary--text'
 })
 
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
