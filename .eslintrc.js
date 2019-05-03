@@ -18,6 +18,7 @@ module.exports = {
   rules: {
     'no-multiple-empty-lines': 'off',
     'no-console': 'off',
-    yoda: 'off'
+    yoda: 'off',
+    quotes: 'off'
   }
 }

@@ -2,7 +2,7 @@
   <v-layout row justify-center>
     <v-flex sm10>
       <v-data-iterator
-        :items="formattedTodos"
+        :items="todos"
         :pagination.sync="pagination"
         :content-props="{'two-line':true}"
         rows-per-page-text="每页个数"
@@ -14,7 +14,13 @@
         <template #item="{item, index}">
           <v-list-tile :key="item.link" inset>
             <v-list-tile-content>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+              <v-list-tile-sub-title>
+                <!--
+                <v-icon>mdi-clock-outline</v-icon>
+                -->
+                Last Updated: {{ item.modifiedTime }}
+              </v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
               <v-btn icon ripple :to="item.link">
@@ -30,7 +36,9 @@
 </template>
 
 <script>
-import todos from '~/contents/todo'
+import rawTodos from '~/contents/todo'
+
+import dayjs from 'dayjs'
 
 export default {
   layout: 'home',
@@ -39,12 +47,16 @@ export default {
       pagination: {
         rowPerPage: 4
       },
-      todos
+      rawTodos
     }
   },
   computed: {
-    formattedTodos() {
-      return this.todos.map(todo => ({ title: todo, link: `/todo/${todo}` }))
+    todos() {
+      return this.rawTodos.map(todo => ({
+        ...todo,
+        modifiedTime: dayjs(todo.mtimeMs).format('YYYY/MM/DD HH:mm:ss'),
+        link: `/todo/${todo.name}`
+      }))
     }
   },
   methods: {
