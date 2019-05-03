@@ -2,7 +2,7 @@
   <v-app>
     <navbar/>
     <v-content>
-      <v-container>
+      <v-container grid-list-md>
         <nuxt/>
       </v-container>
     </v-content>

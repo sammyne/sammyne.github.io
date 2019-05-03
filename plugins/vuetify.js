@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuetify, { VLayout, VList } from 'vuetify/lib'
 // import colors from 'vuetify/es5/util/colors'
+import { Scroll } from 'vuetify/lib/directives'
 
 import '@mdi/font/css/materialdesignicons.css'
 import 'highlight.js/styles/github.css'
@@ -11,6 +12,7 @@ Vue.use(Vuetify, {
     VLayout,
     VList
   },
+  directives: { Scroll },
   iconfont: 'mdi',
   options: {
     customProperties: true

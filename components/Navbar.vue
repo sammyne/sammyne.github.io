@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar dense>
+  <v-toolbar app dense fixed>
     <!--
     <v-toolbar-side-icon></v-toolbar-side-icon>
     -->
