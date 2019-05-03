@@ -2,11 +2,11 @@
 export default {
   props: {
     renderFunc: {
-      type: Function,
+      type: String, // the passed in renderer is a string not a function
       required: true
     },
     staticRenderFuncs: {
-      type: Function,
+      type: String,
       required: true
     }
   },
