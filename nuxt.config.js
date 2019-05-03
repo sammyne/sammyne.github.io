@@ -1,6 +1,24 @@
 import blogs from './contents/todo'
-
 const path = require('path')
+const hljs = require('highlight.js') // https://highlightjs.org/
+
+const md = require('markdown-it')({
+  highlight(str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return (
+          '<pre><code class="hljs">' +
+          hljs.highlight(lang, str, true).value +
+          '</code></pre>'
+        )
+      } catch (__) {}
+    }
+
+    return (
+      '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
+    )
+  }
+})
 
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 const pkg = require('./package')
@@ -79,6 +97,7 @@ module.exports = {
         loader: 'frontmatter-markdown-loader',
         include: path.resolve(__dirname, 'contents'),
         options: {
+          markdown: body => md.render(body),
           vue: {
             root: 'dynamicMarkdown'
           }

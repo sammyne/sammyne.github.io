@@ -28,3 +28,16 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+/* @import 'highlight.js/styles/github.css'; */
+code {
+  &:before {
+    content: none !important;
+  }
+
+  &:after {
+    content: none !important;
+  }
+}
+</style>

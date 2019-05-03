@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuetify, { VLayout, VList } from 'vuetify/lib'
 import colors from 'vuetify/es5/util/colors'
 
+import 'highlight.js/styles/github.css'
+
 // import the component for customizing tag for v-data-iterator
 Vue.use(Vuetify, {
   components: {
