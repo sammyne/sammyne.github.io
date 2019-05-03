@@ -12,6 +12,7 @@
     "gh-page": "sh deploy.sh",
     "gitee-page": "sh deploy-gitee.sh",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "ls-contents": "node scripts/list-contents.js",
     "precommit": "npm run lint"
   },
   "dependencies": {

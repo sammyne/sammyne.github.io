@@ -1,1 +1,1 @@
-export default ['to-do']
+export default ['stealth-address', 'to-do']
