@@ -4,7 +4,7 @@ import Vuetify, { VLayout, VList } from 'vuetify/lib'
 import { Scroll } from 'vuetify/lib/directives'
 
 import '@mdi/font/css/materialdesignicons.css'
-import 'highlight.js/styles/github.css'
+//import 'prismjs/themes/prism.css'
 
 // import the component for customizing tag for v-data-iterator
 Vue.use(Vuetify, {

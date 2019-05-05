@@ -1,33 +1,9 @@
 import blogs from './contents/todo'
 const path = require('path')
 
-const hljs = require('highlight.js') // https://highlightjs.org/
-const md = require('markdown-it')({
-  highlight(str, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        return (
-          '<pre><code class="hljs">' +
-          hljs.highlight(lang, str, true).value +
-          '</code></pre>'
-        )
-      } catch (__) {}
-    }
-
-    return (
-      '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
-    )
-  },
-  linkify: true
-})
-  .use(require('markdown-it-anchor'), {
-    permalink: true,
-    // permalinkBefore: true
-    permalinkClass: 'header-anchor primary--text'
-  })
-  .use(require('markdown-it-toc-done-right'), { listType: 'ul' })
-
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+
+const md = require('./packages/markdown/markdown-it')
 const pkg = require('./package')
 
 module.exports = {
@@ -61,7 +37,7 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ['~/assets/style/app.styl'],
+  css: ['~/assets/style/app.styl', 'prismjs/themes/prism.css'],
 
   /*
   ** Plugins to load before mounting the App

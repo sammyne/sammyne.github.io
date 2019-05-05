@@ -39,6 +39,23 @@ code {
   &:after {
     content: none !important;
   }
+
+  &[class*='language-'] {
+    box-shadow: none;
+  }
+
+  .highlighted-line {
+    background-color: #14161a;
+    display: block;
+    margin: 0 -1.575rem;
+    padding: 0 1.575rem;
+  }
+
+  span.line-idx {
+    border-right: 1px solid black;
+    display: inline-block; /* make the height of span adjustable */
+    padding-right: 8px;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
