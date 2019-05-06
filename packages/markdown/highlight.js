@@ -10,8 +10,7 @@ const highlight = (text, lang) => {
   text = text.endsWith('\n') ? text.slice(0, -1) : text
 
   //console.log('***' + lang)
-  let { language } = parseLanguage(lang)
-  console.log('----' + language)
+  let { language, ranges } = parseLanguage(lang)
   if (!language || !Prism.languages[language]) {
     language = 'markup' // fallback to markup
   }
@@ -19,9 +18,16 @@ const highlight = (text, lang) => {
   const grammar = Prism.languages[language]
 
   //const lines = Prism.highlight(text, Prism.languages[l]).split('\n')
+  ranges = ranges || []
   try {
     const lines = Prism.highlight(text, grammar).split('\n')
-    const code = lines.map(highlightLine).join('')
+    const code = lines
+      .map((line, idx) => {
+        idx++ // converse from 0-based to 1-based
+        const inRange = ranges.some(v => v.start <= idx && idx <= v.end)
+        return highlightLine(line, idx, inRange)
+      })
+      .join('')
 
     return (
       `<pre class="language-${language}"><code class="language-${language}">` +

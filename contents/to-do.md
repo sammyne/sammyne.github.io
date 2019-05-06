@@ -5,7 +5,11 @@ author: 'sammyne'
 
 # Hello Todo
 
-```go{1}
+```go{1,3-4}
+func main() {
+  fmt.Println("hello world")
+}
+
 func main() {
   fmt.Println("hello world")
 }
