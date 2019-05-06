@@ -1,20 +1,21 @@
+import highlightLine from './highlightLine'
+
 const Prism = require('prismjs')
 const loadLanguages = require('prismjs/components/')
+
 loadLanguages(['go'])
 
 const md = require('markdown-it')({
   highlight(str, lang) {
-    //const hello = Prism.highlight(str, Prism.languages[lang], lang)
+    str = str.endsWith('\n') ? str.slice(0, -1) : str
+
     const lines = Prism.highlight(str, Prism.languages[lang], lang).split('\n')
-    const code = lines
-      .map((v, i) => `<div><span class="line-idx">${i}</span> ${v}</div>`)
-      .join('')
+    const code = lines.map(highlightLine).join('')
 
     if (lang && Prism.languages[lang]) {
       try {
         return (
           `<pre class="language-${lang}"><code class="language-${lang}">` +
-          //Prism.highlight(str, Prism.languages[lang], lang) +
           code +
           '</pre></code>'
         )
@@ -31,6 +32,6 @@ const md = require('markdown-it')({
     permalinkClass: 'header-anchor primary--text'
   })
   .use(require('markdown-it-toc-done-right'), { listType: 'ul' })
-//  .use(require('./highlightLines'))
+//const highlightLine = require('./highlightLine')
 
 module.exports = md

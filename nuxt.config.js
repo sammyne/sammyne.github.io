@@ -37,7 +37,7 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ['~/assets/style/app.styl', 'prismjs/themes/prism.css'],
+  css: ['~/assets/style/app.styl', 'prismjs/themes/prism-solarizedlight.css'],
 
   /*
   ** Plugins to load before mounting the App

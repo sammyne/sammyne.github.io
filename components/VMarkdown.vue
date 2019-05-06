@@ -41,20 +41,25 @@ code {
   }
 
   &[class*='language-'] {
+    background-color: initial;
     box-shadow: none;
+    display: block;
   }
 
   .highlighted-line {
-    background-color: #14161a;
+    /* copy from the official prismjs */
+    background-color: hsla(24, 20%, 50%, 0.08);
     display: block;
-    margin: 0 -1.575rem;
-    padding: 0 1.575rem;
+    /* adapt to the padding of the outer pre */
+    margin: 0 -1em;
+    padding: 0 1em;
   }
 
   span.line-idx {
-    border-right: 1px solid black;
+    border-right: 1px solid var(--v-success-base);
     display: inline-block; /* make the height of span adjustable */
     padding-right: 8px;
+    user-select: none;
   }
 }
 
