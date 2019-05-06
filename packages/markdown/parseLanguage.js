@@ -3,7 +3,7 @@ const parseLanguage = (lang) => {
 
   let language = lang.match(/^\w+/)
   if (!language) {
-    return
+    return { language: lang }
   }
   language = language[0]
 
