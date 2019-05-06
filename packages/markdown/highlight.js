@@ -6,6 +6,25 @@ import parseLanguage from './parseLanguage'
 
 loadLanguages(['go'])
 
+const wrap = (code, lang) => {
+  /*
+  return `<div class="code-snippet">
+      <div class="toolbar">
+        <span>${lang}</span>
+      </div>
+      <pre class="language-${lang}"><code class="language-${lang}">${code}</code></pre>
+    </div>`
+    */
+  const langLine = `<div class="toolbar"><span>${lang}<span></div>`
+  //code = `${langLine}${code}`
+
+  return (
+    `<pre class="language-${lang}">` +
+    `<code class="language-${lang}">${langLine}${code}</code>` +
+    `</pre>`
+  )
+}
+
 const highlight = (text, lang) => {
   text = text.endsWith('\n') ? text.slice(0, -1) : text
 
@@ -17,7 +36,6 @@ const highlight = (text, lang) => {
 
   const grammar = Prism.languages[language]
 
-  //const lines = Prism.highlight(text, Prism.languages[l]).split('\n')
   ranges = ranges || []
   try {
     const lines = Prism.highlight(text, grammar).split('\n')
@@ -29,11 +47,7 @@ const highlight = (text, lang) => {
       })
       .join('')
 
-    return (
-      `<pre class="language-${language}"><code class="language-${language}">` +
-      code +
-      '</pre></code>'
-    )
+    return wrap(code, language)
   } catch (__) {}
 
   return ''
