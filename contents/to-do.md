@@ -5,7 +5,7 @@ author: 'sammyne'
 
 # Hello Todo
 
-```go {1}
+```go{1}
 func main() {
   fmt.Println("hello world")
 }
@@ -14,6 +14,10 @@ func main() {
 hello world
 
 `hello`
+
+```
+console.log("hello world")
+```
 
 # hello
 
