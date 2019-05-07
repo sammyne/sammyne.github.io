@@ -122,6 +122,14 @@ export default {
         border-color: var(--v-primary-darken1);
       }
     }
+
+    &:hover {
+      /* box-shadow below is an alias to that of .elevation-1 in vuetify */
+      /*
+      box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;
+      */
+      background-color: #EEEEEE;
+    }
   }
 }
 </style>
