@@ -36,20 +36,21 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-/* @import 'highlight.js/styles/github.css'; */
-code {
-  &:before {
-    content: none !important;
-  }
+pre {
+  code {
+    &:before {
+      content: none !important;
+    }
 
-  &:after {
-    content: none !important;
-  }
+    &:after {
+      content: none !important;
+    }
 
-  &[class*='language-'] {
-    background-color: initial;
-    box-shadow: none;
-    display: block;
+    &[class*='language-'] {
+      background-color: initial;
+      box-shadow: none;
+      display: block;
+    }
   }
 }
 
