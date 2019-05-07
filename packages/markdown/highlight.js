@@ -15,7 +15,10 @@ const wrap = (code, lang) => {
       <pre class="language-${lang}"><code class="language-${lang}">${code}</code></pre>
     </div>`
     */
-  const langLine = `<div class="toolbar"><span>${lang}<span></div>`
+  const langLine =
+    `<div class="toolbar">` +
+    `<span class="not-selectable">${lang}<span>` +
+    `</div>`
   //code = `${langLine}${code}`
 
   return (

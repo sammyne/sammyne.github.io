@@ -15,7 +15,11 @@ export default {
       templateRender: null
     }
   },
-
+  methods: {
+    sayHello() {
+      console.log('hello')
+    }
+  },
   created() {
     /* eslint no-new-func: "off" */
     this.templateRender = new Function(this.renderFunc)()
@@ -78,5 +82,9 @@ h1, h2, h3, h4, h5, h6 {
 div.toolbar {
   display: flex;
   flex-direction: row-reverse;
+}
+
+.not-selectable {
+  user-select: none;
 }
 </style>
