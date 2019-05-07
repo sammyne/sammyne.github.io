@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-hello-world",
+  "name": "sammyne",
   "version": "1.0.0",
   "description": "My peachy Nuxt.js project",
   "author": "sammyne",
@@ -18,10 +18,7 @@
   "dependencies": {
     "@mdi/font": "^3.6.95",
     "@nuxtjs/markdownit": "^1.2.4",
-    "babel-plugin-prismjs": "^1.0.2",
-    "cross-env": "^5.2.0",
     "dayjs": "^1.8.13",
-    "markdown-it-highlight-lines": "^1.0.2",
     "nuxt": "^2.5.0",
     "prismjs": "^1.16.0",
     "vue-template-compiler": "^2.6.10",
@@ -29,7 +26,6 @@
     "vuetify-loader": "^1.0.8"
   },
   "devDependencies": {
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@nuxtjs/eslint-config": "^0.0.1",
     "babel-eslint": "^8.2.1",
     "eslint": "^5.0.1",
@@ -44,12 +40,10 @@
     "eslint-plugin-standard": ">=4.0.0",
     "eslint-plugin-vue": "^5.0.0",
     "frontmatter-markdown-loader": "1.6.0",
-    "highlight.js": "^9.13.1",
     "markdown-it": "^8.4.2",
     "markdown-it-anchor": "^5.0.2",
     "markdown-it-toc-done-right": "^3.0.1",
     "nodemon": "^1.18.9",
-    "nuxt-babel": "^1.0.1",
     "prettier": "1.14.3",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2"
