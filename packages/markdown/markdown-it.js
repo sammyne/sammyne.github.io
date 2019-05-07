@@ -5,9 +5,8 @@ const md = require('markdown-it')({
   linkify: true
 })
   .use(require('markdown-it-anchor'), {
-    permalink: true,
+    permalink: true
     // permalinkBefore: true
-    permalinkClass: 'header-anchor primary--text'
   })
   .use(require('markdown-it-toc-done-right'), { listType: 'ul' })
 
