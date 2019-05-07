@@ -3,7 +3,7 @@
     <v-flex md10>
       <v-markdown :render-func="md.vue.render" :static-render-funcs="md.vue.staticRenderFns"/>
     </v-flex>
-    <v-flex md2>
+    <v-flex md2 hidden-xs-only>
       <ul class="md-toc">
         <li class="mb-2" v-for="(h,i) in headings" :key="i">
           <a class="grey--text text--darken-1 subheading" @click="$vuetify.goTo(h.id)">{{ h.text }}</a>
