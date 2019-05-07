@@ -6,7 +6,17 @@
     <v-flex md2 hidden-xs-only>
       <ul class="md-toc">
         <li class="mb-2" v-for="(h,i) in headings" :key="i">
-          <a class="grey--text text--darken-1 subheading" @click="$vuetify.goTo(h.id)">{{ h.text }}</a>
+          <a
+            v-if="h.text.length>32"
+            class="grey--text text--darken-1 subheading"
+            @click="$vuetify.goTo(h.id)"
+            :title="h.text"
+          >{{ h.text.slice(0,32) }}</a>
+          <a
+            v-else
+            class="grey--text text--darken-1 subheading"
+            @click="$vuetify.goTo(h.id)"
+          >{{ h.text }}</a>
         </li>
       </ul>
     </v-flex>
@@ -45,23 +55,14 @@ export default {
     this.headings = headings.map(h => ({
       id: `#${h.id}`,
       offsetTop: h.offsetTop,
-      text: h.innerText
+      // trim and merge continuous whitespaces
+      text: h.innerText.trim().replace(/\s+/g, ' ')
     }))
 
     const focusedClass = ['primary--text', 'focused']
 
     // previous active anchor
     let focused
-    /*
-    // an ad-hoc solution addressing the unmounted document
-    setTimeout(() => {
-      focused = document.querySelector(`ul.md-toc li:nth-child(1) a`)
-      if (focused) {
-        focused.classList.add(...focusedClass)
-      }
-    }, 1000)
-    */
-
     // a more elegant solution addressing init
     Vue.nextTick(() => {
       focused = document.querySelector(`ul.md-toc li:nth-child(1) a`)
