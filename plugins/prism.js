@@ -1,4 +1,5 @@
 // WARNING: this plugin isn't SSR applicable
+// TODO: try to introduce prismjs as the nuxt head meta
 import Prism from 'prismjs'
 
 // TODO: figure out the unknown reason for the broken loagLanguages below
