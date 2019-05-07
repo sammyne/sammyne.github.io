@@ -114,10 +114,6 @@ export default {
       text-decoration: none;
       transition: color 0.1s ease-in;
 
-      &:hover {
-        text-decoration: underline;
-      }
-
       &.focused {
         border-color: var(--v-primary-darken1);
       }
