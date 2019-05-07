@@ -37,12 +37,18 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ['~/assets/style/app.styl', 'prismjs/themes/prism-solarizedlight.css'],
+  css: ['~/assets/style/app.styl'],
 
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: ['@/plugins/vuetify'],
+  plugins: [
+    '@/plugins/vuetify',
+    {
+      src: '~/plugins/prism.js',
+      ssr: false
+    }
+  ],
 
   /*
   ** Nuxt.js modules

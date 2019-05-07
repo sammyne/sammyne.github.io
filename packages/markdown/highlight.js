@@ -1,20 +1,15 @@
 import Prism from 'prismjs'
 import loadLanguages from 'prismjs/components/'
 
-import highlightLine from './highlightLine'
+//import highlightLine from './highlightLine'
 import parseLanguage from './parseLanguage'
 
 loadLanguages(['go'])
 
-const wrap = (code, lang) => {
+//const wrap = (code, lang) => {
+const wrap = (code, lang, highlightedLine) => {
+  return `<pre data-line="${highlightedLine}" class="language-${lang} line-numbers"><code class="language-${lang}">${code}</code></pre>`
   /*
-  return `<div class="code-snippet">
-      <div class="toolbar">
-        <span>${lang}</span>
-      </div>
-      <pre class="language-${lang}"><code class="language-${lang}">${code}</code></pre>
-    </div>`
-    */
   const langLine =
     `<div class="toolbar">` +
     `<span class="not-selectable">${lang}<span>` +
@@ -25,7 +20,7 @@ const wrap = (code, lang) => {
     `<pre class="language-${lang}">` +
     `<code class="language-${lang}">${langLine}${code}</code>` +
     `</pre>`
-  )
+  )*/
 }
 
 const highlight = (text, lang) => {
@@ -33,10 +28,12 @@ const highlight = (text, lang) => {
 
   //console.log('***' + lang)
   let { language, ranges } = parseLanguage(lang)
+  //let { language } = parseLanguage(lang)
   if (!language || !Prism.languages[language]) {
     language = 'markup' // fallback to markup
   }
 
+  /*
   const grammar = Prism.languages[language]
 
   ranges = ranges || []
@@ -54,6 +51,8 @@ const highlight = (text, lang) => {
   } catch (__) {}
 
   return ''
+  */
+  return wrap(text, language, ranges)
 }
 
 export default highlight

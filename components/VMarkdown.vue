@@ -1,4 +1,6 @@
 <script>
+import Vue from 'vue'
+
 export default {
   props: {
     renderFunc: {
@@ -29,6 +31,11 @@ export default {
     return this.templateRender
       ? this.templateRender()
       : createElement('div', 'rendering')
+  },
+  mounted() {
+    Vue.nextTick(() => {
+      window.Prism.highlightAll()
+    })
   }
 }
 </script>
