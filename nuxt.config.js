@@ -95,6 +95,6 @@ module.exports = {
     }
   },
   generate: {
-    routes: blogs.map(blog => `/todo/${blog}`)
+    routes: blogs.map(blog => `/todo/${blog.name}`)
   }
 }
