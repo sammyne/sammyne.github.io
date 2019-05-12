@@ -3,6 +3,12 @@ title: 'to-do'
 author: 'sammyne'
 ---
 
+# TODO
+
+## Reading
+
+- [goroutine 背后的系统知识](http://www.sizeofvoid.net/goroutine-under-the-hood/)
+
 # Hello Todo
 
 ```go{1,3-4}
@@ -24,79 +30,3 @@ console.log("hello world")
 ```
 
 # hellooooooooooooooooooooooooooooo ooooooooooooooooooooooooooooooooooooooooooooooooooooo
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-### hello
-
-#### hello
-
-#### world
-
-##### hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
-
-# hello
