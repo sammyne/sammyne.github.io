@@ -1,5 +1,28 @@
 <template>
   <v-layout row wrap>
+    <v-flex class="headline" md10 v-if="md.attributes.title">
+      <h1>{{ md.attributes.title }}</h1>
+    </v-flex>
+    <v-flex md10>
+      <v-list class="transparent" dense two-line>
+        <v-list-tile>
+          <v-list-tile-avatar>S</v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">{{ md.attributes.author || "匿名" }}</v-list-tile-title>
+            <v-list-tile-sub-title>
+              <v-chip
+                v-for="tag in md.attributes.tags"
+                :key="tag"
+                color="primary"
+                label
+                small
+                text-color="white"
+              >{{ tag }}</v-chip>
+            </v-list-tile-sub-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-flex>
     <v-flex md10>
       <v-markdown :render-func="md.vue.render" :static-render-funcs="md.vue.staticRenderFns"/>
     </v-flex>
