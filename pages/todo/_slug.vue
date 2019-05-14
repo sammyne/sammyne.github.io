@@ -3,25 +3,26 @@
     <v-flex class="headline" md10 v-if="md.attributes.title">
       <h1>{{ md.attributes.title }}</h1>
     </v-flex>
-    <v-flex md10>
-      <v-list class="transparent" dense two-line>
-        <v-list-tile>
-          <v-list-tile-avatar>S</v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title class="subheading">{{ md.attributes.author || "匿名" }}</v-list-tile-title>
-            <v-list-tile-sub-title>
-              <v-chip
-                v-for="tag in md.attributes.tags"
-                :key="tag"
-                color="primary"
-                label
-                small
-                text-color="white"
-              >{{ tag }}</v-chip>
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
+    <v-flex md10 class="font-weight-bold grey--text text--darken-1">
+      <span>{{ md.attributes.author || "unknown" }}</span>
+      <v-divider class="mx-2" vertical></v-divider>
+      <span>2019-05-13</span>
+    </v-flex>
+    <v-flex class="font-weight-bold" sm12>
+      <v-chip
+        v-for="tag in md.attributes.tags"
+        :key="tag"
+        label
+        outline
+        small
+        text-color="grey darken-1"
+      >
+        <v-icon class="mr-1" left>mdi-label</v-icon>
+        {{ tag }}
+      </v-chip>
+    </v-flex>
+    <v-flex sm12 md10>
+      <v-divider></v-divider>
     </v-flex>
     <v-flex md10>
       <v-markdown :render-func="md.vue.render" :static-render-funcs="md.vue.staticRenderFns"/>
