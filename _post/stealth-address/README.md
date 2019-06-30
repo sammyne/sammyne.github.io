@@ -17,7 +17,7 @@
 
 [Cryptonote 白皮书](https://cryptonote.org/whitepaper.pdf)描述的**双密钥隐形地址**如下
 
-![Cryptonote描述的双密钥隐形地址](../assets/images/stealth-address/stealth-address-cryptonote.png)
+![Cryptonote描述的双密钥隐形地址](./images/stealth-address-cryptonote.png)
 
 其中，黄色高亮部分即为我们关注的隐形地址`P=h(r*A)*G+B`
 

@@ -4,6 +4,7 @@ author: 'sammyne'
 tags:
   - hello
   - world
+permalink: /todo
 ---
 
 # Reading

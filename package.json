@@ -1,51 +1,20 @@
 {
-  "name": "sammyne",
-  "version": "1.0.0",
-  "description": "My peachy Nuxt.js project",
-  "author": "sammyne",
-  "private": true,
-  "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate",
-    "gh-page": "sh deploy.sh",
-    "gitee-page": "sh deploy-gitee.sh",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "ls-contents": "node scripts/list-contents.js",
-    "precommit": "npm run lint"
-  },
+  "name": "sammyne.github.io",
+  "version": "0.0.1",
+  "description": "My peachy Vuepress-based blog",
+  "main": "index.js",
+  "repository": "https://github.com/sammyne/sammyne.github.io.git",
+  "author": "Sammy xiangminli@alumni.sjtu.edu.cn",
+  "license": "ISC",
   "dependencies": {
-    "@mdi/font": "^3.6.95",
-    "@nuxtjs/markdownit": "^1.2.4",
-    "dayjs": "^1.8.13",
-    "nuxt": "^2.5.0",
-    "prismjs": "^1.16.0",
-    "vue-template-compiler": "^2.6.10",
-    "vuetify": "^1.5.11",
-    "vuetify-loader": "^1.0.8"
+    "@sammyne/vuepress-theme-sammyne": "0.0.1"
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config": "^0.0.1",
-    "babel-eslint": "^8.2.1",
-    "eslint": "^5.0.1",
-    "eslint-config-prettier": "^3.1.0",
-    "eslint-config-standard": ">=12.0.0",
-    "eslint-loader": "^2.0.0",
-    "eslint-plugin-import": ">=2.14.0",
-    "eslint-plugin-jest": ">=21.24.1",
-    "eslint-plugin-node": ">=7.0.1",
-    "eslint-plugin-prettier": "2.6.2",
-    "eslint-plugin-promise": ">=4.0.1",
-    "eslint-plugin-standard": ">=4.0.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "frontmatter-markdown-loader": "1.6.0",
-    "markdown-it": "^8.4.2",
-    "markdown-it-anchor": "^5.0.2",
-    "markdown-it-toc-done-right": "^3.0.1",
-    "nodemon": "^1.18.9",
-    "prettier": "1.14.3",
-    "stylus": "^0.54.5",
-    "stylus-loader": "^3.0.2"
+    "vuepress": "^1.0.2"
+  },
+  "scripts": {
+    "dev": "vuepress dev",
+    "build": "vuepress build",
+    "deploy": "sh deploy.sh"
   }
 }
