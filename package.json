@@ -7,7 +7,7 @@
   "author": "Sammy xiangminli@alumni.sjtu.edu.cn",
   "license": "ISC",
   "dependencies": {
-    "@sammyne/vuepress-theme-sammyne": "0.0.3"
+    "@sammyne/vuepress-theme-sammyne": "0.0.4"
   },
   "devDependencies": {
     "vuepress": "^1.0.2"
