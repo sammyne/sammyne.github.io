@@ -4,11 +4,11 @@ jobs:
     branches:
       only:
         - vuepress
-    - add_ssh_keys:
-      fingerprints:
-        - 33:14:91:7f:a9:25:f4:a1:5e:cf:c0:6f:55:a1:7f:2b
     docker:
       - image: circleci/node:lts-alpine
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - 33:14:91:7f:a9:25:f4:a1:5e:cf:c0:6f:55:a1:7f:2b
       - checkout 
       - run: yarn deploy
