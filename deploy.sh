@@ -17,11 +17,7 @@ git add -A
 git commit -m 'deploy'
 
 # if you are deploying to https://<USERNAME>.github.io
-#git push -f git@github.com:sammyne/sammyne.github.io.git master
-
-# for CircleCI
-git remote add origin https://github.com/sammyne/sammyne.github.io.git
-git push -f origin master
+git push -f git@github.com:sammyne/sammyne.github.io.git master
 
 # if you are deploying to https://<USERNAME>.github.io/<REPO>
 # git push -f git@github.com:<USERNAME>/<REPO>.git master:gh-pages
