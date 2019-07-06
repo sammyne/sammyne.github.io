@@ -5,7 +5,7 @@ jobs:
       only:
         - vuepress
     docker:
-      - image: circleci/node:lts-alpine
+      - image: node:lts-alpine
     steps:
       - add_ssh_keys:
           fingerprints:
