@@ -4,12 +4,19 @@ permalink: /
 isSummary: true
 ---
 
-# Hello VuePress
+# Vuepress for sammy
 
-::: tip
-hello
-:::
+## 安装  
 
-## world
+```bash
+git clone https://github.com/sammyne/sammyne.github.io.git
+yarn 
+```
 
-# Worl
+## 发布  
+
+### Github Page
+
+```bash
+./deploy.sh
+```
