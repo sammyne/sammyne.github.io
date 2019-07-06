@@ -6,6 +6,9 @@ jobs:
         - vuepress
     docker:
       - image: node:lts-alpine
+    environment:
+      - GH_USER: nu00
+      - GH_EMAIL: xiangminli00@qq.com
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -25,5 +28,8 @@ jobs:
           paths:
             - ~/.cache/yarn
       # git is needed by the deploy command
-      - run: apk add git
+      - run: |
+          apk add git 
+          git config --global user.email ${GH_EMAIL}
+          git config --global user.name ${GH_USER}
       - run: yarn deploy
