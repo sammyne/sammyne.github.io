@@ -20,3 +20,6 @@ yarn
 ```bash
 yarn deploy
 ```
+
+## 注意事项  
+- CI必须使用circleci官方的镜像，否则`git push`一大堆问题
