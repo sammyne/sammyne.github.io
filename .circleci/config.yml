@@ -5,7 +5,7 @@ jobs:
       only:
         - vuepress
     docker:
-      - image: node:lts-alpine
+      - image: circleci/node:lts
     environment:
       - GH_USER: nu00
       - GH_EMAIL: xiangminli00@qq.com
