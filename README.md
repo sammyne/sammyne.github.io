@@ -18,5 +18,5 @@ yarn
 ### Github Page
 
 ```bash
-./deploy.sh
+yarn deploy
 ```
