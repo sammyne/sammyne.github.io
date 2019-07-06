@@ -24,4 +24,6 @@ jobs:
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
+      # git is needed by the deploy command
+      - run: apk add git
       - run: yarn deploy
