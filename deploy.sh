@@ -14,7 +14,8 @@ cd .vuepress/dist
 
 git init
 git add -A
-git commit -m 'deploy'
+# add [skip ci] to instruct CircleCI to skip this deployment
+git commit -m 'deploy [skip ci]'
 
 # if you are deploying to https://<USERNAME>.github.io
 git push -f git@github.com:sammyne/sammyne.github.io.git master
