@@ -1,13 +1,13 @@
 {
   "name": "sammyne.github.io",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "My peachy Vuepress-based blog",
   "main": "index.js",
   "repository": "https://github.com/sammyne/sammyne.github.io.git",
   "author": "Sammy xiangminli@alumni.sjtu.edu.cn",
   "license": "ISC",
   "dependencies": {
-    "@sammyne/vuepress-theme-sammyne": "0.0.4"
+    "@sammyne/vuepress-theme-sammyne": "0.0.7"
   },
   "devDependencies": {
     "vuepress": "^1.0.2"

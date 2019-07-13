@@ -5,6 +5,7 @@ tags:
   - hello
   - world
 permalink: /todo
+isSummary: true
 ---
 
 # Reading
