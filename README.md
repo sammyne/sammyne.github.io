@@ -6,6 +6,8 @@ isSummary: true
 
 # Vuepress for sammy
 
+[![CircleCI](https://circleci.com/gh/sammyne/sammyne.github.io/tree/vuepress.svg?style=svg)](https://circleci.com/gh/sammyne/sammyne.github.io/tree/vuepress)
+
 ## 安装  
 
 ```bash
