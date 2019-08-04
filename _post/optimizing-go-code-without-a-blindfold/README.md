@@ -307,15 +307,14 @@ func HelloWorld() {
 }
 ```
 
-然后运行
+生成`HelloWorld`程序的SSA报表。
 ```bash
 GOSSAFUNC=HelloWorld go build
 
+# 用浏览器打开生成的ssa.html即可看到SSA的形式
 # code
 dumped SSA to ./ssa.html
 ```
-
-上面生成了`HelloWorld`程序的[SSA报表](./code/ssa.html)。
 
 如有兴趣，可以通过[Go的介绍文档](https://github.com/golang/go/blob/master/src/cmd/compile/internal/ssa/README.md)了解其编译器的更多内部机理。
 
