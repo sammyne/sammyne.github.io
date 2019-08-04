@@ -48,7 +48,7 @@ Go代码用一些基本要素创建一份ECDSA X509格式的证书的示例如�
 
 > `utils`包参见@TODO: add the link to source file
 
-<<< @/2019/08/04/pki-for-gophers/codes/server.go
+<<< @/_post/pki-for-gophers/codes/ca.go
 
 ```go
 package main
@@ -65,15 +65,6 @@ import (
 
 	"codes/utils"
 )
-
-func newSerialNum() *big.Int {
-	var sn int64
-	if err := binary.Read(rand.Reader, binary.LittleEndian, &sn); err != nil {
-		panic(err)
-	}
-
-	return big.NewInt(sn)
-}
 
 func main() {
 	caPriv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
