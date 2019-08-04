@@ -46,62 +46,9 @@ HTTPS通信要求我们持有证书。这些证书是被签发的文档，包含
 
 Go代码用一些基本要素创建一份ECDSA X509格式的证书的示例如下。所创建的证书能够签发其他证书，实现类似CA的功能。
 
-> `utils`包参见@TODO: add the link to source file
+> `utils`包参见[github](https://github.com/sammyne/sammyne.github.io/blob/vuepress/_post/pki-for-gophers/codes/utils)
 
 <<< @/_post/pki-for-gophers/codes/ca.go
-
-```go
-package main
-
-import (
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
-	"crypto/x509"
-	"crypto/x509/pkix"
-	"encoding/binary"
-	"math/big"
-	"time"
-
-	"codes/utils"
-)
-
-func main() {
-	caPriv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	if err != nil {
-		panic(err)
-	}
-
-	// Generate a self-signed certificate
-	caTmpl := &x509.Certificate{
-		Subject:               pkix.Name{CommonName: "my-ca"},
-		SerialNumber:          utils.RandSerialNumber(), // Choose a random, big number
-		BasicConstraintsValid: true,
-		IsCA:                  true,
-		NotBefore:             time.Now(),
-		NotAfter:              time.Now().Add(time.Hour),
-		KeyUsage: x509.KeyUsageKeyEncipherment |
-			x509.KeyUsageDigitalSignature |
-			x509.KeyUsageCertSign,
-	}
-
-	caCertDER, err := x509.CreateCertificate(rand.Reader, caTmpl, caTmpl, caPriv.Public(), caPriv)
-	if err != nil {
-		panic(err)
-	}
-
-	const owner = "ca"
-	if err := utils.DumpCert(caCertDER, owner); err != nil {
-		panic(err)
-	}
-
-	if err := utils.DumpPrivKey(caPriv, owner); err != nil {
-		panic(err)
-	}
-}
-```
-
-> 源码参见@TODO: codes/ca.go文件
 
 这份证书是自签名的，经过序列化等操作后得到类似如下结果
 
@@ -128,147 +75,15 @@ func main() {
 
 下面代码段则展示用CA的私钥签发服务器所需证书的流程。所得证书也经过同样的序列化流程得到类似上面CA证书序列化类似的结果。
 
-```go
-// +build ignore
-
-package main
-
-import (
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
-	"crypto/x509"
-	"crypto/x509/pkix"
-	"time"
-
-	"codes/utils"
-)
-
-func main() {
-	caPrivKey, caCert, err := utils.LoadKeyAndCert("ca")
-	if err != nil {
-		panic(err)
-	}
-
-	// Generate a key pair and certificate template
-	servPriv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	if err != nil {
-		panic(err)
-	}
-	servTmpl := &x509.Certificate{
-		Subject:      pkix.Name{CommonName: "my-server"},
-		SerialNumber: utils.RandSerialNumber(),
-		NotBefore:    time.Now(),
-		NotAfter:     time.Now().Add(time.Hour),
-		DNSNames:     []string{"localhost"},
-		KeyUsage:     x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,
-		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
-	}
-	// Sign the serving cert with the CA private key
-	servCertDER, err := x509.CreateCertificate(rand.Reader, servTmpl, caCert, servPriv.Public(), caPrivKey)
-	if err != nil {
-		panic(err)
-	}
-
-	if err := utils.DumpCert(servCertDER, "server"); err != nil {
-		panic(err)
-	}
-
-	if err := utils.DumpPrivKey(servPriv, "server"); err != nil {
-		panic(err)
-	}
-}
-```
-
-> 源码参见@TODO: codes/certify_server.go文件
+<<< @/_post/pki-for-gophers/codes/certify_server.go
 
 服务器机器上部署一个简单的HTTP服务器，但是加持了我们创建和CA签名的证书所配置的TLS设定。代码如下
 
-```go
-// +build ignore
-
-package main
-
-import (
-	"crypto/tls"
-	"fmt"
-	"net/http"
-)
-
-func main() {
-	// Load the certificate and private key as a TLS certificate
-	servTLSCert, err := tls.LoadX509KeyPair("server.cert", "server.key")
-	if err != nil {
-		panic(err)
-	}
-
-	serv := http.Server{
-		Addr: "localhost:8443",
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintln(w, "You're using HTTPS")
-		}),
-		// Configure TLS options
-		TLSConfig: &tls.Config{Certificates: []tls.Certificate{servTLSCert}},
-	}
-
-	// Begin serving TLS
-	if err := serv.ListenAndServeTLS("", ""); err != nil {
-		panic(err)
-	}
-}
-```
-
-> 源码参见@TODO: codes/server.go文件
+<<< @/_post/pki-for-gophers/codes/server.go
 
 客户端必须相信CA。创建一个服务器证书池，填入根CA证书。客户端后续基于服务器证书池抵御监听和篡改等攻击。代码如下
 
-```go
-// +build ignore
-
-package main
-
-import (
-	"crypto/tls"
-	"crypto/x509"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-)
-
-func main() {
-	caCertPEM, err := ioutil.ReadFile("ca.cert")
-	if err != nil {
-		panic(err)
-	}
-
-	// Configure a client to trust the server
-	certPool := x509.NewCertPool()
-	if ok := certPool.AppendCertsFromPEM(caCertPEM); !ok {
-		panic("invalid cert in PEM")
-	}
-
-	client := &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{RootCAs: certPool},
-		},
-	}
-
-	resp, err := client.Get("https://localhost:8443/")
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("response goes as")
-	fmt.Printf("%s\n", body)
-}
-```
-
-> 源码参见@TODO: codes/client.go文件
+<<< @/_post/pki-for-gophers/codes/client.go
 
 运行操作如下
 ```bash
@@ -294,172 +109,18 @@ You're using HTTPS
 服务器向客户端展示证书以进行验证的流程一样，客户端也可以向服务器出示客户端证书。实现方式可基于同一个CA：CA签发客户端证书，服务器相信CA，因此也会隐式地相信客户端证书。
 
 生成客户端证书的代码如下
-```go
-// +build ignore
 
-package main
-
-import (
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
-	"crypto/x509"
-	"crypto/x509/pkix"
-	"time"
-
-	"codes/utils"
-)
-
-func main() {
-	caPrivKey, caCert, err := utils.LoadKeyAndCert("ca")
-	if err != nil {
-		panic(err)
-	}
-
-	cliPriv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	if err != nil {
-		panic(err)
-	}
-	cliTmpl := &x509.Certificate{
-		Subject:      pkix.Name{CommonName: "my-client"},
-		SerialNumber: utils.RandSerialNumber(),
-		NotBefore:    time.Now(),
-		NotAfter:     time.Now().Add(time.Hour),
-		KeyUsage:     x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,
-		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth},
-	}
-
-	cliCert, err := x509.CreateCertificate(rand.Reader, cliTmpl, caCert, cliPriv.Public(),
-		caPrivKey)
-	if err != nil {
-		panic(err)
-	}
-
-	const owner = "client"
-	if err := utils.DumpCert(cliCert, owner); err != nil {
-		panic(err)
-	}
-
-	if err := utils.DumpPrivKey(cliPriv, owner); err != nil {
-		panic(err)
-	}
-}
-```
-
-> 源码参见@TODO: codes/certify_client.go文件
+<<< @/_post/pki-for-gophers/codes/certify_client.go
 
 类似一般的客户端和CA之间的交互，验证客户端的服务器也必须相信CA，因此，服务器端也设置了证书池，设定`clientAuth`为`RequireAndVerifyClientCert`（这也是目前应该设置的唯一值）以要求验证客户端。
 
 双向认证版的服务器端代码如下
-```go
-// +build ignore
 
-package main
-
-import (
-	"crypto/tls"
-	"crypto/x509"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-)
-
-func main() {
-	// Load the certificate and private key as a TLS certificate
-	servTLSCert, err := tls.LoadX509KeyPair("server.cert", "server.key")
-	if err != nil {
-		panic(err)
-	}
-
-	// Configure a client to trust the server
-	certPool := x509.NewCertPool()
-	if caCertPEM, err := ioutil.ReadFile("ca.cert"); err != nil {
-		panic(err)
-	} else if ok := certPool.AppendCertsFromPEM(caCertPEM); !ok {
-		panic("invalid cert in PEM")
-	}
-
-	serv := http.Server{
-		Addr: "localhost:8443",
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintln(w, "You're using HTTPS")
-		}),
-		// Configure TLS options
-		TLSConfig: &tls.Config{
-			// MUST use RequireAndVerifyClientCert to require a client cert
-			ClientAuth:   tls.RequireAndVerifyClientCert,
-			ClientCAs:    certPool,
-			Certificates: []tls.Certificate{servTLSCert},
-		},
-	}
-
-	// Begin serving TLS
-	if err := serv.ListenAndServeTLS("", ""); err != nil {
-		panic(err)
-	}
-}
-```
-
-> 源码参见@TODO: codes/mtls_server.go文件
+<<< @/_post/pki-for-gophers/codes/mtls_server.go
 
 相应的客户端代码如下
 
-```go
-// +build ignore
-
-package main
-
-import (
-	"crypto/tls"
-	"crypto/x509"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-)
-
-func main() {
-	// Load the certificate and private key as a TLS certificate
-	cliTLSCert, err := tls.LoadX509KeyPair("client.cert", "client.key")
-	if err != nil {
-		panic(err)
-	}
-
-	caCertPEM, err := ioutil.ReadFile("ca.cert")
-	if err != nil {
-		panic(err)
-	}
-
-	// Configure a client to trust the server
-	certPool := x509.NewCertPool()
-	if ok := certPool.AppendCertsFromPEM(caCertPEM); !ok {
-		panic("invalid cert in PEM")
-	}
-
-	client := &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				Certificates: []tls.Certificate{cliTLSCert},
-				RootCAs:      certPool,
-			},
-		},
-	}
-
-	resp, err := client.Get("https://localhost:8443/")
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("response goes as")
-	fmt.Printf("%s\n", body)
-}
-```
-
-> 源码参见@TODO: codes/mtls_client.go文件
+<<< @/_post/pki-for-gophers/codes/mtls_client.go
 
 运行流程
 ```bash
@@ -489,82 +150,7 @@ TLS要来得容易些，但是公钥基础设施（PKI）则要难一些。但�
 
 Go语言中，我们可以创建这样的证书请求。CA会签发证书，因此需要传入CA的私钥。的相关操作如下
 
-```go
-// +build ignore
-
-package main
-
-import (
-	"codes/utils"
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
-	"crypto/x509"
-	"crypto/x509/pkix"
-	"time"
-)
-
-func main() {
-	/// server side
-	servPriv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	if err != nil {
-		panic(err)
-	}
-	csr := &x509.CertificateRequest{
-		Subject:  pkix.Name{CommonName: "my-server"},
-		DNSNames: []string{"example.com"},
-	}
-	csrDER, err := x509.CreateCertificateRequest(rand.Reader, csr, servPriv)
-	if err != nil {
-		panic(err)
-	}
-
-	// send CSR to CA
-	/// end server side
-
-	/// CA side
-	caPrivKey, caCert, err := utils.LoadKeyAndCert("ca")
-	if err != nil {
-		panic(err)
-	}
-
-	servCSR, err := x509.ParseCertificateRequest(csrDER)
-	if err != nil {
-		panic(err)
-	}
-	if err := servCSR.CheckSignature(); err != nil {
-		panic(err)
-	}
-
-	// Certificate authority MUST validate CSR fields before using them to
-	// generate a certificate
-
-	servTmpl := &x509.Certificate{
-		// Fields taken from CSR
-		Subject:     servCSR.Subject,
-		IPAddresses: servCSR.IPAddresses,
-		DNSNames:    servCSR.DNSNames,
-
-		// Fields that must be requested externally from the CSR
-		SerialNumber: utils.RandSerialNumber(),
-		NotBefore:    time.Now(),
-		NotAfter:     time.Now().Add(time.Hour),
-		KeyUsage:     x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,
-		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
-	}
-	servCertDER, err := x509.CreateCertificate(rand.Reader, servTmpl, caCert, servCSR.PublicKey, caPrivKey)
-	if err != nil {
-		panic(err)
-	}
-
-	// send server cert to server
-	_ = servCertDER
-
-	/// end CA side
-}
-```
-
-> 源码参见@TODO: codes/csr.go文件
+<<< @/_post/pki-for-gophers/codes/csr.go
 
 ## 证书所有权
 
@@ -577,134 +163,12 @@ GCE中，元数据用于提供一个JWT token（此处不深究细节），本�
 吊销证书通过吊销列表的形式实现。本质上，这是CA声明吊销的、不再相信的证书列表。Go语言里，CA的操作姿势如下：创建一份包含待吊销证书序列号的列表，然后用CA私钥对这个列表签名得到一份证书吊销列表（Certificate Revocation List）。私钥的作用是表明CRL经过CA授权后发布的。CRL文件接下来会分发给客户端，基于CA私钥的签名，客户端可以确信所列举的证书是被CA吊销的。
 
 CA吊销服务器的证书，生成相应CRL
-```go
-// +build ignore
 
-package main
-
-import (
-	"codes/utils"
-	"crypto/rand"
-	"crypto/x509/pkix"
-	"io/ioutil"
-	"time"
-)
-
-// this is done by CA
-func main() {
-	caPrivKey, caCert, err := utils.LoadKeyAndCert("ca")
-	if err != nil {
-		panic(err)
-	}
-
-	_, serverCert, err := utils.LoadKeyAndCert("server")
-	if err != nil {
-		panic(err)
-	}
-
-	revoked := []pkix.RevokedCertificate{
-		{SerialNumber: serverCert.SerialNumber, RevocationTime: time.Now()},
-	}
-	now := time.Now()
-	exp := time.Now().Add(time.Hour)
-	crlDER, err := caCert.CreateCRL(rand.Reader, caPrivKey, revoked, now, exp)
-	if err != nil {
-		panic(err)
-	}
-
-	if err := ioutil.WriteFile("crl.txt", crlDER, 0755); err != nil {
-		panic(err)
-	}
-}
-```
-
-> 源码参见@TODO: codes/crl.go文件
+<<< @/_post/pki-for-gophers/codes/crl.go
 
 加载CRL的客户端程序如下
 
-```go
-// +build ignore
-
-package main
-
-import (
-	"codes/utils"
-	"crypto/tls"
-	"crypto/x509"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-)
-
-func main() {
-	crlDER, err := ioutil.ReadFile("crl.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	crl, err := x509.ParseCRL(crlDER)
-	if err != nil {
-		panic(err)
-	}
-
-	_, caCert, err := utils.LoadKeyAndCert("ca")
-	if err != nil {
-		panic(err)
-	}
-	if err := caCert.CheckCRLSignature(crl); err != nil {
-		panic(err)
-	}
-
-	caCertPEM, err := ioutil.ReadFile("ca.cert")
-	if err != nil {
-		panic(err)
-	}
-
-	// Configure a client to trust the server
-	certPool := x509.NewCertPool()
-	if ok := certPool.AppendCertsFromPEM(caCertPEM); !ok {
-		panic("invalid cert in PEM")
-	}
-
-	verifyPeerCert := func(raw [][]byte, chains [][]*x509.Certificate) error {
-		for _, chain := range chains {
-			for _, cert := range chain {
-				for _, r := range crl.TBSCertList.RevokedCertificates {
-					if cert.SerialNumber.Cmp(r.SerialNumber) != 0 {
-						continue
-					}
-					return fmt.Errorf("certificate was revoked: /cn=%s", cert.Subject.CommonName)
-				}
-			}
-		}
-		return nil
-	}
-
-	client := &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				RootCAs:               certPool,
-				VerifyPeerCertificate: verifyPeerCert,
-			},
-		},
-	}
-
-	resp, err := client.Get("https://localhost:8443/")
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("response goes as")
-	fmt.Printf("%s\n", body)
-}
-```
-
-> 源码参见@TODO: codes/client_with_crl.go文件
+<<< @/_post/pki-for-gophers/codes/client_with_crl.go
 
 检查CRL的作用
 ```bash
@@ -724,7 +188,6 @@ You're using HTTPS
 panic: Get https://localhost:8443/: certificate was revoked: /cn=my-server
 ```
 
-
 ## OCSP (Online Cerificate Status Protocol)  
 
 对百到千级别大小的吊销列表，CRL完全够用了。但开放的互联网下，这种方案就略显不足了。这是可利用OCSP向CA查询证书是否合法。CA需要反馈证书在一小段时间内是否合法。但是，这种方案也有问题。CA可能处理不了由此带来的大量请求。再者，考虑到隐私的话，请求CA验证所访问网页的证书会使得CA知晓我们浏览历史，这显然是不好的。OCSA stapling应运而生。
@@ -732,159 +195,12 @@ panic: Get https://localhost:8443/: certificate was revoked: /cn=my-server
 实现OCSP stapling的`Certificate`的`OCSPStaple`字段用法如下示例代码。CA端利用`golang.org/x/net/crypto/ocsp`响应类型来创建OCSP响应。给`DialTLS`传入一份自定义的TLS配置，然后在里面执行额外验证，例如，验证OCSP响应不合法时直接退出。
 
 服务器示例代码如下
-```go
-// +build ignore
 
-package main
-
-import (
-	"codes/utils"
-	"crypto/tls"
-	"fmt"
-	"net/http"
-	"time"
-
-	"golang.org/x/crypto/ocsp"
-)
-
-func main() {
-	caPrivKey, caCert, err := utils.LoadKeyAndCert("ca")
-	if err != nil {
-		panic(err)
-	}
-
-	_, serverCert, err := utils.LoadKeyAndCert("server")
-	if err != nil {
-		panic(err)
-	}
-
-	ocspResp := ocsp.Response{
-		Status:       ocsp.Good,
-		SerialNumber: serverCert.SerialNumber,
-		ThisUpdate:   time.Now(),
-		NextUpdate:   time.Now().Add(time.Minute),
-	}
-	ocspStaple, err := ocsp.CreateResponse(caCert, serverCert, ocspResp, caPrivKey)
-	if err != nil {
-		panic(err)
-	}
-
-	// Load the certificate and private key as a TLS certificate
-	servTLSCert, err := tls.LoadX509KeyPair("server.cert", "server.key")
-	if err != nil {
-		panic(err)
-	}
-	servTLSCert.OCSPStaple = ocspStaple
-
-	serv := http.Server{
-		Addr: "localhost:8443",
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintln(w, "You're using HTTPS")
-		}),
-		// Configure TLS options
-		TLSConfig: &tls.Config{Certificates: []tls.Certificate{servTLSCert}},
-	}
-
-	// Begin serving TLS
-	if err := serv.ListenAndServeTLS("", ""); err != nil {
-		panic(err)
-	}
-}
-```
-
-> 源码参见@TODO: codes/server_with_ocsp.go文件
+<<< @/_post/pki-for-gophers/codes/server_with_ocsp.go
 
 客户端示例代码如下
 
-```go
-// +build ignore
-
-package main
-
-import (
-	"crypto/tls"
-	"crypto/x509"
-	"fmt"
-	"io/ioutil"
-	"net"
-	"net/http"
-
-	"golang.org/x/crypto/ocsp"
-)
-
-//func verifyOCSP(s *tls.ConnectionState) error {
-func verifyOCSP(s tls.ConnectionState) error {
-	if len(s.OCSPResponse) == 0 {
-		return fmt.Errorf("remote didn't provide ocsp staple response")
-	}
-	for _, chain := range s.VerifiedChains {
-		if n := len(chain); n < 2 {
-			return fmt.Errorf("verified chain contained too few certificates: %d", n)
-		}
-
-		serverCert := chain[0]
-		caCert := chain[1]
-
-		resp, err := ocsp.ParseResponseForCert(s.OCSPResponse, serverCert, caCert)
-		if err != nil {
-			return fmt.Errorf("invalid ocsp staple data: %v", err)
-		}
-		if err := resp.CheckSignatureFrom(caCert); err != nil {
-			return fmt.Errorf("invalid ocsp signature: %v", err)
-		}
-		if resp.Status != ocsp.Good {
-			return fmt.Errorf("certificate revoked /cn=%s", serverCert.Subject.CommonName)
-		}
-	}
-	return nil
-}
-
-func main() {
-	caCertPEM, err := ioutil.ReadFile("ca.cert")
-	if err != nil {
-		panic(err)
-	}
-
-	// Configure a client to trust the server
-	certPool := x509.NewCertPool()
-	if ok := certPool.AppendCertsFromPEM(caCertPEM); !ok {
-		panic("invalid cert in PEM")
-	}
-
-	client := &http.Client{
-		Transport: &http.Transport{
-			//TLSClientConfig: &tls.Config{RootCAs: certPool},
-			DialTLS: func(network, addr string) (net.Conn, error) {
-				tlsClientConfig := &tls.Config{RootCAs: certPool}
-				conn, err := tls.Dial(network, addr, tlsClientConfig)
-				if err != nil {
-					return nil, err
-				}
-				if err := verifyOCSP(conn.ConnectionState()); err != nil {
-					conn.Close()
-					return nil, fmt.Errorf("ocsp validation failed: %v", err)
-				}
-				return conn, nil
-			},
-		},
-	}
-
-	resp, err := client.Get("https://localhost:8443/")
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("response goes as")
-	fmt.Printf("%s\n", body)
-}
-```
-
-> 源码参见@TODO: codes/client_with_ocsp.go文件
+<<< @/_post/pki-for-gophers/codes/client_with_ocsp.go
 
 ## 服务器名字标识（SNI） 
 
@@ -908,7 +224,7 @@ Go的`Certificate`结构的`PrivateKey`可用于实现条件式接口，例如�
 
 LetsEncrypt简直不要太好，Go也对它有很好的集成。LetsEncrypt是一个CA，签发证书时会给指定域名发送挑战，要求另一端的服务器证明对域名的控制权。强力安利一波LetsEncrypt!
 
-`golang.org/x/crypto/acme/autocert`是个优秀的Go包，能够简单地自动向我们提供被信任的证书。第72页PPT展示操作方式。需要注意的是：环境需要安全存储在诸如桶等地方。
+[autocert](https://godoc.org/golang.org/x/crypto/acme/autocert)是个优秀的Go包，能够简单地自动向我们提供被信任的证书。第72页PPT展示操作方式。需要注意的是：环境需要安全存储在诸如桶等地方。
 
 ## Certificate transparency  
 
