@@ -1,3 +1,7 @@
+---
+date: 2019-08-04
+---
+
 # 非盲目式的Go代码优化
 
 > 原文：[GopherCon 2019 - Optimizing Go Code without a blindfold](https://about.sourcegraph.com/go/gophercon-2019-optimizing-go-code-without-a-blindfold?utm_source=hs_email&utm_medium=email&utm_content=75138236&_hsenc=p2ANqtz--NgfSL80JgQDQ5zlr3v6AQmsSI149ot4H7UuBdOvbfawqznjkfU7-fXFNbZ3-aZabzoJ7VKB6tCG9BjG21uiDA5_1Kz1nhO5aUV5PiHggYz3MBTEg&_hsmi=75138236)
