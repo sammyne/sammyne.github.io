@@ -86,3 +86,6 @@ sw.*
 # Golang
 *.test
 *.out
+
+# macOS
+.DS_Store
