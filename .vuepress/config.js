@@ -1,7 +1,10 @@
 module.exports = {
     description: "Just playing around",
     markdown: {
-        lineNumbers: true
+        extendMarkdown: md => {
+            md.use(require('markdown-it-imsize'), { autofill: true });
+        },
+        lineNumbers: true,
     },
     // the effect is on only when the date field is set in frontmatter
     permalink: '/:year/:month/:day/:slug',
