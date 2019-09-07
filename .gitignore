@@ -91,4 +91,4 @@ sw.*
 .DS_Store
 
 # dev
-.vuepress/_theme
+.vuepress/theme

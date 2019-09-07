@@ -298,7 +298,7 @@ n := len([]rune(str))
 
 ## 多说一句：SSA分析  
 
-如果读过@TODO 上面的Go编译器文档，你应该了解到Go编译器基于源代码的SSA（Static Single Assignment）形式进行优化。用他们的话讲：“这个阶段，AST会被转换为Static Single Assignment (SSA)形式，一种具有特定属性的、更低层次的中间表示法，这种表示法使得优化更加容易实现，并用于最终机器码的生成。”
+如果读过[上面的Go编译器文档](https://github.com/golang/go/blob/master/src/cmd/compile/README.md)，你应该了解到Go编译器基于源代码的SSA（Static Single Assignment）形式进行优化。用他们的话讲：“这个阶段，AST会被转换为Static Single Assignment (SSA)形式，一种具有特定属性的、更低层次的中间表示法，这种表示法使得优化更加容易实现，并用于最终机器码的生成。”
 
 `go build`时设定一个特殊的环境变量--`GOSSAFUNC`，我们就可以查看相应包函数的SSA输出了：
 
