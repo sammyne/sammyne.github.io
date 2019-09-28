@@ -1,5 +1,8 @@
 ---
 date: 2019-09-26
+tags: 
+  - programming language
+  - golang
 ---
 
 # Go 的垃圾回收：第三节 -- GC 的节奏控制
@@ -27,7 +30,7 @@ date: 2019-09-26
 
 https://github.com/ardanlabs/gotraining/tree/master/topics/go/profiling/trace
 
-这个程序计算特定话题在一堆 RSS 新闻概要文档里面的频率。这个追踪程序包含不同版本的查找算法来演示不同的并发模式。本文主要聚焦在`freq`、`freConcurrent`和`freqNumCPU`这3个算法。
+这个程序计算特定话题在一堆 RSS 新闻概要文档里面的频率。这个追踪程序包含不同版本的查找算法来演示不同的并发模式。本文主要聚焦在`freq`、`freqConcurrent`和`freqNumCPU`这3个算法。
 
 > 注意了：后续演示基于具有 12 个硬件线程 Intel i9 处理器的 Macbook Pro 配置，go 版本为 1.12.7。不同架构、操作系统和 Go 版本下看到的结果会有所不同。但所得核心结构应该保持一致。
 

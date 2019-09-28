@@ -19,6 +19,6 @@
     "dev": "vuepress dev",
     "build": "vuepress build",
     "deploy": "sh deploy.sh",
-    "local": "vuepress build && sh nginx.sh"
+    "pre-deploy": "vuepress build && sh nginx.sh"
   }
 }
