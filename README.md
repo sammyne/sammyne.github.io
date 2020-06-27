@@ -1,36 +1,27 @@
 ---
-layout: PostsHome
-permalink: /
-isSummary: true
+home: true
+heroText: vuepress-theme-reco
+tagline: A simple and beautiful vuepress blog theme.
+# heroImage: /hero.png
+# heroImageStyle: {
+#   maxWidth: '600px',
+#   width: '100%',
+#   display: block,
+#   margin: '9rem auto 2rem',
+#   background: '#fff',
+#   borderRadius: '1rem',
+# }
+bgImageStyle: {
+  height: '450px'
+}
+isShowTitleInHome: false
+actionText: Guide
+actionLink: /views/other/guide
+features:
+- title: Yesterday
+  details: 开发一款看着开心、写着顺手的 vuepress 博客主题
+- title: Today
+  details: 希望帮助更多的人花更多的时间在内容创作上，而不是博客搭建上
+- title: Tomorrow
+  details: 希望更多的爱好者能够参与进来，帮助这个主题更好的成长
 ---
-
-# Vuepress for sammy
-
-[![CircleCI](https://circleci.com/gh/sammyne/sammyne.github.io/tree/vuepress.svg?style=svg)](https://circleci.com/gh/sammyne/sammyne.github.io/tree/vuepress)
-
-## 安装  
-
-```bash
-git clone https://github.com/sammyne/sammyne.github.io.git
-yarn 
-```
-
-## 发布  
-
-### Github Page
-
-```bash
-yarn deploy
-```
-
-### 预发布
-预发布主要用于本地检查例如主题更新等变更是否符合预期
-
-1. 构建项目并启动 nginx 服务容器部署静态的页面
-```bash
-yarn pre-deploy
-```
-2. 打开浏览器，通过 9090 端口浏览构建好的网页即可
-
-## 注意事项  
-- CI必须使用circleci官方的镜像，否则`git push`一大堆问题

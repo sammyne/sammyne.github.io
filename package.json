@@ -7,13 +7,10 @@
   "author": "Sammy xiangminli@alumni.sjtu.edu.cn",
   "license": "ISC",
   "dependencies": {
-    "@sammyne/vuepress-theme-sammyne": "https://github.com/sammyne/vuepress-theme-sammyne.git#master",
-    "markdown-it-imsize": "^2.0.1",
-    "vue": "^2.6.10"
+    "vuepress-theme-reco": "^1.4.7"
   },
   "devDependencies": {
-    "vuepress": "^1.0.2",
-    "webpack": "^4.39.3"
+    "vuepress": "^1.5.2"
   },
   "scripts": {
     "dev": "vuepress dev",
