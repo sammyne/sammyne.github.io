@@ -6,6 +6,8 @@ module.exports = {
         ['link', { rel: 'icon', href: '/favicon.ico' }],
         ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }]
     ],
+    // the effect is on only when the date field is set in frontmatter
+    permalink: '/:year/:month/:day/:slug',
     theme: 'reco',
     themeConfig: {
         nav: [
