@@ -1,16 +1,17 @@
 ---
+title: 好开发者是聪明而不机灵的
 date: 2019-11-03
+categories:
+  - software engineering
 tags:
   - software engineering
 ---
 
-# 
-# 好开发者是聪明而不机灵的
 > 好代码自我表达，无须令人印象深刻。
 
 > 原文：[Good Developers are Smart, not Clever](https://medium.com/swlh/good-developers-are-smart-not-clever-4d1d4bde8868)
 
-![Photo by Austin Distel on Unsplash](./images/coder.jpg =100%x)
+![Photo by Austin Distel on Unsplash](./images/coder.jpg)
 
 起始于 15 年前的开发者生涯中，我的第一个经验教训是以下一条简单而短小的格言：
 

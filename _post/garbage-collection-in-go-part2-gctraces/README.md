@@ -1,4 +1,12 @@
-# Go 的垃圾回收：第二节 -- GC 追溯
+---
+title: Go 的垃圾回收：第二节 -- GC 追溯
+date: 2019-09-15
+categories:
+  - programming language
+tags: 
+  - golang
+---
+
 
 > 原文：[Garbage Collection In Go : Part II - GC Traces](https://www.ardanlabs.com/blog/2019/05/garbage-collection-in-go-part2-gctraces.html)
 
@@ -21,7 +29,7 @@
 以下是 Go 培训用的一个网页程序：
 
 图 1
-![searching for anything](./images/1.png =100%x)
+![searching for anything](./images/1.png)
 
 https://github.com/ardanlabs/gotraining/tree/master/topics/go/profiling/project
 
@@ -43,7 +51,7 @@ $ hey -m POST -c 100 -n 10000 "http://localhost:5000/search?term=topic&cnn=on&bb
 代码片段 2 显示了借助 `hey` 工具用 100 条链接发送 10k 个请求给服务器的场景。所有请求被服务处理完后，统计结果如下。
 
 图 2
-![profile without GC](./images/2.png =100%x)
+![profile without GC](./images/2.png)
 
 图 2 可视化地表示关闭垃圾回收后处理 10k 个请求的情形。10k 个请求共花费 4,188 ms，即服务器每秒大约处理 2387 个请求。
 
@@ -119,12 +127,12 @@ Requests/Collection : ~3.98 r/gc  - (10,000 / 2,511)
 代码片段 6 显示了结果。以下图片还可视化地展示了发生的事情。
 
 图 3
-![profile with GC](./images/3.png =100%x)
+![profile with GC](./images/3.png)
 
 图 3 可视化地展示了发生的一切。打开后，回收器必须运行月 2.5k 次才能处理掉 10k 个请求。每次回收的平均启动时间约 2.0 ms，执行所有这些回收引入了另外约 1.1 秒（ 5311 ms - 4188 ms）的延时。
 
 图 4
-![profile comparison for no-GC and GC](./images/4.png =100%x)
+![profile comparison for no-GC and GC](./images/4.png)
 
 图 4 是比较到目前为止的两次程序运行的结果。
 
@@ -258,12 +266,12 @@ Requests/Collection : ~3.98 r/gc    Requests/Collection : 7.13 r/gc
 代码片段 15 比较了这次运行和上次运行。以下图片更是可视化展示发生的事情。
 
 图 5
-![profile comparison for GC and optimized-GC](./images/5.png =100%x)
+![profile comparison for GC and optimized-GC](./images/5.png)
 
 图 5 可视化地展示发生的一切。为了处理同样的 10k 个请求，这次回收器少跑了 1149 次（2551 - 1402）。这使得 GC 的时间占比从 14% 降到 7%。结果是程序快了 48%，在垃圾回收上节省了 74%的时间。
 
 图 6
-![profile comparison for all](./images/6.png =100%x)
+![profile comparison for all](./images/6.png)
 
 图 6 对比了不同条件程序的运行结果。为了完整性，我还加入了关闭垃圾回收器后运行优化的代码的结果。
 

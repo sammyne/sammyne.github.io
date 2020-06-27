@@ -1,8 +1,13 @@
 ---
+title: Gophers的PKI教程
 date: 2019-08-04
+categories:
+  - programming language
+  - crypto
+tags: 
+  - golang
 ---
 
-# Gophers的PKI教程
 
 > 原文：[GopherCon 2019 - PKI for Gophers](https://about.sourcegraph.com/go/gophercon-2019-pki-for-gophers)
 

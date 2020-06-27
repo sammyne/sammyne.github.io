@@ -1,7 +1,11 @@
 ---
+title: 隐形地址(Stealth Address)
+date: 2019-07-06
+categories:
+  - crypto
+tags:
+  - cryptocurrency
 ---
-
-# 隐形地址(Stealth Address)
 
 ## 符号说明
 

@@ -1,8 +1,11 @@
 ---
+title: Go 的垃圾回收：第一节--语义
 date: 2019-08-25
+categories:
+  - programming language
+tags: 
+  - golang
 ---
-
-# Go 的垃圾回收：第一节--语义
 
 > 原文：[Garbage Collection In Go : Part I - Semantics](https://www.ardanlabs.com/blog/2018/12/garbage-collection-in-go-part1-semantics.html)
 

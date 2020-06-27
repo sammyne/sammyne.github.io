@@ -1,8 +1,11 @@
 ---
+title: 明确胜于聪明  
 date: 2019-07-13
+categories:
+- programming language
+tags:
+- golang
 ---
-
-# 明确胜于聪明  
 
 > 原文：https://dave.cheney.net/2019/07/09/clear-is-better-than-clever
 

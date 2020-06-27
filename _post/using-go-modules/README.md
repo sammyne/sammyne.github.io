@@ -1,10 +1,11 @@
 ---
+title: 使用 Go Modules
 date: 2019-11-23
+categories:
+  - programming language
 tags:
   - golang
 ---
-
-# 使用 Go Modules
 
 > 原文：[Using Go Modules](https://blog.golang.org/using-go-modules)，发表于 2019-03-19。译者根据最新的 Go 1.13.4 版本进行了相应更新
 

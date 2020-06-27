@@ -1,8 +1,11 @@
 ---
+title: 常数时间
 date: 2019-07-07 12:25
+categories:
+  - software engineering
+tags: 
+  - golang
 ---
-
-# 常数时间  
 
 > 原文：https://dave.cheney.net/2019/06/10/constant-time
 

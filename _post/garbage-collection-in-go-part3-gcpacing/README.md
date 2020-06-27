@@ -1,11 +1,11 @@
 ---
+title: Go 的垃圾回收：第三节 -- GC 的节奏控制
 date: 2019-09-26
-tags: 
+categories:
   - programming language
+tags: 
   - golang
 ---
-
-# Go 的垃圾回收：第三节 -- GC 的节奏控制
 
 > 原文：[Garbage Collection In Go : Part III - GC Pacing](https://www.ardanlabs.com/blog/2019/07/garbage-collection-in-go-part3-gcpacing.html)
 
@@ -128,29 +128,29 @@ $ go tool trace t.out
 > 温馨提示：追踪工具依赖 Chrome 浏览器的内置工具，所以这个工具只能在 Chrome 里面用。
 
 图 1  
-![tracing profile](./images/01.png =80%x)
+![tracing profile](./images/01.png)
 
 图 1 显示追踪工具启动后呈现的 9 条链接。当前重要的是第一条成为 `View trace`的链接。一旦选择这条链接后，我们可以到类似如下的输出
 
 图 2
-![GC tracing](./images/02.png =100%x)
+![GC tracing](./images/02.png)
 
 图 2 展示了程序在本人电脑运行后所得完整的追踪快照。我们在本篇博文主要着眼于和垃圾回收器相关的部分，即标为`Heap`的第 2 部分和`GC`的第 4 部分。
 
 图 3
-![goroutines and heap of GC tracing](./images/03.png =100%x)
+![goroutines and heap of GC tracing](./images/03.png)
 
 图 3 以近视角显示前 200 毫秒的追踪记录。把注意力都放在`Heap`（绿色和橙色的区域）和`GC`（底部蓝色线）。`Heap`部分向我们显示了两点：程序区域是不同毫秒时堆上被占用的空间，绿色则表示触发下次垃圾回收所需的堆上内存。这也就是为什么每次橙色区域达到绿色区域的顶部时垃圾回收就会发生。蓝色线表示一次垃圾回收。
 
 这个版本的程序运行期间，堆上被占用的内存大小保持在 4 MB 左右。为了查看总共发生的垃圾回收次数，用选择工具画个框圈住所有蓝色线。
 
 图 4
-![GC selection](./images/04.png =100%x)
+![GC selection](./images/04.png)
 
 图 4 演示如何用箭头工具画个蓝色框包住所有蓝色线。我们要圈住所有蓝色线。框中显示的数字表示图中被所选目标共耗费的时间。这里图中选择的区域对应着约 316 毫秒。所有蓝线选中后， 可得以下统计数据
 
 图 5
-![GC stats](./images/05.png =100%x)
+![GC stats](./images/05.png)
 
 图 5 显示图中所有蓝线覆盖的范围是从第 15.911 毫秒起的 2.596 秒。期间共发生了 232 次垃圾回收，耗费时间 64.524 毫秒，每次回收平均用时 287.121 微妙。整个程序运行共花费 2.626 秒，这也就意味着垃圾回收仅占用总运行时间约 2% 的时间。垃圾回收事实上不是运行这个程序的关键成本。 
 
@@ -228,19 +228,19 @@ Searching 4000 files, found president 28000 times.
 由代码片段 7 可知，程序现在处理同样的 4000 个文件需要 951 毫秒，实现了大约 64% 的性能提升。让我们再看看追踪记录。
 
 图 6
-![trace profile v2 with concurrency as fan out](./images/06.png =100%x)
+![trace profile v2 with concurrency as fan out](./images/06.png)
 
 图 6 显示这个版本的程序消耗了机器更多的 CPU 容量。图像开始的密度很大。这是因为所有协程都创建出来了，它们跑起来后开始尝试向堆申请内存。第一份 4 MB 内存很快就被分配出来，GC就开始了。这个 GC 期间，每个协程都得到了运行时间，大部分在申请堆上内存时被置为等待状态。至少有 9 个协程得以继续运行，使得堆的大小在这次 GC 完成时增加到约 26 MB。
 
 图 7
-![goroutines and heap of GC tracing v2](./images/07.png =100%x)
+![goroutines and heap of GC tracing v2](./images/07.png)
 
 图 7 显示了第一次 GC 的大部分时间里大量协程都处于可运行和运行中状态且启动起来非常迅速的情形。可以注意到堆概览看起来是不同寻常且回收不想以往那般有节奏了。仔细一点看的话，第二次 GC 几乎立即在第一次之后就开始了。
 
 选择这张图的所有回收的话，我们可以看到以下结果
 
 图 8 
-![GC stats v2](./images/08.png =100%x)
+![GC stats v2](./images/08.png)
 
 图 8 显示所有蓝线都在从 4.828 毫秒起的 906.939 毫秒的区间内。期间共有 23 次垃圾回收，耗时 284.447 毫秒，平均回收时间为 12.367 毫秒/次。鉴于整个程序运行耗时 951 毫秒，这意味着垃圾回收占用了总运行时间约 34%。
 
@@ -330,19 +330,19 @@ Searching 4000 files, found president 28000 times.
 由代码片段 9 的输出可知，现在的程序处理同样的 4000 个文件耗时 754 毫秒。程序比上一个版本快了约 200 毫秒，对这个小任务来说是非常可观的。再看看追踪记录。
 
 图 9
-![trace profile v3 with concurrency as pooling](./images/09.png =100%x)
+![trace profile v3 with concurrency as pooling](./images/09.png)
 
 图 9 显示了这个版本的程序是如何占用机器的所有 CPU 容量的。凑近一点看的话，还可以发现程序的 GC 步奏又比较整齐了，和串行版本非常类似。
 
 图 10  
-![goroutines and heap of GC tracing v3](./images/10.png =80%x)
+![goroutines and heap of GC tracing v3](./images/10.png)
 
 图 10 展示了更近距离视角的程序前 20 毫秒的核心衡量指标。回收时间肯定比串行版本要长，但是运行的协程有 12 个。占用的内存在整个程序运行期间一直保持在约 4 MB 的水平。再次和串行版本的程序保持一致。
 
 选择图中所有回收可得以下结果
 
 图 11
-![GC stats v3](./images/11.png =100%x)
+![GC stats v3](./images/11.png)
 
 图 11 显示图中所有蓝线都在从 3.055 毫秒开始的 719.928 毫秒的区间内。期间共有 467 次垃圾回收，耗时 177.709 毫秒，平均回收时间为 380.535 微秒/次。基于程序运行总共耗时 754 毫秒，这意味着垃圾回收占用了总运行时间的约 25%。性能比另一并发版本提升了 9%。
 

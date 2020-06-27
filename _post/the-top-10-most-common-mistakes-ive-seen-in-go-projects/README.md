@@ -1,4 +1,11 @@
-# 我在Go项目遇到的10大最常见误用  
+---
+title: 我在Go项目遇到的10大最常见误用  
+date: 2019-07-20
+categories:
+  - programming language
+tags: 
+  - golang
+---
 
 > 原文：https://itnext.io/the-top-10-most-common-mistakes-ive-seen-in-go-projects-4b79d4f6cd65
 

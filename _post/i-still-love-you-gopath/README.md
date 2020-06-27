@@ -1,15 +1,15 @@
 ---
+title: GOPATH，我依然爱着你
 date: 2019-10-19
-tags: 
+categories:
   - programming language
+tags: 
   - golang
 ---
 
-# GOPATH，我依然爱着你
-
 > 原文：[I still ❤️ you, GOPATH](https://divan.dev/posts/gopath/?utm_campaign=The%20Go%20Gazette&utm_medium=email&utm_source=Revue%20newsletter)
 
-![I still love you, GOPATH](./images/gopath.png =100%x)
+![I still love you, GOPATH](./images/gopath.png)
 
 最新发布的 Go - [Go 1.13](https://golang.org/doc/go1.13) - 终于实现了对 [Go Modules](https://blog.golang.org/using-go-modules) 的完整支持 - 一个优秀且令人等待已久的内置依赖版本管理问题的解决方案。现在模块会默认开启，也就形式上抛弃了 GOPATH。
 
@@ -17,7 +17,7 @@ tags:
 
 许多人都强烈反感 GOPATH 这个死板的想法和概念。在开始上手 Go 之前，成千上万的人得花费小时级别的时间来设置一个单一的环境变量（仅个人看法）。毫不意外，能够在任何目录下编写 Go 程序的事实得到了大肆赞美。
 
-![GOPATH hates](./images/gopath_hate.jpg =100%x)
+![GOPATH hates](./images/gopath_hate.jpg)
 
 然而。
 
@@ -109,7 +109,7 @@ GOPATH 代表的绝不仅是一个大目录。它是 Go 宇宙在我们本地磁
 
 请欣赏以下出自 [Andrei Kashcha](https://github.com/anvaka) 的 [Go 宇宙的一个可视化动图](http://anvaka.github.io/pm/#/galaxy/gosearch)。
 
-![Go universe](./images/go_universe.gif =100%x)
+![Go universe](./images/go_universe.gif)
 
 这里面的一些点有你的包、你贡献的包、你项目使用的包。
 
@@ -117,7 +117,7 @@ GOPATH 代表的绝不仅是一个大目录。它是 Go 宇宙在我们本地磁
 
 少了 GOPATH，这个活体组织就不可能存在。
 
-![Go universe snapshot](./images/go_universe.png =100%x)
+![Go universe snapshot](./images/go_universe.png)
 
 和 GOPATH 说再见之后，我不知道这个活体组织的还会多活跃。还会足够动力来保持这个巨大而不失美丽的活物生机勃勃和互连吗？
 

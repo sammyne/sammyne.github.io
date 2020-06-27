@@ -1,7 +1,11 @@
 ---
+title: 让我们一起来学习3种组织Go代码的方式
 date: 2019-07-13
+categories:
+  - software engineering
+tags: 
+  - golang
 ---
-# 让我们一起来学习3种组织Go代码的方式
 
 > 原文：https://www.perimeterx.com/blog/ok-lets-go/
 
