@@ -1,9 +1,9 @@
 version: 2.1
 jobs:
   build:
-#    branches:
-#      only:
-#        - vuepress
+    branches:
+      only:
+        - v1
     docker:
       - image: circleci/node:lts
     environment:
