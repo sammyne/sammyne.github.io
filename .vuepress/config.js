@@ -8,6 +8,11 @@ module.exports = {
     ],
     // the effect is on only when the date field is set in frontmatter
     permalink: '/:year/:month/:day/:slug',
+    plugins: {
+        "@vuepress-reco/vuepress-plugin-pagation": {
+            perPage: 8, // @TODO: figure why this doesn't override the default
+        },
+    },
     theme: 'reco',
     themeConfig: {
         nav: [

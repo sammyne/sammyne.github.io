@@ -2,8 +2,6 @@
 title: 'to-do'
 author: 'sammyne'
 tags:
-  - hello
-  - world
 permalink: /todo
 isSummary: true
 ---
