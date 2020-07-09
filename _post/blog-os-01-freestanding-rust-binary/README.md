@@ -1,5 +1,5 @@
 ---
-title: 01. 独立的 Rust 二进制
+title: 【blog_os】01. 独立的 Rust 二进制
 date: 2020-07-09
 categories:
   - os
@@ -7,8 +7,6 @@ categories:
 tags:
   - rust
 ---
-
-# 01. 独立的 Rust 二进制
 
 > 原文：[A Freestanding Rust Binary](https://os.phil-opp.com/freestanding-rust-binary/)
 
