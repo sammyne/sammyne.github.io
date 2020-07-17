@@ -336,7 +336,7 @@ cargo install bootimage
 
 这会打开一个类似下图的独立窗口：
 
-![样例输出](./images/vga-sample-output.png)
+![样例输出](./images/hello-world.png)
 
 我们可以看到，屏幕窗口已经显示出 “Hello World!” 字符串。
 
