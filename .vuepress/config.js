@@ -82,6 +82,7 @@ module.exports = {
             appId: 'DdlgebEa7jtjQ2esuId5c1vT-gzGzoHsz',// your appId
             appKey: 'MfPqCClqEN2F1Q8ixe3kprP3', // your appKey
         },
+        codeTheme: 'tomorrow', // default theme means no highlighting
     },
     markdown: {
         lineNumbers: true
