@@ -63,7 +63,7 @@ module.exports = {
         // 备案号
         record: 'xxxx',
         // 项目开始时间
-        startYear: '2020'
+        startYear: '2020',
         /**
          * 密钥 (if your blog is private)
          */
@@ -78,10 +78,10 @@ module.exports = {
          * valine 设置 (if you need valine comment )
          */
 
-        // valineConfig: {
-        //   appId: '...',// your appId
-        //   appKey: '...', // your appKey
-        // }
+        valineConfig: {
+            appId: 'DdlgebEa7jtjQ2esuId5c1vT-gzGzoHsz',// your appId
+            appKey: 'MfPqCClqEN2F1Q8ixe3kprP3', // your appKey
+        },
     },
     markdown: {
         lineNumbers: true
