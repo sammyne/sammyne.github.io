@@ -1007,6 +1007,7 @@ fn panic(_info: &PanicInfo) -> ! {
 [trait object]: https://doc.rust-lang.org/1.30.0/book/first-edition/trait-objects.html
 [unimplemented]: https://doc.rust-lang.org/core/macro.unimplemented.html
 [utest]: https://github.com/japaric/utest
+[valine]: #valine
 [vga lazy-static]: /2020/07/23/blog-os-03-vga-text-mode/#延迟初始化
 
 [04-testing]: https://github.com/sammyne/blog-os-cn/tree/master/04-testing
