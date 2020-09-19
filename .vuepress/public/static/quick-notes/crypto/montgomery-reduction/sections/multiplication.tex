@@ -1,0 +1,104 @@
+算法~\ref{algo-multiplication} 将归约算法~\ref{algo-reduction} 和多精度乘法结合，计算两个整
+数乘积的蒙哥马利归约。
+
+\begin{algorithm}
+  \caption{蒙哥马利乘法}\label{algo-multiplication}
+  \DontPrintSemicolon
+  \KwIn{\(m=(m_{n-1}\dots m_1 m_0)_b\)，其中 \(gcd(m,b)=1\)}
+  \KwIn{\(x=(x_{n-1}\dots x_1 x_0)_b\)，且 \(0\leq x <m\)}
+  \KwIn{\(y=(y_{n-1}\dots y_1 y_0)_b\)，且 \(0\leq y <m\)}
+  \KwIn{\(m'=-m^{-1}\bmod b\)}
+  \KwOut{\(xyR^{-1}\bmod m\)}
+  \BlankLine
+  \(A\leftarrow 0\)，记 \(A=(a_na_{n-1}\dots a_1a_0)_b\)\;
+  \For{\(i=0\) \KwTo \((n-1)\)}{ \label{algo-multiplication-loop}
+    \(u_i\leftarrow (a_0+x_iy_0)m'\bmod b\) \label{algo-multiplication-calc-ui}\;
+    \(A\leftarrow (A+x_i y+u_i m)/b\)（注：这一步会更新 \(a_0\dots a_n\)）\label{algo-multiplication-update-ai}\;
+  }
+  \If{\(A\ge m\)}{
+    \(A\leftarrow A-m\) \label{algo-multiplication-A-minus-m}\;
+  }
+  \Return{A}\;
+\end{algorithm}
+
+\begin{note}[蒙哥马利乘法~\ref{algo-multiplication}的部分证明]
+  假设算法~\ref{algo-multiplication} 第~\ref{algo-multiplication-loop} 行的第 \(i\)
+  次循环时，\(0\le A < 2m-1\)，第~\ref{algo-multiplication-update-ai} 行将 \(A\) 更新
+  为 
+    \begin{align*}
+      &\quad (A+x_i y+u_i m)/b \\
+      &\le (2m-2 + (b-1)(m-1) + (b-1)m)/b \\
+      &=(2m-2 + (b-1)m - (b-1) + (b-1)m)/b \\
+      &=(2m-1 + 2m(b-1) - b)/b \\
+      &=(2mb-b-1)/b \\
+      &=2m-1-1/b \\
+      &\le 2m-1
+    \end{align*}
+\end{note}
+
+\begin{note}[蒙哥马利乘法~\ref{algo-multiplication}的第~\ref{algo-multiplication-update-ai} 行所得 \(A\) 为整数的证明]\
+  \begin{itemize}[label={}]
+    \item \(\because\ m'=-m^{-1}\bmod m\)
+    \item \(\therefore \exists k_1\in\mathbb{Z}, m'=-m^{-1}+k_1b\)
+    \item \(\therefore\) 
+      \begin{align*}
+        u_i &= (a_0+x_i y_0)m'\bmod b \\
+            &= (a_0+x_i y_0)(-m^{-1}+k_1 b)\bmod b \\
+            &= [-m^{-1}(a_0+x_i y_0) + k_1 b (a_0+x_i y_0)]\bmod b \\
+            &= -m^{-1}(a_0+x_i y_0)\bmod b \\
+            &\Rightarrow \exists k_2\in\mathbb{Z}, u_i=-m^{-1}(a_0+x_i y_0)+k_2b
+      \end{align*}
+    \item \(\therefore\) 
+      \begin{align*}
+        &\quad (A+x_i y+u_im)/b \\
+        &= \left(a_0 + \sum_{i=1}^{n-1}a_i b^i + x_i y_0 + \sum_{j=1}^{n-1} x_i y_j b^j + u_i m\right)/b \\
+        &= \left(a_0 + \sum_{i=1}^{n-1}a_i b^i + x_i y_0 + \sum_{j=1}^{n-1} x_i y_j b^j + m(-m^{-1}(a_0+x_i y_0)+k_2b) \right)/b \\
+        &= \left(a_0 + \sum_{i=1}^{n-1}a_i b^i + x_i y_0 + \sum_{j=1}^{n-1} x_i y_j b^j - (a_0+x_i y_0) + mk_2b) \right)/b \\
+        &= \left(\sum_{i=1}^{n-1}a_i b^i + \sum_{j=1}^{n-1} x_i y_j b^j + mk_2b \right)/b \\
+        &= \sum_{i=1}^{n-1}a_i b^{i-1} + \sum_{j=1}^{n-1} x_i y_j b^{j-1} + mk_2 \in \mathbb{Z}
+      \end{align*}
+  \end{itemize} 
+
+  以上过程本质上是逐步把 \(x_i y\quad(0\le i<n)\) 逐步加到 \(A\) 上，并在每一步加法操作时，执行归约操作
+\end{note}
+
+\begin{note}[蒙哥马利乘法~\ref{algo-multiplication} 的效率]
+  因为 \(A+x_i y+u_im\) 是 \(b\) 的整数倍，算法的第~\ref{algo-multiplication-update-ai} 行执行右移操作即可实现除以 \(b\)。第~\ref{algo-multiplication-calc-ui} 行需要两次单精度乘法，第~\ref{algo-multiplication-update-ai} 行则需要 \(2n\) 次。由于第~\ref{algo-multiplication-loop} 行需要执行 \(n\) 次，所以共需 \(n(2+2n)=2n(n+1)\) 次单精度乘法。
+\end{note}
+
+\begin{note}[基于蒙哥马利乘法计算 \(xy\bmod m\)]
+  假设 \(x\)，\(y\) 和 \(m\) 都是基底为 \(b\) 的 \(n\) 位整数，且 \(0\le x,y<m\)。忽略输入中的预计算的代价，
+  算法~\ref{algo-multiplication} 计算 \(xyR^{-1}\bmod m\) 需要 \(2n(n+1)\) 次单精度乘法。
+  忽略计算 \(R^2\bmod m\) 的代价，对 \(xyR^{-1}\bmod m\) 和 \(R^2\bmod m\) 应用算法~\ref{algo-multiplication}，\(xy\bmod m=(xyR^{-1}\bmod m)(R^2\bmod m)R^{-1} \bmod m\) 
+  可在共 \(2n(n+1) + 2n(n+1)=4n(n+1)\) 次单精度乘法内算得。使用传统的模乘需要 \(2n(n+1)\)
+  次单精度乘法，不需要预计算。因此，传统算法在处理单次模乘时更优。然而，蒙哥马利模乘在执行模幂运算
+  时非常高效（具体算法参见《Handbook of Applied Cryptography》一书的算法 14.94）。
+\end{note}
+
+\begin{note}[蒙哥马利归约和蒙哥马利乘法]
+  算法~\ref{algo-multiplication} 接收两个 \(n\) 位的整数，然后交叉执行乘法和归约操作。
+  因此，算法~\ref{algo-multiplication} 无法有效利用两个整数相等（例如，求平方）这种特殊
+  情况。而算法~\ref{algo-reduction}（蒙哥马利归约）假设输入的是两个整数乘积，每个最多
+  \(n\) 位。由于算法~\ref{algo-reduction} 独立于多精度乘法，在归约之前可以采用更快的平方
+  算法。
+\end{note}
+
+\begin{example}[蒙哥马利乘法]
+  给定 \(m=72639\)，\(R=10^5\)，\(x=5792\)，\(y=1229\)。则有 \(n=5\)，
+  \(m'=-m^{-1}\bmod 10 =1\)，\(xyR^{-1}\bmod m=39796\)，具体计算过程如下
+
+  \begin{table}[!htbp]
+    \centering
+    \begin{tabular}{|c|c|r|c|r|c|c|}
+      \hline
+      \(i\) &\(x_i\) &\(x_i y_0\) &\(u_i\) &\(x_i y\) &\(u_i m\) &\(A\) \\
+      \hline
+      0 &2 &18 &8 &2458  &581112 &58357 \\
+      1 &9 &81 &8 &11061 &581112 &65053 \\
+      2 &7 &63 &6 &8603  &435834 &50949 \\
+      3 &5 &45 &4 &6145  &290556 &34765 \\
+      4 &0 &0  &5 &0     &363195 &39796 \\
+      \hline
+    \end{tabular} 
+  \end{table}
+\end{example}

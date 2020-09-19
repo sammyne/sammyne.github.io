@@ -1,0 +1,139 @@
+
+蒙哥马利归约是一种能够高效地实现模乘而无须显式执行传统的取模归约操作的技巧。
+
+给定 \(m\)，\(R\) 和 \(T\) 为正整数，\(R>m\)，\(gcd(m, R)=1\), \(0 \le T < mR\)。\( TR^{-1} \bmod m\) 称为 \(T\) 关于 \(R\) 模 \(m\) 的 \textit{蒙哥马利归约}。选择合适的 \(R\)，可以高效地执行蒙哥马利归约。
+
+给定整数 \(x\) 和 \(y\)（\(0\le x,y <m\)），令 \(\tilde{x} = xR \bmod m\)，\(\tilde{y} = yR \bmod m\)，则有 \(\tilde{x}\tilde{y}\) 的蒙哥马利归约为
+\[
+  \tilde{x}\tilde{y}R^{-1}\bmod m = xyR \bmod m 
+\]
+
+这个等式可用于实现模幂运算的高效方法。例如，计算 \(x^5 \bmod m\)（\(1\le x<m\)）
+\begin{enumerate}
+  \item 计算 \(\tilde{x}=xR\bmod m\)
+  \item 计算 \(\tilde{x}\tilde{x}\) 的蒙哥马利归约 \(A=\tilde{x}^2R^{-1}\bmod m\)
+  \item 计算 \(A^2\) 的蒙哥马利归约 \(A^2R^{-1}\bmod m=\tilde{x}^4R^{-3}\bmod m\)
+  \item 计算 \((A^2R^{-1}\bmod m)\tilde{x}\) 的蒙哥马利归约
+    \[
+      (A^2R^{-1})\tilde{x}R^{-1}\bmod m = \tilde{x}^5R^{-4}\bmod m = (xR\bmod m)^5 R^{-4} \bmod m = x^5R\bmod m
+    \]
+  \item 将上述值乘以 \(R^{-1}\bmod m\)，并基于 \(m\) 归约即可得到 \(x^5\bmod m\)
+\end{enumerate}
+
+如果 \(m\) 看做长度为 \(n\) 的基底为 \(b\) 的整数，\(R\) 通常选为 \(b^n\)。\(R>m\) 很明显是满足的，
+但是只有 \(gcd(b,m)=1\) 时才会有 \(gcd(R,m)=1\)。因此，\(R\) 并不是对于所有模数都有合理的
+\(R\)。对于特别的模数（例如 RSA 的模数），\(m\) 会为奇数，\(b\) 为 2 的次幂，这样 \(R=b^n\)
+就足够了。
+
+\begin{fact}[蒙哥马利归约]\label{reduction-basis}
+  给定整数 \(m\) 和 \(R\)，\(gcd(m,R)=1\)，令 \(m'=-m^{-1}\bmod R\)，\(T\) 为整数，
+  满足 \(0\le T < mR\)。如果 \(U = Tm'\bmod R\)，则有 \((T+Um)/R\) 为整数，且 \((T+Um)/R \equiv TR^{-1} (\bmod\ m)\)。
+
+  \begin{proof}\
+    \begin{itemize}[label={}]
+      \item \(\because\ T+Um\equiv T\ (\bmod\ m)\)
+      \item \(\therefore\ (T+Um)R^{-1}\equiv TR^{-1}\ (\bmod\ m)\)
+      \item \(\because\ U = Tm'\bmod R\)
+      \item \(\therefore\ \exists k\in \mathbb{Z}, U=Tm'+kR\)
+      \item \(\because\ m'=-m^{-1}\bmod R\)
+      \item \(\therefore\ \exists l\in \mathbb{Z}, m'm=-1+lR\)
+      \item \(\therefore\)
+        \begin{align*}
+          (T+Um)/R &=(T+(Tm'+kR)m)/R \\
+            &=(T+Tm'm+kRm)/R \\
+            &=(T+T(-1+lR)+kRm)/R \\
+            &=lT+km 
+        \end{align*}
+    \end{itemize}
+  \end{proof}
+\end{fact}
+
+\begin{implication}[关于事实~\ref{reduction-basis} 的推论]\
+  \begin{enumerate}
+    \item \(
+      \begin{aligned}[t]
+        &T<mR, U<R \\
+        &\Rightarrow (T+Um)/R<(mR+mR)/R=2m \\
+        &\Rightarrow (T+Um)/R=TR^{-1}\bmod m \quad or\\
+        &\qquad (T+Um)/R=TR^{-1}\bmod m + m
+      \end{aligned}
+      \)
+    \item 如果所有整数的基底均为 \(b\) 且 \(R=b^n\)，则 \(TR^{-1}\bmod m\) 可借助
+      两个多精度乘法（即 \(U=T\cdot m'\) 和 \(U\cdot m\)）和 \(T+Um\) 除以 \(R\)
+      的简单右移实现
+  \end{enumerate}
+\end{implication}
+
+\begin{example}[蒙哥马利归约]
+  令 \(m=187\)，\(R=190\)，则有 \(R^{-1}\bmod m=125\)，\(m^{-1}\bmod R=63\)，
+  \(m'=127\)。
+  \begin{itemize}
+    \item 如果 \(T=563\)，则\(U=Tm'\bmod R=61 \Rightarrow (T+Um)/R=63=TR^{-1}\bmod m\)
+    \item 如果 \(T=1125\)，则\(U=Tm'\bmod R=185 \Rightarrow (T+Um)/R=188=TR^{-1}\bmod m + m\)
+  \end{itemize}
+\end{example}
+
+\begin{algorithm}
+  \caption{蒙哥马利归约}\label{algo-reduction}
+  \DontPrintSemicolon
+  \KwIn{\(m=(m_{n-1}\dots m_1 m_0)_b\)，其中 \(gcd(m,b)=1\)}
+  \KwIn{\(R=b^n\)}
+  \KwIn{\(m'=-m^{-1}\bmod b\)}
+  \KwIn{\(T=(t_{2n-1}\dots t_1 t_0)_b<mR\)}
+  \KwOut{\(TR^{-1}\bmod m\)}
+  \BlankLine
+  \(A\leftarrow T\)，记 \(A=(a_{2n-1}\dots a_1a_0)_b\)\;
+  \For{\(i=0\) \KwTo \((n-1)\)}{
+    \(u_i\leftarrow a_im'\bmod b\) \label{algo-reduction-calc-ui}\;
+    \(A\leftarrow A+u_imb^i\)（注：这一步会更新 \(a_{i+1}\dots a_{2n-1}\)）\label{algo-reduction-update-ai}\;
+  }
+  \(A\leftarrow A/b^n\) \label{algo-reduction-divide-bn}\;
+  \If{\(A\ge m\)}{
+    \(A\leftarrow A-m\) \label{algo-reduction-A-minus-m}\;
+  }
+  \Return{A}\;
+\end{algorithm}
+
+\begin{note}[关于蒙哥马利归约算法~\ref{algo-reduction}]\
+  \begin{enumerate}
+    \item 不同于事实~\ref{reduction-basis}，算法不要求 \(m'=-m^{-1}\bmod R\)，而是
+    要求 \(m'=-m^{-1}\bmod b\)，这是由于 \(R=b^n\)
+    \item 算法的第~\ref{algo-reduction-calc-ui} 行，对于 \(0\le j\le i-1\) 有 \(a_j=0\)。第~\ref{algo-reduction-update-ai} 行并没有改变这些值，只是将 \(a_i\) 置为 0。因此，
+    第~\ref{algo-reduction-divide-bn} 行有 \(b^n\) 整除 \(A\)
+    \item 进入第~\ref{algo-reduction-divide-bn} 行，\(A\) 的值等于 \(T\) 加上 \(m\) 的整数倍（由第~\ref{algo-reduction-update-ai} 可得）。此时 \(T=(T+km)/b^n\) 为整数，\(A\equiv TR^{-1}(\bmod\ m)\)。
+     剩下只需要证明 \(A<2m\) 即可确保第~\ref{algo-reduction-A-minus-m} 行的一次减法
+     （而不是除法）就够了。推导如下，第~\ref{algo-reduction-divide-bn} 行前
+      \[
+        A =T+\sum_{i=0}^{n-1}u_ib^im \le T+b^nm < Rm+Rm = 2Rm
+      \]
+     执行第~\ref{algo-reduction-divide-bn} 行，得 \(A\leftarrow A/b^n=A/R<2m\)
+  \end{enumerate}
+\end{note}
+
+\begin{note}[蒙哥马利归约的计算效率]
+  算法~\ref{algo-reduction} 的第~\ref{algo-reduction-calc-ui} 和~\ref{algo-reduction-update-ai}
+  行共需 \(n+1\) （\(a_im'\) 消耗 1 次，\(u_imb^i\) 消耗 n 次）次单精度乘法。由于这两步执行
+  \(n\) 次，所以共需单精度乘法次数为 \(n(n+1)\)。算法~\ref{algo-reduction} 不需要
+  任何单精度除法。
+\end{note}
+
+\begin{example}[蒙哥马利归约]
+  给定 \(m=72639\)，\(b=10\)，\(R=10^5\)，和 \(T=7118368\)，有 \(n=5\)，\(m'=-m^{-1}\bmod 10=1\)，\(T\bmod m=72385\)，\(TR^{-1}\bmod m=39796\)，具体计算过程如下\tablename~\ref{montgomery-reduction-example}
+
+  \begin{table}[!htbp]
+    \centering
+    \begin{tabular}{|c|c|c|r|r|}
+      \hline 
+      \(i\) & \(a_i\) & \(u_i=a_im'\bmod 10\) & \(u_imb^i\) & \(A\) \\
+      \hline
+      - & - & - & - & 7118368 \\
+      0 &8 &8 &581112 &7699480 \\
+      1 &8 &8 &5811120 &13510600 \\
+      2 &6 &6 &43583400 &57094000 \\
+      3 &4 &4 &290556000 &347650000 \\
+      4 &5 &5 &3631950000 &3979600000 \\
+      \hline 
+    \end{tabular} 
+    \caption{蒙哥马利归约算法示例}\label{montgomery-reduction-example}
+  \end{table}
+\end{example}

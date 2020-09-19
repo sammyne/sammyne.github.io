@@ -1,0 +1,40 @@
+%! TEX program=xelatex
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[ruled,linesnumbered,vlined]{algorithm2e}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{ctex}
+\usepackage{enumitem}
+\usepackage[top=1cm,bottom=2cm]{geometry}
+\usepackage[colorlinks,
+  linkcolor=red,
+  anchorcolor=blue,
+  citecolor=green
+]{hyperref}
+
+\newtheorem{example}{\bf 例}[section]
+\newtheorem{fact}{\bf 事实}[section]
+\newtheorem{note}{\bf 小记}[section]
+\newtheorem{implication}{\bf 推论}[section]
+
+\renewcommand{\algorithmcfname}{算法}
+
+\title{蒙哥马利归约}
+\author{sammyne}
+\date{\today}
+
+\begin{document}
+  \maketitle
+
+\section{归约}
+\input{sections/reduction.tex}
+
+\section{模乘}
+\input{sections/multiplication.tex}
+
+\section{参考文献}
+\input{sections/references.tex}
+
+\end{document}
