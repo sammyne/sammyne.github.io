@@ -8,22 +8,21 @@ tags:
 - rust
 ---
 
-本文为我们的内核添加堆内存分配的支持。首先，它会介绍动态内存，展示借用检查器是如何防止常见的分配错误的。然后实现 Rust 的基本分配器接口，创建一个堆内存分配器，并创建一个分配器包。本文结束后，我们的内核就能用上内置的 `alloc` 包的分配和集合类型了。
+> 原文：[Heap Allocation](https://os.phil-opp.com/heap-allocation/)
+
+本文为我们的内核添加堆内存分配的支持。首先，它会介绍动态内存，展示借用检查器如何防止常见的分配错误。然后实现 Rust 的基本分配器接口，创建一个堆内存分配器，并创建一个分配器包。本文结束后，我们的内核就能用上内置的 `alloc` 包的分配和集合类型了。
 
 <!-- more -->
 
-这文章开源在 [Github] 上。如果你有任何问题或疑问的话，请在那里打开一个 issue。这篇文章的完整源代码参见 @TODO（补充地址）。
-
+此博客在 [GitHub][github blog-os] 上公开开发。如果您有任何问题或疑问，请在那边打开一个 issue。 您也可以在 [底部](#valine) 发表评论。这篇文章的完整源代码可以在 [blog-os-cn/10-heap-allocation][10-heap-allocation] 找到。
 
 ## 局部与静态变量
 
-我们的内核当前只使用了两种类型的变量：局部变量和 `static` 变量。局部变量保存在 [调用栈][call stack]，只在函数返回前有效。静态变量则会保存在固定的内存区域，在程序的整个生命周期内都是有效的。
+我们的内核当前只使用了两种类型的变量：局部变量和 `static` 变量。局部变量保存在 [调用栈][call stack]，只在函数返回前有效。静态变量则会保存在固定的内存区域，在程序的整个生命周期内都有效。
 
 ### 局部变量
 
-局部变量保存在 [调用栈][call stack]，这是个支持 `push` 和 `pop` 操作的 [栈数据结构][stack data structure]。每个进入函数时，被调函数的参数、返回地址和局部变量会由编译器压入：
-
-
+局部变量保存在 [调用栈][call stack]，这是个支持 `push` 和 `pop` 操作的 [栈数据结构][stack data structure]。每次进入函数时，被调函数的参数、返回地址和局部变量会由编译器压入：
 
 ![一个 outer() 和 inner(i: usize) 函数。两者都有一些局部变量。Outer 调用 inner(1)。调用栈包含以下插槽：outer 的局部变量，然后是实参 `i = 1`，再是返回地址，最后是 inner 的局部变量](./images/call-stack.svg)
 
@@ -46,12 +45,9 @@ fn inner(i: usize) -> &'static u32 {
 
 虽然这个例子里面返回引用意义不大，有些情况下我们会想要返回比函数存活更久的变量。我们之前已经在内核里面看到这样的情况--试图 [加载中断描述表][load an interrupt descriptor table]，必须使用 `static` 变量来延长生命期。
 
-
 ### 静态变量
 
-静态变量不同于栈的固定内存区域上。这个内存区域在编译阶段有链接器分配并编码在可执行文件里面。静态变量会在程序的整个运行时存活，所以他们有 `'static` 证明器，可以总被局部变量引用：
-
-Static variables are stored at a fixed memory location separate from the stack. This memory location is assigned at compile time by the linker and encoded in the executable. Statics live for the complete runtime of the program, so they have the `'static` lifetime and can always be referenced from local variables:
+静态变量存储在不同于栈的固定内存区域上。这个内存区域在编译阶段由链接器分配并编码在可执行文件里面。静态变量会在程序的整个运行时存活，所以他们有 `'static` 生命周期，总可以被局部变量引用：
 
 ![同样的 outer/inner 示例，不同的是 inner 包含 `static Z: [u32; 3] = [1,2,3];`，并返回 `&Z[i]` 引用](./images/call-stack-static.svg)
 
@@ -59,28 +55,24 @@ Static variables are stored at a fixed memory location separate from the stack. 
 
 除了 `'static` 生命期以外，静态变量还有一个有用的性质：它们的位置在编译时就已知，所以访问它们不需要引用。我们的 `println` 宏就利用了这个属性：通过内地里使用 [静态的 `Writer`][static `Writer`]，调用这个宏不需要 `&mut Writer` 引用，这对于我们无法访问任何额外变量的 [异常处理函数][exception handlers] 是非常有用。
 
-
-然而，静态变量的属性也带来了严重缺点：默认情况下它们都只读。Rust 强制这条规则是因为诸如两个线程同时更改静态变量会引发 [数据竞争][data race] 问题。更改静态变量的唯一方法是将其包装到 [`Mutex`] 类型，这确保任意时间内都只有一个 `&mut` 引用存在。[静态 VGA 缓冲区 TODO][vga mutex] 已经用上了 `Mutex`。
-
+然而，静态变量的属性也带来了严重缺点：默认情况下它们都只读。Rust 强制这条规则是因为诸如两个线程同时更改静态变量会引发 [数据竞争][data race] 问题。更改静态变量的唯一方法是将其包装到 [`Mutex`] 类型，这确保任意时间内都只有一个 `&mut` 引用存在。[静态 VGA 缓冲区][static VGA buffer Writer] 已经用上了 `Mutex`。
 
 ## 动态内存
 
-局部变量和静态变量都非常强大，并支持大部分使用情况了。然而，可以看到他们还是有各自的缺陷的：
+局部变量和静态变量都非常强大，并适用于大部分使用情况。然而，可以看到他们还是各有缺陷的：
 
 - 局部变量只会存活到外围函数或区块的末尾。因为他们都存在栈上，会在外围函数返回后被破坏掉
 - 静态变量总是在程序的整个运行时内存活，不再使用时，没有办法能够回收或者复用它们的内存。而且，他们的所有权未明，能够被所有函数访问，所以如果需要更改它们的话需要借助 [`Mutex`] 保护
 
-局部变量和静态变量的另一个局限性时大小固定。所以它们无法存储添加元素时要求动态增长的集合类型。（Rust 有提议使用 [无符号右值][unsized rvalues] 来支持存储动态大小的局部变脸，但是只适用于某些特定情况。）
+局部变量和静态变量的另一个局限性是大小固定。所以它们无法存储添加元素时要求动态增长的集合类型。（Rust 有提议使用 [无符号右值][unsized rvalues] 来支持存储动态大小的局部变量，但是只适用于某些特定情况。）
 
-
-为了规避这些缺点，编程语言通常支持用称为 **堆** 的另一个内存区域存储变量。堆借助 `allocate` 和 `deallocate` 两个函数支持运行时 *动态内存分配*。它的工作方式如下：`allocate` 函数返回特定大小的内存空闲块，用于存储变量。这个变量会一直存在直至以这个变量的引用调用 TODO 函数。 
+为了规避这些缺点，编程语言通常支持用称为 **堆** 的另一个内存区域存储变量。堆借助 `allocate` 和 `deallocate` 两个函数支持运行时 *动态内存分配*。它的工作方式如下：`allocate` 函数返回特定大小的内存空闲块，用于存储变量。这个变量会一直存在直至以这个变量的引用调用 `deallocate` 函数。 
 
 让我们看个例子：
 
 ![inner 函数调用 `allocate(size_of([u32; 3]))`，写入 `z.write([1,2,3]);` 并返回 `(z as *mut u32).offset(i)`。outer 函数堆返回值 `y` 执行 `deallocate(y, size_of(u32))`](./images/call-stack-heap.svg)
 
-这里的 `inner` 函数使用堆内存而不是静态变量存储 `z`。它首先分配要求大小的内存块，得到返回的 `*mut u32` [裸指针][raw pointer]。然后使用 [`ptr::write`] 方法写入数组 `[1,2,3]`。最后一步，使用 [`offset`] 函数计算第 `i` 个元素的指针，并返回它。（需要注意的是，为了示例函数的简洁起见，我们这里忽略了一些必要的转换 unsafe 区块。）
-
+这里的 `inner` 函数使用堆内存而不是静态变量存储 `z`。它首先分配要求大小的内存块，得到返回的 `*mut u32` [裸指针][raw pointer]。然后使用 [`ptr::write`] 方法写入数组 `[1,2,3]`。最后一步，使用 [`offset`] 函数计算第 `i` 个元素的指针，并返回它。（需要注意的是，为了示例函数的简洁起见，我们这里忽略了一些必要的转换和 unsafe 区块。）
 
 分配出来的内存会一直存活直至显式调用 `deallocate` 来释放。所以，在 `inner` 返回以及调用栈的相关部分被破坏之后，所得指针依然合法。和静态内存相比，使用堆内存的好处是内存被释放（借助 `outer` 调用 `deallocate`）后可以复用。调用这个函数之后，情况如下：
 
@@ -92,22 +84,18 @@ Static variables are stored at a fixed memory location separate from the stack. 
 
 内存泄露虽然是不好的，但是还不会使得程序容易遭受攻击，但这之外还有两种后果严重的 bug：
 
-- 对变量调用 `deallocate` 后我们无意间继续使用这个变量时，释放后使用 的问题就会出现。这个 bug 会触发未定义行为，通常被攻击者利用来执行任意代码
-- 不小心是释放了一个变量两次，会出现 **双重释放** 的问题。因为这可能会释放在第一次 `deallocate` 调用后分配到同一个位置的内存。因此，这会再次导致使用后释放的问题
+- 对变量调用 `deallocate` 后我们无意间继续使用这个变量时，**释放后使用** 的问题就会出现。这个 bug 会触发未定义行为，通常被攻击者利用来执行任意代码
+- 不小心释放一个变量两次，会出现 **双重释放** 的问题。因为这可能会释放在第一次 `deallocate` 调用后分配到同一个位置的内存。因此，这会再次导致释放后使用的问题
 
-这些问题都是比较知名的，所以一般人会认为现在大部分都学会如何避免它们了。但是事实并没有，这些问题依然被经常发现，例如这个最近的 [Linux 的释放后使用的问题][linux vulnerability] 使得任意代码可以执行。这表明即使是最好的程序猿也无法总能在复杂项目里面正确处理动态内存问题。
-
+这些问题都是比较知名的，所以一般人会认为现在大部分人都学会如何避免它们了。但是事实并没有，这些问题依然被经常发现，例如这个最近的 [Linux 的释放后使用的问题][linux vulnerability] 使得任意代码可以执行。这表明即使是最好的程序猿也无法总能在复杂项目里面正确处理动态内存问题。
 
 为了避免这些问题，诸如 Java 或 Python 等很多语言都借助称为 [*垃圾回收*][_garbage collection_] 的技巧自动管理动态内存。思路是程序猿从不手动调用 `deallocate`。而是程序定期暂停并扫描未被使用的堆变量，然后自动释放这些变量。因此，上面的问题绝不会出现。相应的缺点是定期扫描和可能挺长的暂停时间会带来性能损失。
 
-
-Rust 采用了应对这个问题的另一种方法：它使用称为 [*所有权*][_ownership_] 的概念，能够在编译时检查动态内存操作的正确性。因此，不需要垃圾回收来解决前面提到的问题，这也意味着没有性能损失。这种方法的另一个好处是程序猿依然能够像 C 或 C++ 那般精细地控制动态内存的使用。
-
+Rust 采用应对这个问题的另一种方法：它使用称为 [*所有权*][_ownership_] 的概念，能够在编译时检查动态内存操作的正确性。因此，不需要垃圾回收来解决前面提到的问题，这也意味着没有性能损失。这种方法的另一个好处是程序猿依然能够像 C 或 C++ 那般精细地控制动态内存的使用。
 
 ### Rust 的内存分配
 
-与其让程序猿人为地调用 `allocate` 和 `deallocate`，Rust 标准库提供隐式调用这些函数的抽象类型。其中最重要的类型是 [**`Box`**]，这是堆分配值的抽象。它提供接收一个值得 [`Box::new`] 构造函数，会以值的大小调用 `allocate`，然后把值移动到堆新分配出来的插槽。为了再次释放堆内存，`Box` 类型实现 [`Drop` trait]，会在作用域结束后调用 `deallocate`：
-
+与其让程序猿人为地调用 `allocate` 和 `deallocate`，Rust 标准库提供隐式调用这些函数的抽象类型。其中最重要的类型是 [**`Box`**]，这是堆分配值的抽象。它提供接收一个值的 [`Box::new`] 构造函数，会以值的大小调用 `allocate`，然后把值移动到堆新分配出来的插槽。为了再次释放堆内存，`Box` 类型实现 [`Drop` trait]，会在作用域结束后调用 `deallocate`：
 
 ```rust
 {
@@ -117,7 +105,6 @@ Rust 采用了应对这个问题的另一种方法：它使用称为 [*所有权
 ```
 
 这种模式有个奇怪的名字--[*资源获取即初始化*][_resource acquisition is initialization_]（或者简称 *RAII*）。它起源于 C++，用于实现一个称为 [`std::unique_ptr`] 的类似的抽象类型。
-
 
 因为在 `Box` 作用域结束、相应堆内存插槽被释放后，程序猿仍然可能持有其引用，所以仅有这个类型不足以避免所有释放后使用的 bug。
 
@@ -129,8 +116,7 @@ let x = {
 println!("{}", x);
 ```
 
-这是 Rust 所有权进场的时候了。它会为每个引用分配一个抽象的 [生命期][lifetime]，这个生命期规定引用有效的作用域。在上面的例子中，`x` 引用从 `z` 数组中来，所以它会在 `z` 作用域结束后变得无效。[在 playground 上运行上面的例子][playground-2] 会看到 Rust 编译器确实抛出一个错误：
-
+这就到 Rust 所有权进场的时候了。它会为每个引用分配一个抽象的 [生命期][lifetime]，这个生命期规定引用有效的作用域。在上面的例子中，`x` 引用从 `z` 数组中来，所以它会在 `z` 作用域结束后变得无效。[在 playground 上运行上面的例子][playground-2] 会看到 Rust 编译器确实抛出一个错误：
 
 ```bash
 error[E0597]: `z[_]` does not live long enough
@@ -145,26 +131,23 @@ error[E0597]: `z[_]` does not live long enough
   |     - `z[_]` dropped here while still borrowed
 ```
 
-这个术语一开始听起来有点让人困惑。因为和现实生活的借用类似，获得某个值的引用称为 *借用* 这个值：我们获得对象的临时访问权，但是需要后续某个时间点把它还回去，且不能破坏它。通过确保对象被析构之前所有借用都已完成，Rust 的编译器可以确保没有释放后试用的情况出现。
+这个术语一开始听起来有点让人困惑。因为和现实生活的借用类似，获得某个值的引用称为 *借用* 这个值：我们获得对象的临时访问权，但是需要在后续某个时间点把它还回去，且不能破坏它。通过确保对象被析构之前所有借用都已完成，Rust 的编译器可以确保没有释放后使用的情况出现。
 
-Rust 的所有权系统甚至做到了更多，不仅避免释放后使用的 bug，还提供了类似 Java 和 Python 等垃圾回收语言的 [*内存安全性*][_memory safety_]。另外，它保证 [*线程安全*][_thread safety_]，所有在多线程代码方面比那些语言要甚至更加安全。最重要的是，这些检查都发生在编译时，所以和用 C 手码内存管理相比没有运行时代价。
-
+Rust 的所有权系统甚至做到了更多，不仅避免释放后使用的 bug，还提供了类似 Java 和 Python 等垃圾回收语言的 [*内存安全性*][_memory safety_]。另外，它保证 [*线程安全*][_thread safety_]，所以在多线程代码方面比那些语言要甚至更加安全。最重要的是，这些检查都发生在编译时，所以和用 C 手码内存管理相比没有运行时代价。
 
 #### 用例
 
-现在知道 Rust 动态内存管理的基本知识了，但是我们什么时候应该用它呢？我们的内核走到现在一直都没有使用动态内存分配，所以为什么现在有需要了呢？
+现在知道 Rust 动态内存管理的基本知识了，但是什么时候应该用它呢？我们的内核走到现在一直都没有使用动态内存分配，所以为什么现在有需要了呢？
 
 首先，因为每次内存分配时都需要在堆上找出一个空闲的插槽，所以动态内存分配总是伴随着性能损耗的。为此，局部变量通常是更受喜爱的，尤其是在性能敏感的内核代码里面。然而，还有一些场景能说明动态内存分配是最佳选择。
 
-基本原则是：具有动态生命期或者大小的变量都需要动态内存。动态生命期中最重要的一个类型是 [**`Rc`**]，它会记录其包装值的引用，并在所有引用作用域结束后释放它占用的内存。具有动态大小的类型例子有 [**`Vec`**]、[**`String`**] 和其他 [集合类型][collection types]，这些类型会在添加更多元素时动态增长。这些类型的工作原理是容量打满时，申请分配一块更多的内存，把所有元素拷贝过去，然后释放掉旧的内存区域。
-
+基本原则是：具有动态生命期或者大小的变量都需要动态内存。动态生命期中最重要的一个类型是 [**`Rc`**]，它会记录其包装值的引用，并在所有引用作用域结束后释放它占用的内存。具有动态大小的类型例子有 [**`Vec`**]、[**`String`**] 和其他 [集合类型][collection types]，这些类型会在添加更多元素时动态增长。这些类型的工作原理是容量打满时，申请分配一块更大的内存，把所有元素拷贝过去，然后释放掉旧的内存区域。
 
 对于内核，我们很可能会用到集合类型，例如在后续文章实现多任务时存储活跃任务的列表。
 
 ## 分配器接口
 
-实现堆分配器的第一步是添加堆内置 [`alloc`] 包的依赖。和 [`core`] 包类似，这是标准库的一个子集，并包括内存分配和集合相关类型。为了添加 `alloc` 依赖，我们在 `lib.rs` 里面添加以下内容：
-
+实现堆分配器的第一步是添加对内置 [`alloc`] 包的依赖。和 [`core`] 包类似，这是标准库的一个子集，并包括内存分配和集合相关类型。为了添加 `alloc` 依赖，我们在 `lib.rs` 里面添加以下内容：
 
 ```rust
 // in src/lib.rs
@@ -174,7 +157,7 @@ extern crate alloc;
 
 和常规依赖不同，我们需要更改 `Cargo.toml`。原因是 `alloc` 包打包到 Rust 编译器作为标准库的一部分，所以编译器已经知道这个包。通过添加 `extern crate` 语句，我们规定编译器应该尝试包含它。（历史上所有依赖都需要一个 `extern crate` 语句，但是现在变成了可选）
 
-由于基于自定义的目标编译，所以我们无法使用 Rust 安装包里面预编译好的 `alloc` 版本。而是需要告诉 cargo 从源码重新编译这个包。具体操作为在 `.cargo/config.toml` 文件添加 `unstable.build-std` 数组如下：
+因为基于自定义的目标编译，所以我们无法使用 Rust 安装包里面预编译好的 `alloc` 版本。而是需要告诉 cargo 从源码重新编译这个包。具体操作为在 `.cargo/config.toml` 文件添加 `unstable.build-std` 数组如下：
 
 ```toml
 # in .cargo/config.toml
@@ -198,9 +181,7 @@ error: `#[alloc_error_handler]` function required, but not found
 
 第二个错误原因是调用 `allocate` 可能会失败，最常见的情形是没有可用内存了。我们的程序必须能够应对这种情况，这正是 `#[alloc_error_handler]` 函数的用途。
 
-
 我们会在后续部分详细讲解这个 trait 和属性。
-
 
 ### `GlobalAlloc` trait
 
@@ -225,24 +206,23 @@ pub unsafe trait GlobalAlloc {
 
 它定义了两个要求的方法 [`alloc`] 和 [`dealloc`]，分别对应到我们样例使用的 `allocate` 和 `deallocate` 函数：
 
-- [`alloc`] 方法接收一个 [`Layout`] 实例作为参数，这个实例说明待分配内存应该有的大小和对齐方式。方法返回所分配内存块的第一个字节的 [裸指针][raw pointer]。`alloc` 方法返回一个空指针而不是一个显式的错误值来提示分配错误。这不是惯用写法，但是好处是利于包装现有的系统分配器，因为它们都是用同样的风格
+- [`alloc`] 方法接收一个 [`Layout`] 实例作为参数，这个实例说明待分配内存应有的大小和对齐方式。方法返回所分配内存块第一个字节的 [裸指针][raw pointer]。`alloc` 方法返回一个空指针而不是一个显式的错误值来提示分配错误。这不是惯用写法，但是好处是利于包装现有的系统分配器，因为它们都是用同样的风格
 - [`dealloc`] 方法则是对立面，负责再次释放内存块。它接收两个参数，分配时使用的 `alloc` 返回的指针和 `Layout`
 
 
 这个 trait 还定义了另外两个方法：具有默认实现的 [`alloc_zeroed`] 和 [`realloc`]：
 - [`alloc_zeroed`] 方法等价于调用 `alloc`，然后设置分配的内存区块为 0，这正是默认实现做的东西。可能的话，一个分配器实现可以用一个更高效的自定义实现覆写默认实现
-- [`realloc`] 允许增加或压缩分配的内存。默认实现时分配一块预期大小的新内存区块，并从旧的内存中把所有内容拷贝过来。同样地，分配器实现可以提供这个方法更加高效的实现，例如可能时原地增加/压缩内存
-
+- [`realloc`] 允许增加或压缩分配的内存。默认实现是分配一块预期大小的新内存区块，并从旧的内存中把所有内容拷贝过来。同样地，分配器实现可以提供这个方法更加高效的实现，例如可能时原地增加/压缩内存
 
 #### 不安全性
 
 需要注意的一点是 trait 本身和所有 trait 方法都声明为 `unsafe`：
-- 把 TODO 声明为 `unsafe` 的理由是程序猿必须确保分配器类型的 trait 实现是正确的。例如，`alloc` 方法必须不会返回一个已在其他地方被使用的内存区块，否则会导致未定义行为
-- 类似的，`unsafe` 方法是因为调用方法时调用方必须保证多个前提条件，例如，传给 `alloc` 的 `Layout` 注明的大小不为 0。由于这些方法通常直接由编译器调用，所以在实践中这些条件问题都不不大紧要，编译器会满足要求
+- 把 trait 声明为 `unsafe` 的理由是程序猿必须确保分配器类型的 trait 实现是正确的。例如，`alloc` 方法必须不会返回一个已在其他地方被使用的内存区块，否则会导致未定义行为
+- 类似的，`unsafe` 方法是因为调用方法时调用方必须保证多个前提条件，例如，传给 `alloc` 的 `Layout` 注明的大小不为 0。由于这些方法通常直接由编译器调用，所以在实践中这些条件问题都不大紧要，编译器会满足要求
 
 ### `DummyAllocator`
 
-既然知道分配器类型需要提供的方法，我们可以创建一个简单的假分配器了。为此，我们创建一个新的 `allocator` 模块：
+既然知道分配器类型需要提供的方法，我们可以创建一个简单的假分配器了。为此，创建一个新的 `allocator` 模块：
 
 ```rust
 // in src/lib.rs
@@ -273,12 +253,11 @@ unsafe impl GlobalAlloc for Dummy {
 
 这个结构体不需要任何字段，所以创建为 [零大小类型][zero sized type]。如前面所描述的那样，我们总是在 `alloc` 里面返回空指针，对应到一个分配错误。由于分配器不会返回任何内存，绝不应该调用 `dealloc`。为此，我们在 `dealloc` 方法里面简单 panic 即可。`alloc_zeroed` 和 `realloc` 方法有默认实现，所以我们不需要为其提供实现。
 
-
 现在有了一个简单的分配器，但是我们还必须告诉 Rust 编译器使用这个分配器。这时得用上 `#[global_allocator]` 属性。
 
 ### `#[global_allocator]` 属性
 
-`#[global_allocator]` 属性告诉 Rust 编译器应该使用分配器实例作为全局堆分配器。这个属性只适用于实现 `GlobalAlloc` trait 的静态变量。让我们注册一个 `Dummy`  分配的实例作为全局分配器：
+`#[global_allocator]` 属性告诉 Rust 编译器应该使用具体哪个分配器实例作为全局堆分配器。这个属性只适用于实现 `GlobalAlloc` trait 的静态变量。让我们注册一个 `Dummy`  分配的实例作为全局分配器：
 
 ```rust
 // in src/allocator.rs
@@ -287,7 +266,7 @@ unsafe impl GlobalAlloc for Dummy {
 static ALLOCATOR: Dummy = Dummy;
 ```
 
-由于 `Dummy` 分配器是 [零大小类型][zero sized type]，所以我们不需要再初始化表达式注明任何字段。
+由于 `Dummy` 分配器是 [零大小类型][zero sized type]，所以我们不需要在初始化表达式注明任何字段。
 
 现在尝试编译，第一个错误应该消失了。让我们处理一下第二个错误：
 
@@ -312,10 +291,9 @@ fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
 }
 ```
 
-`alloc_error_handler` 函数仍然是不稳定的，所以我们需要特性门来启用它。这个函数接收单个参数：分配失败时传给 `alloc` 的 `Layout` 实例。我们对失败无能为力，所以只是用包含 `Layout` 实例的消息触发 panic。
+`alloc_error_handler` 函数仍然是不稳定的，所以我们需要特性开关来启用它。这个函数接收单个参数：分配失败时传给 `alloc` 的 `Layout` 实例。我们对失败无能为力，所以只是用包含 `Layout` 实例的消息触发 panic。
 
 有了这个函数，编译错误应该被修复了。现在我们可以使用 `alloc` 的分配和集合相关类型了，例如使用 [`Box`] 来在堆上分配一个值：
-
 
 ```rust
 // in src/main.rs
@@ -334,10 +312,9 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     println!("It did not crash!");
     blog_os::hlt_loop();
 }
-
 ```
 
-注意一下我们也需要在 `extern crate alloc` 里面注明 `main.rs` 语句。这是因为 `lib.rs` 和 `main.rs` 看做不同的包。然而，我们不需要创建另一个 `#[global_allocator]` 静态变量，因为全局分配器会作用于项目的所有包。事实上，在另一个包注明另外另一个分配器会触发错误。
+注意一下我们也需要在 `extern crate alloc` 里面注明 `main.rs` 语句。这是因为 `lib.rs` 和 `main.rs` 看做不同的包。然而，我们不需要创建另一个 `#[global_allocator]` 静态变量，因为全局分配器会作用于项目的所有包。事实上，在另一个包注明另一个分配器会触发错误。
 
 运行以上代码，可以看到 `alloc_error_handler` 函数被调用了：
 
@@ -347,10 +324,9 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
 ## 创建一个内核堆
 
-创建一个合理的分配器之前，我们首先需要开辟一个堆内存区域，让分配器可以分配内存。为此，我们需要定一个堆区域的虚拟内存范围，然后把这个区域映射到物理帧。请参见 [*"分页入门"*][_"Introduction To Paging"_] 一文了解虚拟内存和页表。
+创建一个合理的分配器之前，我们首先需要开辟一个堆内存区域，让分配器可以分配内存。为此，我们需要指定一个堆区域的虚拟内存范围，然后把这个区域映射到物理帧。请参见 [*"分页入门"*][Introduction To Paging] 一文了解虚拟内存和页表。
 
-
-第一步是为堆定一个虚拟内存区域。我们随心所欲地选择虚拟地址范围，只要它尚未用于其他不同内存区域。让我们定义其为从地址 `0x_4444_4444_0000` 开始的内存，这样后续我们就能很容易识别出来堆指针。
+第一步是为指定定一个虚拟内存区域。我们可以随便选择虚拟地址范围，只要它尚未用于其他不同内存区域。让我们定义其为从地址 `0x_4444_4444_0000` 开始的内存，这样后续我们就能很容易识别出来堆指针。
 
 ```rust
 // in src/allocator.rs
@@ -361,7 +337,7 @@ pub const HEAP_SIZE: usize = 100 * 1024; // 100 KiB
 
 我们当前设置堆大小为 100 KiB。如果将来需要更多的话，可以很容易增加。
 
-如果试图现在就是用这个堆区域的话，虚拟内存区域还没有映射到物理内存会导致缺页异常。为了解决这个问题，我们创建 `init_heap` 函数借助 [*"分页实现"*] 一文介绍的 [`Mapper` API] 来映射页面。
+如果试图现在就是用这个堆区域的话，虚拟内存区域还没有映射到物理内存会导致缺页异常。为了解决这个问题，我们创建 `init_heap` 函数借助 [*"分页实现"*][Paging Implementation] 一文介绍的 [`Mapper` API] 来映射页面。
 
 ```rust
 // in src/allocator.rs
@@ -399,16 +375,15 @@ pub fn init_heap(
 }
 ```
 
-这个函数接收 [`Mapper`] 和 [`FrameAllocator`] 示例的可变引用，两者都使用 [`Size4KiB`] 作为泛型参数以限定到 4KiB 的页面。函数的返回值为 [`Result`]，其成功枚举值为 `()`，失败枚举值为 [`Mapper::map_to`] 方法返回的错误类型 [`MapToError`]。因为这个函数的 `map_to` 方法是错误的主要源头。
+这个函数接收 [`Mapper`] 和 [`FrameAllocator`] 实例的可变引用，两者都使用 [`Size4KiB`] 作为泛型参数以限定到 4KiB 的页面。函数的返回值为 [`Result`]，其成功枚举值为 `()`，失败枚举值为 [`Mapper::map_to`] 方法返回的错误类型 [`MapToError`]。因为这个函数的 `map_to` 方法是错误的主要源头。
 
 实现可以分解为两部分：
 
 - **创建页面范围**：为了创建想要映射的页面范围，我们将 `HEAP_START` 指针转化为 [`VirtAddr`] 类型。然后基于它加上 `HEAP_SIZE` 计算堆的结束地址。因为想要闭合的界限（堆最后一个字节的地址），所以减一。接下来，我们借助 [`containing_address`] 函数将地址转化为 [`Page`] 类型。最后，调用 [`Page::range_inclusive`] 函数创建从开始到结束页的页面范围。
 - **映射页面**：第二步时把刚才所创建范围的所有页面映射出来。为此，我们使用 `for` 循环遍历范围内的页面。对于个页面，我们执行以下操作：
     - 使用 [`FrameAllocator::allocate_frame`] 方法分配一个页面会映射到的物理帧。这个方法在没有再多可用帧时返回 [`None`]。我们借助 [`Option::ok_or`] 方法将这种情况处理为 [`MapToError::FrameAllocationFailed`] 错误，然后应用 [问号运算符][question mark operator] 来实现一旦出错则早返回的问题
-    - 把页面的标记符设置为 `PRESENT` 和 `WRITABLE`。有了这些标记符，读写权限到手，对于堆内存时非常合理的
+    - 把页面的标记符设置为 `PRESENT` 和 `WRITABLE`。有了这些标记符，读写权限到手，对于堆内存是非常合理的
     - 使用 [`Mapper::map_to`] 方法为活跃的页表创建映射。这个方法可以失败，所以再次使用 [问号运算符][question mark operator] 来把错误导向调用方。一旦成功，这个方法会返回 [`MapperFlush`] 实例，可调用其 [`flush`] 方法更新 [*快表*][_translation lookaside buffer_]
-
 
 最后一步是在 `kernel_main` 函数调用这个函数：
 
@@ -443,7 +418,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
 这里展示整个函数方便联系上下文。唯一新行是 `blog_os::allocator` 导入和对 `allocator::init_heap` 函数的调用。因为当前没有合适的方式处理错误，所以使用 [`Result::expect`] 方法处理 `init_heap` 函数返回的错误。
 
-
 现在我们有了一个可用的映射好的堆内存区域了。`Box::new` 调用依然是旧的 `Dummy` 分配器，所以执行程序时我们还会看到 "out of memory" 错误。让我们使用一个合适的分配器来解决这个问题。
 
 ## 使用分配器包
@@ -453,7 +427,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 [`linked_list_allocator`] 包是适用于 `no_std` 应用的简单分配器包。它的名字来源于这样的事实--它内部使用链表数据结构来追踪被释放的内存区域。这种方法的更多详情参见下一篇文章。
 
 为了使用这个包，我们首先需要在 `Cargo.toml` 添加它作为依赖：
-
 
 ```toml
 # in Cargo.toml
@@ -475,9 +448,7 @@ static ALLOCATOR: LockedHeap = LockedHeap::empty();
 
 这个结构体名为 `LockedHeap` 是因为它是用 [`spinning_top::Spinlock`] 类型实现同步。这是因为多个线程都会同时访问 `ALLOCATOR` 静态变量。和以往一样，使用自旋锁或 mutex 时，我们需要注意不要不小心引发死锁。这意味着我们不应该在中断处理函数里面执行任何分配操作，因为他们会在任意时间执行，会中断正在执行的分配操作。
 
-
 设置 `LockedHeap` 为全局分配器还是不够的。理由是我们使用 [`empty`] 构造函数，这会创建一个任何后备内存的分配器。和假的分配器类似，他总是在调用 `alloc` 时返回错误。为了解决这个问题，我们需要在创建堆之后初始化分配：
-
 
 ```rust
 // in src/allocator.rs
@@ -498,7 +469,6 @@ pub fn init_heap(
 ```
 
 我们使用 `LockedHeap` 类型内部的自旋锁的 [`lock`] 方法获得被包装的 [`Heap`] 实例的独占引用，然后以堆的边界作为参数调用其 [`init`] 方法。重要的是我们在映射堆页面后再初始化堆，因为 [`init`] 函数已经尝试写入堆内存了。
-
 
 初始化堆之后，我们现在可以使用内置 [`alloc`] 包的所有分配和集合相关类型而不会触发错误了：
 
@@ -536,7 +506,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
 这份示例代码演示 [`Box`]、[`Vec`] 和 [`Rc`] 类型的一些用法。对于 `Box` 和 `Vec` 类型，我们使用 [`{:p}` 格式化符][`{:p}` formatting specifier] 打印底层的堆指针。为了演示 `Rc`，我们创建一个引用计数的堆值，使用 [`Rc::strong_count`] 函数打印 销毁实例（使用 [`core::mem::drop`]）前后的引用计数。
 
-
 现在运行可以看到以下输出：
 
 ![QEMU 显示 `
@@ -549,7 +518,6 @@ reference count is 1 now
 和预期的那样，从地址起始地址为 `0x_4444_4444` 可以看出 `Box` 和 `Vec` 的值存在堆上。引用计数的值表现和预期也一致，调用 `clone` 后引用计数为 2，销毁一个实例后引用计数变回 1。
 
 向量的偏移地址为 `0x800` 的原因不是包装的值长度为 `0x800` 字节，而是向量需要增加容量时会触发 [重新分配][reallocations]。例如，当向量容量为 32 师，我们试图添加一个元素，向量会内地里分配一个后备容量为 64 的数组 ，并把所有元素复制过去。然后释放掉旧的内存。
-
 
 当然，`alloc` 包还有很多分配和集合相关类型现在都可用到我们的内核里面了，包括：
 
@@ -592,8 +560,7 @@ fn panic(info: &PanicInfo) -> ! {
 }
 ```
 
-我们复用 `lib.rs` 的 `test_runner` 和 `test_panic_handler` 函数。由于想要测试内存分配，我们借助 `extern crate alloc` 语句启用 `alloc` 包。更多关于测试模板的信息参见 [*测试*][_Testing_] 一文。
-
+我们复用 `lib.rs` 的 `test_runner` 和 `test_panic_handler` 函数。由于想要测试内存分配，我们借助 `extern crate alloc` 语句启用 `alloc` 包。更多关于测试模板的信息参见 [*测试*][Testing] 一文。
 
 `main` 函数的实现如下：
 
@@ -660,7 +627,6 @@ fn large_vec() {
 
 我们通过和 [n 部分和][n-th partial sum] 公式的结果验证 n 项部分和的计算。这能让我们确信被分配的值都是正确的。
 
-
 再多一个测试是创建紧接的一万次内存分配：
 
 ```rust
@@ -702,18 +668,18 @@ many_boxes... [ok]
 
 ## 下篇预告
 
-虽然我们现在本文支持了堆内存分配，但是大部分工作都是 `linked_list_allocator` 包实现的。下篇文章将会详细讲解如何从零开始实现分配器。它会展示多种可能的分配器方案，延时如何实现它们的简单版本，并分析它们的优缺点。
+虽然我们现在本文支持了堆内存分配，但是大部分工作都是 `linked_list_allocator` 包实现的。下篇文章将会详细讲解如何从零开始实现分配器。它会展示多种可能的分配器方案，演示如何实现它们的简单版本，并分析它们的优缺点。
 
-[_Testing_]: @/second-edition/posts/04-testing/index.md
-[_"Introduction To Paging"_]: @/second-edition/posts/08-paging-introduction/index.md
-[_"Paging Implementation"_]: @/second-edition/posts/09-paging-implementation/index.md
+[Testing]: /2020/07/27/blog-os-04-testing/
+[Introduction To Paging]: /2020/07/19/blog-os-08-intro-to-paging/
+[Paging Implementation]: /2020/07/18/blog-os-09-paging-implementation/
 
 [_garbage collection_]: https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)
 [_memory safety_]: https://en.wikipedia.org/wiki/Memory_safety
 [_ownership_]: https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html
 [_resource acquisition is initialization_]: https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization
 [_thread safety_]: https://en.wikipedia.org/wiki/Thread_safety
-[_translation lookaside buffer_]: @/second-edition/posts/08-paging-introduction/index.md#the-translation-lookaside-buffer
+[_translation lookaside buffer_]: /2020/07/19/blog-os-08-intro-to-paging/#快表（translation-lookaside-buffer）
 
 [**`Box`**]: https://doc.rust-lang.org/std/boxed/index.html
 [**`Rc`**]: https://doc.rust-lang.org/alloc/rc/index.html
@@ -737,7 +703,7 @@ many_boxes... [ok]
 [`MapToError::FrameAllocationFailed`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/enum.MapToError.html#variant.FrameAllocationFailed
 [`Mapper`]:https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/trait.Mapper.html
 [`Mapper::map_to`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/trait.Mapper.html#method.map_to
-[`Mapper` API]: @/second-edition/posts/09-paging-implementation/index.md#using-offsetpagetable
+[`Mapper` API]: /2020/07/18/blog-os-09-paging-implementation/#使用-offsetpagetable
 [`MapperFlush`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/struct.MapperFlush.html
 [`Mutex`]: https://docs.rs/spin/0.5.2/spin/struct.Mutex.html
 [`None`]: https://doc.rust-lang.org/core/option/enum.Option.html#variant.None
@@ -754,7 +720,6 @@ many_boxes... [ok]
 [`Result::expect`]: https://doc.rust-lang.org/core/result/enum.Result.html#method.expect
 [`Size4KiB`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/page/enum.Size4KiB.html
 [`Heap`]: https://docs.rs/linked_list_allocator/0.8.0/linked_list_allocator/struct.Heap.html
-
 
 [`alloc`]: https://doc.rust-lang.org/alloc/
 [`alloc_zeroed`]: https://doc.rust-lang.org/alloc/alloc/trait.GlobalAlloc.html#method.alloc_zeroed
@@ -779,7 +744,8 @@ many_boxes... [ok]
 [call stack]: https://en.wikipedia.org/wiki/Call_stack
 [collection types]: https://doc.rust-lang.org/alloc/collections/index.html
 [data race]: https://doc.rust-lang.org/nomicon/races.html
-[exception handlers]: @/second-edition/posts/05-cpu-exceptions/index.md#implementation
+[exception handlers]: /2020/07/27/blog-os-05-cpu-exceptions/#实现
+[github blog-os]: https://github.com/phil-opp/blog_os
 [load an interrupt descriptor table]: @/second-edition/posts/05-cpu-exceptions/index.md#loading-the-idt
 [lifetime]: https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html
 [linux vulnerability]: https://securityboulevard.com/2019/02/linux-use-after-free-vulnerability-found-in-linux-2-6-through-4-20-11/
@@ -789,9 +755,9 @@ many_boxes... [ok]
 [raw pointer]: https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html#dereferencing-a-raw-pointer
 [reallocations]: https://doc.rust-lang.org/alloc/vec/struct.Vec.html#capacity-and-reallocation
 [stack data structure]: https://en.wikipedia.org/wiki/Stack_(abstract_data_type)
-[static `Writer`]: @/second-edition/posts/03-vga-text-buffer/index.md#a-global-interface
+[static `Writer`]: /2020/07/23/blog-os-03-vga-text-mode/#全局接口
 [unsized rvalues]: https://github.com/rust-lang/rust/issues/48055
-[vga mutex]: @/second-edition/posts/03-vga-text-buffer/index.md#spinlocks
+[static VGA buffer Writer]: /2020/07/23/blog-os-03-vga-text-mode/#自旋锁
 [zero sized type]: https://doc.rust-lang.org/nomicon/exotic-sizes.html#zero-sized-types-zsts
 
-[GitHub]: https://github.com/phil-opp/blog_os
+[10-heap-allocation]: https://github.com/sammyne/blog-os-cn/tree/master/10-heap-allocation
