@@ -1799,12 +1799,12 @@ impl Executor {
 
 [`conquer_once`]: https://docs.rs/conquer-once/0.2.0/conquer_once/index.html
 [`crossbeam`]: https://github.com/crossbeam-rs/crossbeam
-[`enable_interrupts_and_hlt`]: https://docs.rs/x86_64/0.11.1/x86_64/instructions/interrupts/fn.enable_interrupts_and_hlt.html
+[`enable_interrupts_and_hlt`]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/interrupts/fn.enable_interrupts_and_hlt.html
 [`enum`]: https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html
 [`fetch_add`]: https://doc.rust-lang.org/core/sync/atomic/struct.AtomicU64.html#method.fetch_add
 [`futures`]: https://docs.rs/futures/0.3.4/futures/
 [`get_unchecked_mut`]: https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html#method.get_unchecked_mut
-[`instructions::hlt`]: https://docs.rs/x86_64/0.11.1/x86_64/instructions/fn.hlt.html
+[`instructions::hlt`]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/fn.hlt.html
 [`hlt` instruction]: https://en.wikipedia.org/wiki/HLT_(x86_instruction)
 [`lazy_static`]: https://docs.rs/lazy_static/1.4.0/lazy_static/index.html
 [`map`]: https://docs.rs/futures/0.3.4/futures/future/trait.FutureExt.html#method.map
@@ -1817,5 +1817,5 @@ impl Executor {
 [`poll`]: https://doc.rust-lang.org/nightly/core/future/trait.Future.html#tymethod.poll
 [`ready`]: https://docs.rs/futures/0.3.4/futures/future/fn.ready.html
 [`then`]: https://docs.rs/futures/0.3.4/futures/future/trait.FutureExt.html#method.then
-[`x86_64`]: https://docs.rs/x86_64/0.11.1/x86_64/index.html
+[`x86_64`]: https://docs.rs/x86_64/0.12.1/x86_64/index.html
 [`wake`]: https://doc.rust-lang.org/stable/core/task/struct.Waker.html#method.wake

@@ -693,42 +693,42 @@ many_boxes... [ok]
 [`BTreeMap`]: https://doc.rust-lang.org/alloc/collections/btree_map/struct.BTreeMap.html
 [`BTreeSet`]: https://doc.rust-lang.org/alloc/collections/btree_set/struct.BTreeSet.html
 [`Drop` trait]: https://doc.rust-lang.org/book/ch15-03-drop.html
-[`FrameAllocator`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/trait.FrameAllocator.html
-[`FrameAllocator::allocate_frame`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/trait.FrameAllocator.html#tymethod.allocate_frame
+[`FrameAllocator`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/trait.FrameAllocator.html
+[`FrameAllocator::allocate_frame`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/trait.FrameAllocator.html#tymethod.allocate_frame
 [`GlobalAlloc`]: https://doc.rust-lang.org/alloc/alloc/trait.GlobalAlloc.html
 [`GlobalAlloc::alloc`]: https://doc.rust-lang.org/alloc/alloc/trait.GlobalAlloc.html#tymethod.alloc
 [`Layout`]: https://doc.rust-lang.org/alloc/alloc/struct.Layout.html
 [`LinkedList`]: https://doc.rust-lang.org/alloc/collections/linked_list/struct.LinkedList.html
-[`MapToError`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/enum.MapToError.html
-[`MapToError::FrameAllocationFailed`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/enum.MapToError.html#variant.FrameAllocationFailed
-[`Mapper`]:https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/trait.Mapper.html
-[`Mapper::map_to`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/trait.Mapper.html#method.map_to
+[`MapToError`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/enum.MapToError.html
+[`MapToError::FrameAllocationFailed`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/enum.MapToError.html#variant.FrameAllocationFailed
+[`Mapper`]:https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/trait.Mapper.html
+[`Mapper::map_to`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/trait.Mapper.html#method.map_to
 [`Mapper` API]: /2020/07/18/blog-os-09-paging-implementation/#使用-offsetpagetable
-[`MapperFlush`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/struct.MapperFlush.html
+[`MapperFlush`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/struct.MapperFlush.html
 [`Mutex`]: https://docs.rs/spin/0.5.2/spin/struct.Mutex.html
 [`None`]: https://doc.rust-lang.org/core/option/enum.Option.html#variant.None
 [`Option::ok_or`]: https://doc.rust-lang.org/core/option/enum.Option.html#method.ok_or
-[`Page`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/page/struct.Page.html
-[`Page::range_inclusive`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/page/struct.Page.html#method.range_inclusive
+[`Page`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/page/struct.Page.html
+[`Page::range_inclusive`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/page/struct.Page.html#method.range_inclusive
 [`Rc`]: https://doc.rust-lang.org/alloc/rc/
 [`String`]: https://doc.rust-lang.org/alloc/string/struct.String.html
 [`VecDeque`]: https://doc.rust-lang.org/alloc/collections/vec_deque/struct.VecDeque.html
 [`Vec`]: https://doc.rust-lang.org/alloc/vec/
-[`VirtAddr`]: https://docs.rs/x86_64/0.11.1/x86_64/addr/struct.VirtAddr.html
+[`VirtAddr`]: https://docs.rs/x86_64/0.12.1/x86_64/addr/struct.VirtAddr.html
 [`Rc::strong_count`]: https://doc.rust-lang.org/alloc/rc/struct.Rc.html#method.strong_count
 [`Result`]: https://doc.rust-lang.org/core/result/enum.Result.html
 [`Result::expect`]: https://doc.rust-lang.org/core/result/enum.Result.html#method.expect
-[`Size4KiB`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/page/enum.Size4KiB.html
+[`Size4KiB`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/page/enum.Size4KiB.html
 [`Heap`]: https://docs.rs/linked_list_allocator/0.8.0/linked_list_allocator/struct.Heap.html
 
 [`alloc`]: https://doc.rust-lang.org/alloc/
 [`alloc_zeroed`]: https://doc.rust-lang.org/alloc/alloc/trait.GlobalAlloc.html#method.alloc_zeroed
-[`containing_address`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/page/struct.Page.html#method.containing_address
+[`containing_address`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/page/struct.Page.html#method.containing_address
 [`core`]: https://doc.rust-lang.org/core/
 [`core::mem::drop`]: https://doc.rust-lang.org/core/mem/fn.drop.html
 [`dealloc`]: https://doc.rust-lang.org/alloc/alloc/trait.GlobalAlloc.html#tymethod.dealloc
 [`empty`]: https://docs.rs/linked_list_allocator/0.8.0/linked_list_allocator/struct.LockedHeap.html#method.empty
-[`flush`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/struct.MapperFlush.html#method.flush
+[`flush`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/struct.MapperFlush.html#method.flush
 [`format!`]: https://doc.rust-lang.org/alloc/macro.format.html
 [`init`]: https://docs.rs/linked_list_allocator/0.8.0/linked_list_allocator/struct.Heap.html#method.init
 [`linked_list_allocator`]: https://github.com/phil-opp/linked-list-allocator/

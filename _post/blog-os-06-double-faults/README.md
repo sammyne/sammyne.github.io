@@ -535,12 +535,12 @@ extern "x86-interrupt" fn test_double_fault_handler(
 [valine]: #valine
 [without a test harness]: /2020/07/27/blog-os-04-testing/#无约束测试
 
-[`TaskStateSegment` struct]: https://docs.rs/x86_64/0.11.1/x86_64/structures/tss/struct.TaskStateSegment.html
+[`TaskStateSegment` struct]: https://docs.rs/x86_64/0.12.1/x86_64/structures/tss/struct.TaskStateSegment.html
 [`Volatile`]: https://docs.rs/volatile/0.2.6/volatile/struct.Volatile.html
 
-[`load_tss`]: https://docs.rs/x86_64/0.11.1/x86_64/instructions/tables/fn.load_tss.html
+[`load_tss`]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/tables/fn.load_tss.html
 [`ltr` instruction]: https://www.felixcloutier.com/x86/ltr
-[`set_cs`]: https://docs.rs/x86_64/0.11.1/x86_64/instructions/segmentation/fn.set_cs.html
+[`set_cs`]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/segmentation/fn.set_cs.html
 
 [“Three Easy Pieces” book]: http://pages.cs.wisc.edu/~remzi/OSTEP/
 

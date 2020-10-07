@@ -684,10 +684,10 @@ PS/2 键盘的某些方面也可以配置的，例如应该使用的扫描码集
 [`ChainedPics`]: https://docs.rs/pic8259_simple/0.2.0/pic8259_simple/struct.ChainedPics.html
 [`HandleControl`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/enum.HandleControl.html
 [`IndexMut`]: https://doc.rust-lang.org/core/ops/trait.IndexMut.html
-[`InterruptDescriptorTable`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/struct.InterruptDescriptorTable.html
+[`InterruptDescriptorTable`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.InterruptDescriptorTable.html
 [`Keyboard`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/struct.Keyboard.html
 [`KeyEvent`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/struct.KeyEvent.html
-[`Port`]: https://docs.rs/x86_64/0.11.1/x86_64/instructions/port/struct.Port.html
+[`Port`]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/port/struct.Port.html
 
 [`add_byte`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/struct.Keyboard.html#method.add_byte
 [`hlt` instruction]: https://en.wikipedia.org/wiki/HLT_(x86_instruction)
@@ -696,7 +696,7 @@ PS/2 键盘的某些方面也可以配置的，例如应该使用的扫描码集
 [`pc-keyboard`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/
 [`pic8259_simple`]: https://docs.rs/pic8259_simple/0.2.0/pic8259_simple/
 [`process_keyevent`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/struct.Keyboard.html#method.process_keyevent
-[`without_interrupts`]: https://docs.rs/x86_64/0.11.1/x86_64/instructions/interrupts/fn.without_interrupts.html
+[`without_interrupts`]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/interrupts/fn.without_interrupts.html
 [`writeln`]: https://doc.rust-lang.org/core/macro.writeln.html
 
 [_scancode_]: https://en.wikipedia.org/wiki/Scancode

@@ -940,7 +940,7 @@ impl FixedSizeBlockAllocator {
 }
 ```
 
-由于 `linked_list_allocator` 包的 [`Heap`] 类型没有实现 TODO（因为 [没有锁是不可能的][not possible without locking]）。它提供一个接口稍微不同的 [`allocate_first_fit`] 方法。这个方法返回一个 `Result<NonNull<u8>, AllocErr>`，而不是返回一个 `*mut u8` 并用空指针表示错误。[`NonNull`] 类型是对裸指针的抽象，表明裸指针非空。[`AllocErr`] 类型则是提示分配错误的标记类型。把 `Ok` 情况映射到 [`NonNull::as_ptr`] 方法并把 `Err` 情况映射为空指针，我们很容易把这个转换会 `*mut u8` 类型。
+由于 `linked_list_allocator` 包的 [`Heap`] 类型没有实现 TODO（因为 [没有锁是不可能的][not possible without locking]）。它提供一个接口稍微不同的 [`allocate_first_fit`] 方法。这个方法返回一个 `Result<NonNull<u8>, ()>`，而不是返回一个 `*mut u8` 并用空指针表示错误。[`NonNull`] 类型是对裸指针的抽象，表明裸指针非空。[`AllocErr`] 类型则是提示分配错误的标记类型。把 `Ok` 情况映射到 [`NonNull::as_ptr`] 方法并把 `Err` 情况映射为空指针，我们很容易把这个转换会 `*mut u8` 类型。
 
 #### 计算列表索引
 
@@ -1210,12 +1210,12 @@ Slab 分配器通常和其他分配器结合使用。例如，它可以喝固定
 [`const` function]: https://doc.rust-lang.org/reference/items/functions.html#const-functions
 [`const` functions]: https://doc.rust-lang.org/reference/items/functions.html#const-functions
 [`dealloc`]: https://doc.rust-lang.org/alloc/alloc/trait.GlobalAlloc.html#tymethod.dealloc
-[`empty`]: https://docs.rs/linked_list_allocator/0.6.4/linked_list_allocator/struct.Heap.html#method.empty
+[`empty`]: https://docs.rs/linked_list_allocator/0.8.6/linked_list_allocator/struct.Heap.html#method.empty
 [`GlobalAlloc`]: https://doc.rust-lang.org/alloc/alloc/trait.GlobalAlloc.html
 [`Heap`]: https://docs.rs/linked_list_allocator/0.6.4/linked_list_allocator/struct.Heap.html
 [`Heap::deallocate`]: https://docs.rs/linked_list_allocator/0.6.4/linked_list_allocator/struct.Heap.html#method.deallocate
 [`heap_allocation` 测试]: @/second-edition/posts/10-heap-allocation/index.md#adding-a-test
-[`init`]: https://docs.rs/linked_list_allocator/0.6.4/linked_list_allocator/struct.Heap.html#method.init
+[`init`]: https://docs.rs/linked_list_allocator/0.8.6/linked_list_allocator/struct.Heap.html#method.init
 [`iter()`]: https://doc.rust-lang.org/std/primitive.slice.html#method.iter
 [`Layout`]: https://doc.rust-lang.org/alloc/alloc/struct.Layout.html
 [`Locked` wrapper]: @/second-edition/posts/11-allocator-designs/index.md#a-locked-wrapper-type

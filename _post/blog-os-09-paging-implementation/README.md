@@ -941,36 +941,36 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 [09-paging-implementation]: https://github.com/sammyne/blog-os-cn/tree/master/09-paging-implementation
 
 [`BootInfo`]: https://docs.rs/bootloader/0.9.3/bootloader/bootinfo/struct.BootInfo.html
-[`FrameAllocator`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/trait.FrameAllocator.html
+[`FrameAllocator`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/trait.FrameAllocator.html
 [`Iterator`]: https://doc.rust-lang.org/core/iter/trait.Iterator.html
 [`Iterator::nth`]: https://doc.rust-lang.org/core/iter/trait.Iterator.html#method.nth
-[`MapperAllSizes`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/trait.MapperAllSizes.html
-[`MappedPageTable`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/struct.MappedPageTable.html
-[`Mapper`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/trait.Mapper.html
-[`MapperFlush`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/struct.MapperFlush.html
+[`MapperAllSizes`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/trait.MapperAllSizes.html
+[`MappedPageTable`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/struct.MappedPageTable.html
+[`Mapper`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/trait.Mapper.html
+[`MapperFlush`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/struct.MapperFlush.html
 [`MemoryRegion`]: https://docs.rs/bootloader/0.6.4/bootloader/bootinfo/struct.MemoryRegion.html
-[`OffsetPageTable`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/struct.OffsetPageTable.html
-[`OffsetPageTable::new`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/struct.OffsetPageTable.html#method.new
-[`PageSize`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/page/trait.PageSize.html
-[`PageTableEntry::frame`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/page_table/struct.PageTableEntry.html#method.frame
-[`RecursivePageTable`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/struct.RecursivePageTable.html
+[`OffsetPageTable`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/struct.OffsetPageTable.html
+[`OffsetPageTable::new`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/struct.OffsetPageTable.html#method.new
+[`PageSize`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/page/trait.PageSize.html
+[`PageTableEntry::frame`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/page_table/struct.PageTableEntry.html#method.frame
+[`RecursivePageTable`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/struct.RecursivePageTable.html
 [`Result`]: https://doc.rust-lang.org/core/result/enum.Result.html
-[`VirtAddr`]: https://docs.rs/x86_64/0.11.1/x86_64/addr/struct.VirtAddr.html
+[`VirtAddr`]: https://docs.rs/x86_64/0.12.1/x86_64/addr/struct.VirtAddr.html
 
 [`enumerate`]: https://doc.rust-lang.org/core/iter/trait.Iterator.html#method.enumerate
 [`entry_point`]: https://docs.rs/bootloader/0.6.4/bootloader/macro.entry_point.html
 [`expect`]: https://doc.rust-lang.org/core/result/enum.Result.html#method.expect
 [`filter`]: https://doc.rust-lang.org/core/iter/trait.Iterator.html#method.filter
 [`flat_map`]: https://doc.rust-lang.org/core/iter/trait.Iterator.html#method.flat_map
-[`flush`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/struct.MapperFlush.html#method.flush
+[`flush`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/struct.MapperFlush.html#method.flush
 [`impl Trait`]: https://doc.rust-lang.org/book/ch10-02-traits.html#returning-types-that-implement-traits
 [`map`]: https://doc.rust-lang.org/core/iter/trait.Iterator.html#method.map
-[`map_to`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/trait.Mapper.html#tymethod.map_to
+[`map_to`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/trait.Mapper.html#tymethod.map_to
 [`next`]: https://doc.rust-lang.org/core/iter/trait.Iterator.html#tymethod.next
 [`step_by`]: https://doc.rust-lang.org/core/iter/trait.Iterator.html#method.step_by
-[`translate`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/trait.MapperAllSizes.html#tymethod.translate
-[`translate_addr`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/trait.MapperAllSizes.html#method.translate_addr
-[`translate_page`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/mapper/trait.Mapper.html#tymethod.translate_page
+[`translate`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/trait.MapperAllSizes.html#tymethod.translate
+[`translate_addr`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/trait.MapperAllSizes.html#method.translate_addr
+[`translate_page`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/mapper/trait.Mapper.html#tymethod.translate_page
 [`write_volatile`]: https://doc.rust-lang.org/std/primitive.pointer.html#method.write_volatile
 
 [_named existential types_]: https://github.com/rust-lang/rfcs/pull/2071

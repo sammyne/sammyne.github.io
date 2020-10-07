@@ -423,13 +423,13 @@ blog_os::interrupts::test_breakpoint_exception...	[ok]
 [Calling conventions]: https://en.wikipedia.org/wiki/Calling_convention
 [GDT]: https://en.wikipedia.org/wiki/Global_Descriptor_Table
 [GitHub]: https://github.com/phil-opp/blog_os
-[HandlerFunc]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/type.HandlerFunc.html
-[HandlerFuncWithErrCode]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/type.HandlerFuncWithErrCode.html
+[HandlerFunc]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/type.HandlerFunc.html
+[HandlerFuncWithErrCode]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/type.HandlerFuncWithErrCode.html
 [Handling Exceptions with Naked Functions]: @/first-edition/extra/naked-exceptions/_index.md
 [How debuggers work]: https://eli.thegreenplace.net/2011/01/27/how-debuggers-work-part-2-breakpoints
-[InterruptDescriptorTable struct]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/struct.InterruptDescriptorTable.html
-[InterruptDescriptorTable::load]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/struct.InterruptDescriptorTable.html#method.load
-[PageFaultHandlerFunc]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/type.PageFaultHandlerFunc.html
+[InterruptDescriptorTable struct]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.InterruptDescriptorTable.html
+[InterruptDescriptorTable::load]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.InterruptDescriptorTable.html#method.load
+[PageFaultHandlerFunc]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/type.PageFaultHandlerFunc.html
 [RFLAGS]: https://en.wikipedia.org/wiki/FLAGS_register
 [SSE instructions]: https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions
 [System V ABI]: https://refspecs.linuxbase.org/elf/x86_64-abi-0.99.pdf
@@ -440,7 +440,7 @@ blog_os::interrupts::test_breakpoint_exception...	[ok]
 [foreign calling convention]: https://doc.rust-lang.org/nomicon/ffi.html#foreign-calling-conventions
 [github blog-os]: https://github.com/phil-opp/blog_os
 [global descriptor table]: https://en.wikipedia.org/wiki/Global_Descriptor_Table
-[idt::Entry]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/struct.Entry.html
+[idt::Entry]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.Entry.html
 [naked functions]: https://github.com/rust-lang/rfcs/blob/master/text/1201-naked-fns.md
 [rust abi]: https://github.com/rust-lang/rfcs/issues/600
 [too-much-magic]: TODO
@@ -450,8 +450,8 @@ blog_os::interrupts::test_breakpoint_exception...	[ok]
 [vga text buffer lazy static]: /2020/07/23/blog-os-03-vga-text-mode/#延迟初始化
 
 [`Box`]: https://doc.rust-lang.org/std/boxed/struct.Box.html
-[`InterruptDescriptorTable`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/struct.InterruptDescriptorTable.html
-[`InterruptStackFrame`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/struct.InterruptStackFrame.html
+[`InterruptDescriptorTable`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.InterruptDescriptorTable.html
+[`InterruptStackFrame`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.InterruptStackFrame.html
 
 [`lidt`]: https://www.felixcloutier.com/x86/lgdt:lidt
 [`static mut`]: https://doc.rust-lang.org/1.30.0/book/second-edition/ch19-01-unsafe-rust.html#accessing-or-modifying-a-mutable-static-variable

@@ -375,10 +375,10 @@ Level 4 page table at: PhysAddr(0x1000)
 [Spectre]: https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)
 
 [double fault]: /2020/07/27/blog-os-06-double-faults/
-[entries]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/page_table/struct.PageTableEntry.html
+[entries]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/page_table/struct.PageTableEntry.html
 [github blog-os]: https://github.com/phil-opp/blog_os
 [paging]: https://en.wikipedia.org/wiki/Virtual_memory#Paged_virtual_memory
-[page tables]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/page_table/struct.PageTable.html
+[page tables]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/page_table/struct.PageTable.html
 [segmentation]: https://en.wikipedia.org/wiki/X86_memory_segmentation
 [sign extension in two's complement]: https://en.wikipedia.org/wiki/Two's_complement#Sign_extension
 [system calls]: https://en.wikipedia.org/wiki/System_call
@@ -393,17 +393,17 @@ Level 4 page table at: PhysAddr(0x1000)
 [_Memory Protection Unit_]: https://developer.arm.com/docs/ddi0337/e/memory-protection-unit/about-the-mpu
 [_protected mode_]: https://en.wikipedia.org/wiki/X86_memory_segmentation#Protected_mode
 
-[`CAUSED_BY_WRITE`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/struct.PageFaultErrorCode.html#associatedconstant.CAUSED_BY_WRITE
+[`CAUSED_BY_WRITE`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.PageFaultErrorCode.html#associatedconstant.CAUSED_BY_WRITE
 [`CR2`]: https://en.wikipedia.org/wiki/Control_register#CR2
-[`Cr2::read`]: https://docs.rs/x86_64/0.11.1/x86_64/registers/control/struct.Cr2.html#method.read
+[`Cr2::read`]: https://docs.rs/x86_64/0.12.1/x86_64/registers/control/struct.Cr2.html#method.read
 [`Cr3::read`]: https://docs.rs/x86_64/0.12.1/x86_64/registers/control/struct.Cr3.html#method.read
-[`Cr3Flags`]: https://docs.rs/x86_64/0.11.1/x86_64/registers/control/struct.Cr3Flags.html
+[`Cr3Flags`]: https://docs.rs/x86_64/0.12.1/x86_64/registers/control/struct.Cr3Flags.html
 [`hlt_loop`]: @/second-edition/posts/07-hardware-interrupts/index.md#the-hlt-instruction
 [`invlpg`]: https://www.felixcloutier.com/x86/INVLPG.html
-[`PageFaultErrorCode`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/struct.PageFaultErrorCode.html
-[`PhysAddr`]: https://docs.rs/x86_64/0.11.1/x86_64/addr/struct.PhysAddr.html
-[`PhysFrame`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/paging/frame/struct.PhysFrame.html
-[`PROTECTION_VIOLATION`]: https://docs.rs/x86_64/0.11.1/x86_64/structures/idt/struct.PageFaultErrorCode.html#associatedconstant.PROTECTION_VIOLATION
-[`tlb` module]: https://docs.rs/x86_64/0.11.1/x86_64/instructions/tlb/index.html
+[`PageFaultErrorCode`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.PageFaultErrorCode.html
+[`PhysAddr`]: https://docs.rs/x86_64/0.12.1/x86_64/addr/struct.PhysAddr.html
+[`PhysFrame`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/paging/frame/struct.PhysFrame.html
+[`PROTECTION_VIOLATION`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.PageFaultErrorCode.html#associatedconstant.PROTECTION_VIOLATION
+[`tlb` module]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/tlb/index.html
 
 ["A minimal Rust kernel"]: /2020/07/17/blog-os-02-a-minimal-rust-kernel/

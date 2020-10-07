@@ -152,11 +152,10 @@ test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04"]
 # in Cargo.toml
 
 [dependencies]
-x86_64 = "0.11.0"
+x86_64 = "0.12.1"
 ```
 
 现在我们可以使用 crate 提供的 [`Port`][Port] 类型来创建一个 `exit_qemu` 函数了:
-
 
 ```rust
 // in src/main.rs
@@ -979,7 +978,7 @@ fn panic(_info: &PanicInfo) -> ! {
 [Fn()]: https://doc.rust-lang.org/std/ops/trait.Fn.html
 [Fn() trait]: https://doc.rust-lang.org/stable/core/ops/trait.Fn.html
 [Integration Tests]: https://os.phil-opp.com/integration-tests/
-[Port]: https://docs.rs/x86_64/0.7.0/x86_64/instructions/port/struct.Port.html
+[Port]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/port/struct.Port.html
 [SSH]: https://en.wikipedia.org/wiki/Secure_Shell
 [UARTs]: https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter
 [UART models]: https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter#UART_models
@@ -1014,5 +1013,5 @@ fn panic(_info: &PanicInfo) -> ! {
 [16550 UART]: https://en.wikipedia.org/wiki/16550_UART
 
 [`fmt::Write`]: https://doc.rust-lang.org/nightly/core/fmt/trait.Write.html
-[`x86_64`]: https://docs.rs/x86_64/0.7.5/x86_64/
+[`x86_64`]: https://docs.rs/x86_64/0.12.1/x86_64/
 [`uart_16550`]: https://docs.rs/uart_16550
