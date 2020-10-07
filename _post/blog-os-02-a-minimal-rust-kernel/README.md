@@ -65,7 +65,7 @@ Nightly 版本的编译器允许我们在源码开头插入 *特性标记符*，
 ### 目标配置
 Cargo 借助 `--target` 参数支持不同的目标系统。这个目标系统可以使用一个所谓的 [目标三元组（target triple）][target triple] 来描述，内容包括 CPU 架构、平台供应商、操作系统和 [ABI]。比方说，目标三元组 `x86_64-unknown-linux-gnu` 描述一个基于 `x86_64` 架构 CPU、没有明确的平台供应商的 linux 系统，它遵循 GNU 风格的 ABI。Rust 支持 [许多不同的目标三元组][rust platform support]，包括安卓系统对应的 `arm-linux-androideabi` 和 WebAssembly 使用的 [wasm32-unknown-unknown]。
 
-为了编写我们的目标系统，并且鉴于需要做一些特殊的配置（比如没有依赖的底层操作系统），没有现成的 [目标三元组][rust platform support] 满足我们的要求。好在 Rust 允许利用 JSON 文件定制自己的目标。比如，一个描述 `x86_64-unknown-linux-gnu` 目标系统的配置清单大概长这样：
+为了编写我们的目标系统，并且鉴于需要做一些特殊的配置（比如没有依赖的底层操作系统），没有现成的 [目标三元组][rust platform support] 满足我们的要求。好在 Rust 允许利用 JSON 文件定制 [自己的目标][custom-targets]。比如，一个描述 `x86_64-unknown-linux-gnu` 目标系统的配置清单大概长这样：
 
 ```json
 {
@@ -418,6 +418,7 @@ runner = "bootimage runner"
 [cargo configuration]: https://doc.rust-lang.org/cargo/reference/config.html
 [cargo doc]: https://doc.rust-lang.org/cargo/reference/config.html
 [core library]: https://doc.rust-lang.org/nightly/core/index.html
+[custom-targets]: https://doc.rust-lang.org/nightly/rustc/targets/custom.html
 [data-layout]: https://llvm.org/docs/LangRef.html#data-layout
 [disabling SIMD]: https://os.phil-opp.com/disable-simd/
 [disabling the read zone]: https://os.phil-opp.com/red-zone/
