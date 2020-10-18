@@ -233,7 +233,7 @@ build-std = ["core", "compiler_builtins"]
 
 Rust 编译器假设所有系统都有一批同样内置的函数。这些函数大多数由刚才重新编译的 `compiler_builtins` crate 提供。但是某些通常由系统 C 语言库提供的一些内存操作相关的函数默认没有被这个 crate 启用。这些函数包括把某个内存块置为特定值的 `memset`、从一个块复制值到另一个块的 `memcpy` 和比较两个内存块的 `memcmp`。虽然编译我们的内核暂时还不用不上这些函数的任何一个，但是后续添加更多代码时就会用到（例如，复制 struct 来到处传递时）。
 
-因为无法连接到操作系统的 C 语言库，我们那需要其他方法来为编译器提供这些函数。其中一种可行的方式就是实现我们那自己的 `memset` 等函数，并为其应用 `#[no_mangle]` 属性（为了避免编译时的自动重命名）。然而，这是很危险的--这些函数的实现稍有不当就会导致未定义行为。所以，复用现有经过充分测试的实现是个好方法。
+因为无法连接到操作系统的 C 语言库，我们那需要其他方法来为编译器提供这些函数。其中一种可行的方式就是实现我们那自己的 `memset` 等函数，并为其应用 `#[no_mangle]` 属性（为了避免编译时的自动重命名）。然而，这是很危险的--这些函数的实现稍有不当就会导致未定义行为。例如，使用 `for` 循环实现 `memcpy` 可能会导致无限递归，因为 `for` 循环会隐式调用 [`IntoIterator::into_iter`] 方法，这个方法可能会再次调用 `memcpy`。所以，复用现有经过充分测试的实现是个好方法。
 
 好在，`compiler_builtins` crate 已经包含了这些所需函数的实现，只是默认为了避免和 C 语言库的冲突而未启用而已。通过设置 cargo 的 [`build-std-features`] 标识符未 `["compiler-builtins-mem"]` 来启用它们。和 `build-std` 标识符类似，这个标识符可以通过命令行的 `-Z` 标识符传递或者通过 `.cargo/config.toml` 文件的 `unstable` 表格配置。由于我们的构建总要使用这个标识符，借助配置文件的方式看起来要合理一点：
 
@@ -448,6 +448,8 @@ runner = "bootimage runner"
 [wg-cargo-std-aware-issues#15]: https://github.com/rust-lang/wg-cargo-std-aware/issues/15
 
 [02-minimal-rust-kernel-source-code]: https://github.com/sammyne/blog-os-cn/tree/master/02-minimal-rust-kernel
+
+[`IntoIterator::into_iter`]: https://doc.rust-lang.org/stable/core/iter/trait.IntoIterator.html#tymethod.into_iter
 
 [`asm!` 宏]: https://doc.rust-lang.org/unstable-book/library-features/asm.html
 [`build-std-features`]: https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std-features
