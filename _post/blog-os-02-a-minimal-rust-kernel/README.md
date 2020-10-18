@@ -213,7 +213,7 @@ build-std = ["core", "compiler_builtins"]
 这告诉 cargo 要重新编译 `core` 和 `compiler_builtins` 库。需要后者的原因是 `core` 依赖它。为了重新编译这些库，cargo 需要访问 rust 的源码，可通过 `rustup component add rust-src` 命令安装。
 
 ::: tip 温馨提示
-`unstable.build-std` 配置要求至少 2020-07-15 后的 nightly 版 Rust。作者当时安装时，这些 nightly 版的 `rustfmt` 组件 [尚未可用](https://rust-lang.github.io/rustup-components-history/)，这种情况下需要使用 `rustup update nightly --force` 跳过不可用的 `rustfmt` 组件从而更新 nightly 版的 Rust。
+`unstable.build-std` 配置要求至少 2020-07-15 后的 nightly 版 Rust。
 :::
 
 设置好 `unstable.build-std` 键和安装 `rust-src` 组件后，重新运行 build 命令：
