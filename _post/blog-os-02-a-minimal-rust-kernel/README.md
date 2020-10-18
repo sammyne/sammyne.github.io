@@ -229,30 +229,24 @@ build-std = ["core", "compiler_builtins"]
 
 可以看到 `cargo build` 现在会为我们的定制目标重新编译 `core`、`rustc-std-workspace-core`（`compiler_builtins` 的依赖）和 `compiler_builtins` 库。
 
-#### `rlibc` crate
+#### 内存相关内部细节
 
-Rust 编译器假设所有系统都有一批同样内置的函数。这些函数大多数由刚才重新编译的 `compiler_builtins` crate 提供。但是某些通常由系统 C 语言库提供的一些函数默认没有被这个 crate 启用。这些函数包括把某个内存块置为特定值的 `memset`、从一个块复制值到另一个块的 `memcpy` 和比较两个内存块的 `memcmp`。
+Rust 编译器假设所有系统都有一批同样内置的函数。这些函数大多数由刚才重新编译的 `compiler_builtins` crate 提供。但是某些通常由系统 C 语言库提供的一些内存操作相关的函数默认没有被这个 crate 启用。这些函数包括把某个内存块置为特定值的 `memset`、从一个块复制值到另一个块的 `memcpy` 和比较两个内存块的 `memcmp`。虽然编译我们的内核暂时还不用不上这些函数的任何一个，但是后续添加更多代码时就会用到（例如，复制 struct 来到处传递时）。
 
-虽然编译我们的内核暂时还用不上这些函数，但是后续添加更多代码后会用上。所以，现在提供这些函数的实现可以避免后续的链接错误问题。虽然至今尚未有办法启用 `compiler_builtins` crate 的实现（参见 [追踪的 issue][wg-cargo-std-aware-issues#15]），但是 [`rlibc`] crate 是一个很好的替换品。
+因为无法连接到操作系统的 C 语言库，我们那需要其他方法来为编译器提供这些函数。其中一种可行的方式就是实现我们那自己的 `memset` 等函数，并为其应用 `#[no_mangle]` 属性（为了避免编译时的自动重命名）。然而，这是很危险的--这些函数的实现稍有不当就会导致未定义行为。所以，复用现有经过充分测试的实现是个好方法。
 
-为了包含这个 crate，我们需要在 `Cargo.toml` 文件将其添加为依赖：
+好在，`compiler_builtins` crate 已经包含了这些所需函数的实现，只是默认为了避免和 C 语言库的冲突而未启用而已。通过设置 cargo 的 [`build-std-features`] 标识符未 `["compiler-builtins-mem"]` 来启用它们。和 `build-std` 标识符类似，这个标识符可以通过命令行的 `-Z` 标识符传递或者通过 `.cargo/config.toml` 文件的 `unstable` 表格配置。由于我们的构建总要使用这个标识符，借助配置文件的方式看起来要合理一点：
 
 ```toml
-# in Cargo.toml
-
-[dependencies]
-rlibc = "1.0.0"
+[unstable]
+build-std-features = ["compiler-builtins-mem"]
 ```
 
-对于常规 crate，这就够了。但是由于没有直接用到 `rlibc` 的任何函数，我们需要显式地要求 Rust 编译器链接这个 crate。往 `main.rs` 添加一下内容即可：
+（`compiler-builtins-mem` 特性的支持是在 [最近才添加的](https://github.com/rust-lang/rust/pull/77284)，所以要求的 Rust 版本至少为 `2020-09-30`。）
 
-```rust
-// in main.rs
+内地里，这个标识符启用 `compiler_builtins` crate 的 [`mem` 特性][`mem` feature]。这个特性的效果是 crate 的 [`memcpy` 等实现] 都有 `#[no_mangle]` 属性修饰，使得链接器能够访问到它们。值得注意的是，这些函数不会立即 [被优化掉][not optimized]，他们的性能可能不会最好的，但至少是正确的。对于 `x86_64`，有个进行中的 PR [使用特殊的汇编指令优化这些函数][memcpy rep movsb]。
 
-extern crate rlibc;
-```
-
-有了这个更新后，我们的内核就有了所有需要的函数实现，所以即使后续代码变得更加复杂，内核仍然能继续编译通过。
+有了这个更新后，我们的内核就有了编译器需要的所有函数实现，所以即使后续代码变得更加复杂，内核仍然能继续编译通过。
 
 ### 设置默认目标
 为了避免每次执行 `cargo build` 时传递 `--target` 参数，我们可以覆写默认的编译目标。往 [cargo 配置][cargo configuration] 文件 `.cargo/config.toml` 添加下面的内容即可：
@@ -430,8 +424,10 @@ runner = "bootimage runner"
 [iterate]: https://doc.rust-lang.org/stable/book/ch13-02-iterators.html
 [linker]: https://en.wikipedia.org/wiki/Linker_(computing)
 [long mode]: https://en.wikipedia.org/wiki/Long_mode
+[memcpy rep movsb]: https://github.com/rust-lang/compiler-builtins/pull/365
 [memory safety]: https://en.wikipedia.org/wiki/Memory_safety
 [nightly-rust]: https://doc.rust-lang.org/book/appendix-07-nightly-rust.html#choo-choo-release-channels-and-riding-the-trains
+[not optimized]: https://github.com/rust-lang/compiler-builtins/issues/339
 [offset]: https://doc.rust-lang.org/std/primitive.pointer.html#method.offset
 [post-build scripts]: https://github.com/rust-lang/cargo/issues/545
 [power-on self-test]: https://en.wikipedia.org/wiki/Power-on_self-test
@@ -452,4 +448,6 @@ runner = "bootimage runner"
 [02-minimal-rust-kernel-source-code]: https://github.com/sammyne/blog-os-cn/tree/master/02-minimal-rust-kernel
 
 [`asm!` 宏]: https://doc.rust-lang.org/unstable-book/library-features/asm.html
-[`rlibc`]: https://docs.rs/rlibc/1.0.0/rlibc/
+[`build-std-features`]: https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std-features
+[`mem` feature]: https://github.com/rust-lang/compiler-builtins/blob/eff506cd49b637f1ab5931625a33cef7e91fbbf6/Cargo.toml#L51-L52
+[`memcpy` etc. implementations]: (https://github.com/rust-lang/compiler-builtins/blob/eff506cd49b637f1ab5931625a33cef7e91fbbf6/src/mem.rs#L12-L69)

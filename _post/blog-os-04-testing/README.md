@@ -639,7 +639,7 @@ fn panic(info: &PanicInfo) -> ! {
 extern crate rlibc;
 ```
 
-和 `main.rs` 一样，`lib.rs` 也是一个可以被 cargo 自动识别的特殊文件。该库是一个独立的编译单元，所以需要为其再次指定 `#![no_std]` 属性并添加 `external crate libc` 语句。
+和 `main.rs` 一样，`lib.rs` 也是一个可以被 cargo 自动识别的特殊文件。该库是一个独立的编译单元，所以需要为其再次指定 `#![no_std]` 属性。
 
 为了让我们的库可以和 `cargo test` 一起协同工作，我们还需要添加以下测试函数和属性:
 
