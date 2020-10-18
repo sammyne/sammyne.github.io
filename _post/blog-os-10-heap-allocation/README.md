@@ -746,7 +746,7 @@ many_boxes... [ok]
 [data race]: https://doc.rust-lang.org/nomicon/races.html
 [exception handlers]: /2020/07/27/blog-os-05-cpu-exceptions/#实现
 [github blog-os]: https://github.com/phil-opp/blog_os
-[load an interrupt descriptor table]: @/second-edition/posts/05-cpu-exceptions/index.md#loading-the-idt
+[load an interrupt descriptor table]: /2020/07/27/blog-os-05-cpu-exceptions/#加载-idt
 [lifetime]: https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html
 [linux vulnerability]: https://securityboulevard.com/2019/02/linux-use-after-free-vulnerability-found-in-linux-2-6-through-4-20-11/
 [n-th partial sum]: https://en.wikipedia.org/wiki/1_%2B_2_%2B_3_%2B_4_%2B_%E2%8B%AF#Partial_sums
