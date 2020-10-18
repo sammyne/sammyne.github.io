@@ -238,6 +238,8 @@ Rust 编译器假设所有系统都有一批同样内置的函数。这些函数
 好在，`compiler_builtins` crate 已经包含了这些所需函数的实现，只是默认为了避免和 C 语言库的冲突而未启用而已。通过设置 cargo 的 [`build-std-features`] 标识符未 `["compiler-builtins-mem"]` 来启用它们。和 `build-std` 标识符类似，这个标识符可以通过命令行的 `-Z` 标识符传递或者通过 `.cargo/config.toml` 文件的 `unstable` 表格配置。由于我们的构建总要使用这个标识符，借助配置文件的方式看起来要合理一点：
 
 ```toml
+# in .cargo/config.toml
+
 [unstable]
 build-std-features = ["compiler-builtins-mem"]
 ```
