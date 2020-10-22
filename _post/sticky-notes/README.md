@@ -1,5 +1,5 @@
 ---
-title: "随手记"
+title: "便利贴"
 date: 2020-09-19
 categories:
 - crypto
