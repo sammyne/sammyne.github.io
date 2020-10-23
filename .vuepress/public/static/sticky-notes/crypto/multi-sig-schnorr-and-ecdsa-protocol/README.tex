@@ -14,8 +14,16 @@
   anchorcolor=blue,
   citecolor=blue
 ]{hyperref}
+\usepackage{listings}
 \usepackage{url}
 
+\lstset{
+  basicstyle=\small,
+  keywordstyle=\ttfamily,
+  identifierstyle=\ttfamily,
+  stringstyle=\ttfamily,
+  showstringspaces=false
+}
 \newtheorem{definition}{\bf 定义}[section]
 
 \title{多重签名 MultiSig：Schnorr 协议与 ECDSA 协议}
@@ -113,37 +121,35 @@ ECDSA 的签名过程包括基于哈希函数生成消息摘要、椭圆曲线�
 \end{enumerate}
 
 比特币中 ECDSA 使用的椭圆曲线 secp256k1 参数由以下 6 元组 \(T=(p,a,b,G,n,h)\) 定义如下：
-\begin{align*}
-  p &= FFFFFFFF\ FFFFFFFF\ FFFFFFFF\ FFFFFFFF\ FFFFFFFF\ FFFFFFFF\\
-    &\quad\ FFFFFFFE\ FFFFFC2F \\
-    &= 2^{256} − 2^{32} − 2^9 − 2^8 − 2^7 − 2^6 − 2^4 − 1  
-\end{align*}
+\begin{lstlisting}[mathescape]
+p = FFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE FFFFFC2F
+  = $2^{256}$ − $2^{32}$ − $2^9$ − $2^8$ − $2^7$ − $2^6$ − $2^4$ − 1  
+\end{lstlisting}
 
 \(\mathbb{F}_p\) 上的曲线 \(E: y^2 = x^3+ax+b\) 定义为
-\begin{align*}
-a\ &=\ 00000000\ 00000000\ 00000000\ 00000000\ 00000000\ 00000000\ 00000000\ 00000000\ \\
-b\ &=\ 00000000\ 00000000\ 00000000\ 00000000\ 00000000\ 00000000\ 00000000\ 00000007
-\end{align*}
+\begin{lstlisting}
+a = 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+b = 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000007
+\end{lstlisting}
 
 压缩格式的基点 \(G\) 为 
-\begin{align*}
-G\ &=\quad \qquad\ \ 02\ 79BE667E\ F9DCBBAC\ 55A06295\ CE870B07\ 029BFCDB\ 2DCE28D9 \\
-   &\ \quad 59F2815B\ 16F81798
-\end{align*}
+\begin{lstlisting}
+G =       02 79BE667E F9DCBBAC 55A06295 CE870B07 029BFCDB 2DCE28D9 59F2815B
+    16F81798
+\end{lstlisting}
 
 非压缩格式的基点 \(G\) 为
-\begin{align*}
-G\ &=\quad \qquad\ \ 04\ 79BE667E\ F9DCBBAC\ 55A06295\ CE870B07\ 029BFCDB\ 2DCE28D9 \\
-   &\ \quad 59F2815B\ 16F81798\ 483ADA77\ 26A3C465\ 5DA4FBFC\ 0E1108A8\ FD17B448 \\
-   &\ \quad A6855419\ 9C47D08F\ FB10D4B8
-\end{align*}
+\begin{lstlisting}
+G =       04 79BE667E F9DCBBAC 55A06295 CE870B07 029BFCDB 2DCE28D9 59F2815B
+    16F81798 483ADA77 26A3C465 5DA4FBFC 0E1108A8 FD17B448 A6855419 9C47D08F
+    FB10D4B8
+\end{lstlisting}
 
 \(G\) 的度 \(n\) 和 cofactor 为
-\begin{align*}
-n\ &=\ FFFFFFFF\ FFFFFFFF\ FFFFFFFF\ FFFFFFFE\ BAAEDCE6\ AF48A03B\\
-   &\ \quad BFD25E8C\ D0364141 \\
-h &= 01
-\end{align*}
+\begin{lstlisting}
+n = FFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 
+h =       01
+\end{lstlisting}
 
 在使用 ECDSA 进行多签的情况下，如果共有 \(N\) 个私钥进行了签名，则验证时需要对 \(N\) 个签名各自进行验证。
 
