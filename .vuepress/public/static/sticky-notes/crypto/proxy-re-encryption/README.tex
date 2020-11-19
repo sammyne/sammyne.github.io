@@ -1,0 +1,151 @@
+%! TEX program=xelatex
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[ruled,linesnumbered,vlined]{algorithm2e}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{cite}
+\usepackage{ctex}
+\usepackage{datetime2}
+\usepackage{enumitem}
+\usepackage[top=1cm,bottom=2cm]{geometry}
+\usepackage[colorlinks,
+  linkcolor=blue,
+  anchorcolor=blue,
+  citecolor=blue
+]{hyperref}
+\usepackage{listings}
+\usepackage{url}
+
+\lstset{
+  basicstyle=\small,
+  keywordstyle=\ttfamily,
+  identifierstyle=\ttfamily,
+  stringstyle=\ttfamily,
+  showstringspaces=false
+}
+
+\newcommand{\bG}{\mathbb{G}}
+\newcommand{\bZ}{\mathbb{Z}}
+
+\newtheorem{definition}{\bf 定义}[section]
+
+\title{代理重加密（Proxy Re-Encryption）}
+\date{\DTMdate{2020-11-18}}
+\author{Sammy Li}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\section{符号定义}
+\begin{table}[!htbp]
+  \centering
+  \caption{符号定义}
+  \begin{tabular}{|r|l|}
+    \hline
+    符号 & 说明 \\
+    \hline
+    \(\bG=\langle G\rangle\) & 椭圆曲线群，生成元记为 \(G\) \\
+    \(e: \bG_1\times \bG_2\rightarrow\bG_T\) & 椭圆曲线群 \(\bG_1=\langle G_1\rangle\) 和 \(\bG_2=\langle G_2\rangle\) 到 \(\bG_T=\langle G_T\rangle\) 的双线性映射 \\
+    \(s\in_R S\) & 表示从集合 \(S\) 随机选取一个元素 \(s\) \\ 
+    \(p\) & 群 \(\bG_1\) 和 \(\bG_2\) 的阶，即元素个数 \\
+    \hline
+  \end{tabular} 
+\end{table}
+
+往后部分使用的具体椭圆曲线群为 bn256\cite{2005Pairing,2010New}。
+
+\section{流程}
+流程涉及角色如下
+\begin{itemize}
+  \item 发送方 A：负责本地加密消息，然后上传到代理服务器，为接收方分配重加密的解密密钥
+  \item 代理服务器 S：存储 A 的密文，基于 A 的重加密密钥执行重加密
+  \item 接收方 B：基于重加密密钥解密密文
+\end{itemize}
+
+\subsection{A 和 B 本地生成密钥}
+\begin{itemize}
+  \item A 本地基于 \(\bG_1\) 生成公私钥对 \((x_A,X_A=x_A\cdot G_1)\)
+  \item B 本地基于 \(\bG_2\) 生成公私钥对 \((x_B,X_B=x_B\cdot G_2)\)
+\end{itemize}
+
+\subsection{A 加密消息并上传到 S}
+
+\begin{enumerate}
+  \item 将 \(m\) 映射为 \(\bG_T\) 的元素 \(M\)
+    \begin{itemize}
+      \item 通常情况下，\(m\) 用作加密数据的对称密钥，可先随机生成 \(M\) 然后转化为 \(m\)，再用 \(m\) 对数据进行对称加密
+    \end{itemize}
+  \item 随机生成 \(r\in_R \bZ_p\)
+  \item 计算密文分片
+    \begin{itemize}
+      \item \(C_1=r\cdot G_T+M \in\bG_T\)
+      \item \(C_2=r\cdot X_A \in\bG_1\)
+    \end{itemize}
+  \item 将 \((C_1,C_2)\) 上传到 S
+\end{enumerate}
+
+\subsection{A 基于 B 的公钥生成重加密密钥并上传到 S}
+
+\begin{enumerate}
+  \item A 计算重加密密钥 \(X'=x_A'^{-1}\cdot X_B\in\bG_2\)
+  \item 将 \(X'\) 上传到 S
+\end{enumerate}
+
+\subsection{S 加工生成重加密消息}
+
+S 计算并保存 \(C_2'=e(X',C_2)\)
+
+\subsection{B 执行重解密还原消息}
+
+\begin{enumerate}
+  \item B 从 S 下载 \((C_1,C_2')\)
+  \item 计算 \(R=x_B'^{-1}\cdot C_2'\)
+  \item 计算 \(M'=C_1-R\)
+  \item 将 \(M'\) 转化为 \(m'\)，即得消息原文 \(m=m'\)
+\end{enumerate}
+
+\section{证明}
+\subsection{预备知识}
+\subsubsection{双线性映射}
+设\(\bG_1\)、\(\bG_2\) 和 \(\bG_T\) 都是阶为 \(p\) 的循环群，\(p\) 是素数。如果映射 \(e: \bG_1\times\bG_2\rightarrow\bG_T\) 满足以下性质：
+
+\begin{enumerate}
+  \item \textbf{双线性性}： 对于任意 \(a,b\in \bZ_p\) 和 \(X\in\bG_1, Y\in\bG_2\)，有 \(e(a\cdot X, b\cdot Y) = a\cdot b\cdot e(X, Y)\)
+  \item \textbf{非退化性}： 存在 \(X\in\bG_1, Y\in\bG_2\)，使得 \(e(X,Y)\neq G_T\)。这里 \(G_T\) 代表 \(\bG_T\) 群的单位元
+  \item \textbf{可计算性}： 存在有效的算法对任意的 \(X\in\bG_1, Y\in\bG_2\)，计算 \(e(X,Y)\) 的值
+\end{enumerate}
+
+那么称 \(e\) 是一个双线性映射。
+
+双线性映射可以通过有线域上的超椭圆曲线上的 Tate 对或 Weil 对来构造。
+
+\textbf{注}：\(e(X,Y)=e(Y,X)\)。
+
+\subsection{解密过程正确性推导}
+\begin{align*}
+  M' &= C_1-R \\
+     &= r\cdot G_T + M - x_B'^{-1} \cdot C_2' \\
+     &= r\cdot G_T + M - x_B'^{-1} \cdot e(X',C_2) \\
+     &= r\cdot G_T + M - x_B'^{-1} \cdot e(x_A'^{-1}\cdot X_B,C_2) \\
+     &= r\cdot G_T + M - x_B'^{-1} \cdot e(x_A'^{-1}\cdot X_B,r\cdot X_A) \\
+     &= r\cdot G_T + M - x_B'^{-1} \cdot e(x_A'^{-1}\cdot x_B \cdot G_2,r\cdot x_A\cdot G_1) \\
+     &= r\cdot G_T + M - e(x_B'^{-1}\cdot x_B \cdot G_2,x_A'^{-1} \cdot r\cdot x_A\cdot G_1) \\
+     &= r\cdot G_T + M - e(G_2,r\cdot G_1) \\
+     &= r\cdot G_T + M - r\cdot e(G_2,G_1) \\
+     &= r\cdot G_T + M - r\cdot G_T \\
+     &= M
+\end{align*}
+
+\phantomsection % 使得链接能正确跳转
+\begin{thebibliography}{99}
+  \addcontentsline{toc}{section}{参考文献} %向目录中添加条目，以章节的名义
+
+  \bibitem{2005Pairing} Barreto, Paulo S. L. M. , and M. Naehrig . "Pairing-Friendly Elliptic Curves of Prime Order." (2005).
+  \bibitem{2010New} Naehrig, Michael , R. Niederhagen , and P. Schwabe . "New Software Speed Records for Cryptographic Pairings." International Conference on Progress in Cryptology-latincrypt Springer-Verlag, 2010.
+\end{thebibliography}
+
+\end{document}
