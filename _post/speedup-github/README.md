@@ -46,7 +46,7 @@ wget https://download.fastgit.org/A/A/releases/download/1.0/1.0.tar.gz
 wget https://raw.githubusercontent.com/kubernetes/kubernetes/master/README.md
 
 ## 新地址
-wget https://raw.fastgit.org//kubernetes/kubernetes/master/README.md
+wget https://raw.fastgit.org/kubernetes/kubernetes/master/README.md
 ```
 
 ### 方式 2. 将源替换操作添加 git 的全局配置
