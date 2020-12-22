@@ -4,8 +4,9 @@ date: 2020-12-03
 categories:
 - network
 tags:
-- ops
 - iptables
+- linux
+- ops
 ---
 
 这篇文章会尽量以通俗易懂的方式描述 iptables 的相关概念，请耐心的读完它。

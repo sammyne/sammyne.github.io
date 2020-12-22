@@ -8400,7 +8400,7 @@ vuepress-theme-reco@^1.6.1:
     vue-click-outside "1.1.0"
     vuepress-plugin-smooth-scroll "^0.0.9"
 
-vuepress@^1.5.2:
+vuepress@^1.7.1:
   version "1.7.1"
   resolved "https://registry.npm.taobao.org/vuepress/download/vuepress-1.7.1.tgz#bb0e139d8c407a0b5aa962cf9577832a5808937e"
   integrity sha1-uw4TnYxAegtaqWLPlXeDKlgIk34=
