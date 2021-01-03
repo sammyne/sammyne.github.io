@@ -2,38 +2,37 @@ name: deploy
 
 on:
   push:
-    branches: [ 'vuepress' ]
+    branches: ['vuepress']
   pull_request:
-    branches: [ 'vuepress' ]
+    branches: ['vuepress']
 
 jobs:
   deploy:
-
     runs-on: ubuntu-18.04
-    container: 
-      image: node:lts-alpine3.11
+    container:
+      image: node:lts-alpine3.12
 
     steps:
-    # without git>=2.18, actions/checkout@v2 would download the repository using REST,
-    # which will render JamesIves/github-pages-deploy-action@releases/v3 failed
-    - name: Install git>=2.18 for actions/checkout@v2 to clone the repository
-      run: apk add git
-    - uses: actions/checkout@v2
-      with:
-        persist-credentials: false
-    - name: Node toolchains
-      run: |
-        echo "node: $(node --version)" &&
-        echo "yarn: $(yarn --version)"
-    - name: Build the static vuepress
-      run: |
-        yarn &&
-        yarn build
-    - name: Install dependencies for JamesIves/github-pages-deploy-action@releases/v3
-      run: apk add rsync
-    - name: Deploy github pages
-      uses: JamesIves/github-pages-deploy-action@releases/v3
-      with:
-        ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        BRANCH: master 
-        FOLDER: .vuepress/dist
+      # without git>=2.18, actions/checkout@v2 would download the repository using REST,
+      # which will render JamesIves/github-pages-deploy-action@releases/v3 failed
+      - name: Install git>=2.18 for actions/checkout@v2 to clone the repository
+        run: apk add git
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Node toolchains
+        run: |
+          echo "node: $(node --version)" &&
+          echo "yarn: $(yarn --version)"
+      - name: Build the static vuepress
+        run: |
+          yarn &&
+          yarn build
+      - name: Install dependencies for JamesIves/github-pages-deploy-action@releases/v3
+        run: apk add rsync
+      - name: Deploy github pages
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          BRANCH: master
+          FOLDER: .vuepress/dist

@@ -15,7 +15,6 @@
   "scripts": {
     "dev": "vuepress dev",
     "build": "vuepress build",
-    "deploy": "sh deploy.sh",
     "pre-deploy": "vuepress build && sh nginx.sh"
   }
 }
