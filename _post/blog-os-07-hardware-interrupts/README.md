@@ -1,11 +1,11 @@
 ---
-title: "[blog os] 07. 硬件中断"
+title: '[blog os] 07. 硬件中断'
 date: 2020-07-27
 categories:
-- os
+  - os
 tags:
-- blog_os
-- rust
+  - blog_os
+  - rust
 ---
 
 > 原文：[Hardware Interrupts](https://os.phil-opp.com/hardware-interrupts/)
@@ -18,9 +18,9 @@ tags:
 
 ## 概览
 
-中断提供了从附带的硬件设备通知 CPU 的途径。所以与其让内核为了定期检查键盘输入的新字符（这个过程称为 [*轮询*][polling]），键盘可以在每次按键时通知内核。因为内核只需要在事件发生时采取行动，所以这样要高效得多。由于内核可以立即响应而不用等到下一次轮询，这也缩短了响应时间。
+中断提供了从附带的硬件设备通知 CPU 的途径。所以与其让内核为了定期检查键盘输入的新字符（这个过程称为 [_轮询_][polling]），键盘可以在每次按键时通知内核。因为内核只需要在事件发生时采取行动，所以这样要高效得多。由于内核可以立即响应而不用等到下一次轮询，这也缩短了响应时间。
 
-将所有硬件设备直连到 CPU 是不可能的。一个独立的 *中断控制器* 从所有设备收集中断，然后通知 CPU：
+将所有硬件设备直连到 CPU 是不可能的。一个独立的 _中断控制器_ 从所有设备收集中断，然后通知 CPU：
 
 ```
                                     ____________             _____
@@ -33,7 +33,7 @@ tags:
 
 大部分中断控制器都是可编程的，这意味着它们支持不同优先级的中断。例如，可编程使得可以赋予时钟中断比键盘中断更高的优先级，来确保准确的时钟同步。
 
-和异常不同的是，硬件中断是 *异步* 触发的。也就是说它们完全独立于当前执行的代码，随时触发。这样给内核引入了某种形式的并发，少不了潜在的并发相关 bug。Rust 严格的所有权模型这时就排上了用场，它禁止全局可修改的状态。然而，后续文章我们可以看到死锁还是可能的。
+和异常不同的是，硬件中断是 _异步_ 触发的。也就是说它们完全独立于当前执行的代码，随时触发。这样给内核引入了某种形式的并发，少不了潜在的并发相关 bug。Rust 严格的所有权模型这时就排上了用场，它禁止全局可修改的状态。然而，后续文章我们可以看到死锁还是可能的。
 
 ## 8259 PIC
 
@@ -41,7 +41,7 @@ tags:
 
 8259 有 8 条中断线路，多条用于和 CPU 通信。那时的典型系统都会配备两个 8259 PIC 实例，一个主 PIC 和一个副 PIC 连接到主 PIC 的一条中断线路。
 
-```text
+```
                      ____________                          ____________
 Real Time Clock --> |            |   Timer -------------> |            |
 ACPI -------------> |            |   Keyboard-----------> |            |      _____
@@ -55,11 +55,11 @@ Secondary ATA ----> |____________|   Parallel Port 1----> |____________|
 
 上图显示了中断线路的典型设置。可以看到 15 条线路的大多数都有固定的映射，例如副 PIC 的 4 号线连接到鼠标。
 
-每个控制器都可以通过两个 [I/O 端口][I/O ports] 配置，一个“命令”端口和一个“数据”端口。对于主控制器，命名和数据端口分别为 `0x20` 和 `0x21`。对于副控制器，命令和数据端口则分别为 `0xa0` 和 `0xa1`。更多关于如何设置 PIC 的信息参见 [osdev.org 上的文章][article on osdev.org]
+每个控制器都可以通过两个 [I/O 端口][i/o ports] 配置，一个“命令”端口和一个“数据”端口。对于主控制器，命名和数据端口分别为 `0x20` 和 `0x21`。对于副控制器，命令和数据端口则分别为 `0xa0` 和 `0xa1`。更多关于如何设置 PIC 的信息参见 [osdev.org 上的文章][article on osdev.org]
 
 ### 实现
 
-由于会把范围在 0-15 的中断向量值传给 CPU，PIC 的默认设置用处不大。这些值已经被 CPU 异常占用了，例如 8 对应到二级异常。为了解决重叠问题，我们需要将 PIC 中断重新映射到不同的值。确切的值范围不重要，只要它们和异常的不重叠就行，但是通常会选择 32-47，因为这些是没被 32 个异常占用的首批可用值。 
+由于会把范围在 0-15 的中断向量值传给 CPU，PIC 的默认设置用处不大。这些值已经被 CPU 异常占用了，例如 8 对应到二级异常。为了解决重叠问题，我们需要将 PIC 中断重新映射到不同的值。确切的值范围不重要，只要它们和异常的不重叠就行，但是通常会选择 32-47，因为这些是没被 32 个异常占用的首批可用值。
 
 配置的形式为向 PIC 的命令和数据端口写入特殊值。好在已有的 [`pic8259_simple`] 包可以排上用场，所以我们不需要手码初始化流程。如果对其原理感兴趣的话，可以阅读 [它的源码][pic crate source]。这是个相当小且文档注释良好的包。
 
@@ -73,7 +73,6 @@ pic8259_simple = "0.2.0"
 ```
 
 这个包提供的主要抽象接口是 [`ChainedPics`] 结构体，这个结构体表示前面看到的主/副 PIC 布局。它的预期用法如下：
-
 
 ```rust
 // in src/interrupts.rs
@@ -104,7 +103,6 @@ pub fn init() {
 
 调用 [`initialize`] 函数执行 PIC 的初始化。和 `ChainedPics::new` 函数类似，如果配置错误的 PIC 会触发未定义行为，所以这个函数也是不安全的。
 
-
 如果一切正常的话，执行 `cargo run` 后我们应该能够继续看到 "It did not crash" 的字样。
 
 ## 启用中断
@@ -128,8 +126,8 @@ pub fn init() {
 
 二级异常触发的原因是硬件计算器（更确切地说是 [Intel 8259] 的）默认是启用的，所以一旦启用中断，我们就会收到时钟中断。由于没有为其定义处理函数，所以二级异常被触发了。
 
-
 ## 处理时钟中断
+
 由 [上图](#_8259-pic) 可知，计时器使用了主 PIC 的 0 号线路。这意味着到达 CPU 时的值为 32（0 + 偏移）。我们用一个 `InterruptIndex` 枚举类型存储它，而不是硬编码这个索引 32：
 
 ```rust
@@ -152,7 +150,7 @@ impl InterruptIndex {
 }
 ```
 
-这是个 [类 C 的枚举类型][C-like enum]，所以我们可以直接注明每个枚举值的索引。`repr(u8)` 属性规定每个枚举值用一个 `u8` 表示。将来我们还会为其他中断添加更多枚举值。
+这是个 [类 C 的枚举类型][c-like enum]，所以我们可以直接注明每个枚举值的索引。`repr(u8)` 属性规定每个枚举值用一个 `u8` 表示。将来我们还会为其他中断添加更多枚举值。
 
 现在可以为时钟中断添加处理函数了：
 
@@ -217,7 +215,7 @@ extern "x86-interrupt" fn timer_interrupt_handler(
 
 ### 配置计时器
 
-我们使用的硬件计时器被称为 *可编程间隔计时器（Progammable Interval Timer）* 或者简称 PIT。如其名，我们可以设置两个中断的间隔。由于就快切换到 [APIC 计时器][APIC timer] 了，所以具体细节不在此深究，但是 OSDev wiki 有关于 [配置 PIT][configuring the PIT] 的大量相关文章。
+我们使用的硬件计时器被称为 _可编程间隔计时器（Progammable Interval Timer）_ 或者简称 PIT。如其名，我们可以设置两个中断的间隔。由于就快切换到 [APIC 计时器][apic timer] 了，所以具体细节不在此深究，但是 OSDev wiki 有关于 [配置 PIT][configuring the pit] 的大量相关文章。
 
 ## 死锁
 
@@ -238,7 +236,6 @@ pub fn _print(args: fmt::Arguments) {
 ```
 
 这个函数锁定 `WRITER`，调用它的 `write_fmt`，会在函数末尾隐式地释放锁。现在假想这么个场景：`WRITER` 被锁定时，一个中断被触发了，中断处理函数也试图打印一些东西：
-
 
 | 时间戳 | `_start`              | 中断处理函数                        |
 | ------ | --------------------- | ----------------------------------- |
@@ -339,7 +336,7 @@ Error: panicked at 'assertion failed: `(left == right)`
  right: `'S'`', src/vga_buffer.rs:205:9
 ```
 
-原因是这个测试函数和时钟处理函数之间存在 *竞争条件*。这个测试函数如下：
+原因是这个测试函数和时钟处理函数之间存在 _竞争条件_。这个测试函数如下：
 
 ```rust
 // in src/vga_buffer.rs
@@ -355,7 +352,7 @@ fn test_println_output() {
 }
 ```
 
-这个测试函数往 VGA 缓冲打印一个字符串，然后遍历 `buffer_chars` 数组人为检查输出。因为时钟中断处理函数可能在 `println` 和读取屏幕字符之间运行，所以出现了竞争条件。需要注意的是这不是 Rust 在编译时完全禁止的危险的 *数据竞争*。更多详情参见 [_Rustonomicon_][nomicon-races]。
+这个测试函数往 VGA 缓冲打印一个字符串，然后遍历 `buffer_chars` 数组人为检查输出。因为时钟中断处理函数可能在 `println` 和读取屏幕字符之间运行，所以出现了竞争条件。需要注意的是这不是 Rust 在编译时完全禁止的危险的 _数据竞争_。更多详情参见 [_Rustonomicon_][nomicon-races]。
 
 为了解决这个问题，我们需要在测试期间一直锁定 `WRITER` ，这样时钟中断处理函数就无法在中间往屏幕打印 `.` 了。修复的测试代码如下：
 
@@ -390,6 +387,7 @@ fn test_println_output() {
 这只是个非常无害的竞争条件，只会导致测试失败。但是可以想象，由于不确定性，调试其他竞争条件要复杂得多。好在 Rust 为我们防止了数据竞争，这类竞争是竞争条件中最为严重的一类，会触发各种未定义行为，包括系统崩溃和消无声息的内存污染。
 
 ## `hlt` 指令
+
 目前为止，我们一直在 `_start` 和 `panic` 函数的末尾使用一个简单的空循环。这使得 CPU 无限自旋，从而按预期运行。由于没有活要干时 CPU 也全速运行，所以是非常低效的。运行内核时可以在任务管理器发现这个问题：QEMU 进程一直需要将近 100% 的 CPU。
 
 我们真正想做的是在下次中断到达前挂起 CPU。这样允许 CPU 进入睡眠状态，消耗更少电量。[`hlt` 指令][`hlt` instruction] 为此而生。让我们用这个指令创建一个用电高效型无限循环吧：
@@ -498,11 +496,11 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
 
 由 [上图](#_8259-pic) 可知，键盘使用了主 PIC 的 1 号线路。这意味着它到达 CPU 时的值是 33（1 + 偏移 32）。我们向 `InterruptIndex` 枚举类型添加一个新的 `Keyboard` 枚举值。由于枚举值默认为前一项的值加一，也是 33，所以我们不需要显示地设置枚举值。中断处理函数中，我们打印一个 `k`，然后把中断结束信号发送给中断控制器。
 
-现在按键时可以在屏幕上看到一个 `k`。然而，只有第一次按键有效，即使我们继续按键也不会在屏幕上看到更多 `k`。这是因为除非读取按键的所谓 *扫描码*（scancode），否则键盘控制器不会再次发送中断。
+现在按键时可以在屏幕上看到一个 `k`。然而，只有第一次按键有效，即使我们继续按键也不会在屏幕上看到更多 `k`。这是因为除非读取按键的所谓 _扫描码_（scancode），否则键盘控制器不会再次发送中断。
 
 ### 读取扫描码
 
-为了查明 *具体* 按下的键，我们需要向键盘控制器查询。具体做法为从 PS/2 控制器的数据端口读取，一个值为 `0x60` 的 [I/O 端口][I/O ports]：
+为了查明 _具体_ 按下的键，我们需要向键盘控制器查询。具体做法为从 PS/2 控制器的数据端口读取，一个值为 `0x60` 的 [I/O 端口][i/o ports]：
 
 ```rust
 // in src/interrupts.rs
@@ -523,8 +521,7 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
 }
 ```
 
-我们使用 `x86_64` 包的 [`Port`] 类型从键盘的数据端口读取一字节。这个字节成为 [*扫描码*][_scancode_]，表示按下/释放的键。我们目前还不会对扫描码做任何事情，只是把它打印到屏幕：
-
+我们使用 `x86_64` 包的 [`Port`] 类型从键盘的数据端口读取一字节。这个字节成为 [_扫描码_][_scancode_]，表示按下/释放的键。我们目前还不会对扫描码做任何事情，只是把它打印到屏幕：
 
 ![按下键盘后 QEMU 往屏幕打印扫描码](./images/qemu-printing-scancodes.gif)
 
@@ -532,7 +529,7 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
 
 ### 翻译扫描码
 
-目前将扫描码映射到键有三种不同标准，即所谓的 *扫描码集*。三种标准都源自早期 IBM 电脑的键盘：[IBM XT]、[IBM 3270 PC] 和 [IBM AT]。好在后来的电脑都没有兴起定义新扫描集的风气，而是模拟现有集合或拓展它们。今天的大多数键盘都可以配置为模拟上述三种集合中的任何一个：
+目前将扫描码映射到键有三种不同标准，即所谓的 _扫描码集_。三种标准都源自早期 IBM 电脑的键盘：[IBM XT]、[IBM 3270 PC] 和 [IBM AT]。好在后来的电脑都没有兴起定义新扫描集的风气，而是模拟现有集合或拓展它们。今天的大多数键盘都可以配置为模拟上述三种集合中的任何一个：
 
 PS/2 键盘默认模拟的是扫描码集 1（“XT”）。对于这个集合，扫描码字节的低 7 位定义键值，最高有效位定义按键动作是按下（“0”）还是释放（“1”）。[IBM XT] 键盘没有定义的键，例如键盘的 enter 键，对应到两个连续的扫描码：一个 `0xe0` 转义字节，然后是一个表示键的字节。想要查看集合 1 的所有扫描码和相应键的话，参见 [OSDev Wiki][scancode set 1]。
 
@@ -654,21 +651,20 @@ PS/2 键盘的某些方面也可以配置的，例如应该使用的扫描码集
 
 但是创建进程或线程前，我们需要为他们分配内存的方法。下篇文章将会探究内存管理来实现这个基础组件。
 
-[APIC]: https://en.wikipedia.org/wiki/Intel_APIC_Architecture
-[APIC timer]: https://wiki.osdev.org/APIC_timer
-[C-like enum]: https://doc.rust-lang.org/reference/items/enumerations.html#custom-discriminant-values-for-fieldless-enumerations
-[IBM AT]: https://en.wikipedia.org/wiki/IBM_Personal_Computer/AT
-[IBM XT]: https://en.wikipedia.org/wiki/IBM_Personal_Computer_XT
-[IBM 3270 PC]: https://en.wikipedia.org/wiki/IBM_3270_PC
-[Intel 8253]: https://en.wikipedia.org/wiki/Intel_8253
-[Intel 8259]: https://en.wikipedia.org/wiki/Intel_8259
-[I/O ports]: @/second-edition/posts/04-testing/index.md#i-o-ports
-[PS/2]: https://en.wikipedia.org/wiki/PS/2_port
-
+[apic]: https://en.wikipedia.org/wiki/Intel_APIC_Architecture
+[apic timer]: https://wiki.osdev.org/APIC_timer
+[c-like enum]: https://doc.rust-lang.org/reference/items/enumerations.html#custom-discriminant-values-for-fieldless-enumerations
+[ibm at]: https://en.wikipedia.org/wiki/IBM_Personal_Computer/AT
+[ibm xt]: https://en.wikipedia.org/wiki/IBM_Personal_Computer_XT
+[ibm 3270 pc]: https://en.wikipedia.org/wiki/IBM_3270_PC
+[intel 8253]: https://en.wikipedia.org/wiki/Intel_8253
+[intel 8259]: https://en.wikipedia.org/wiki/Intel_8259
+[i/o ports]: @/second-edition/posts/04-testing/index.md#i-o-ports
+[ps/2]: https://en.wikipedia.org/wiki/PS/2_port
 [article on osdev.org]: https://wiki.osdev.org/8259_PIC
 [closure]: https://doc.rust-lang.org/book/second-edition/ch13-01-closures.html
 [configuration commands]: https://wiki.osdev.org/PS/2_Keyboard#Commands
-[configuring the PIT]: https://wiki.osdev.org/Programmable_Interval_Timer
+[configuring the pit]: https://wiki.osdev.org/Programmable_Interval_Timer
 [github blog-os]: https://github.com/phil-opp/blog_os
 [match]: https://doc.rust-lang.org/book/ch06-02-match.html
 [nomicon-races]: https://doc.rust-lang.org/nomicon/races.html
@@ -680,15 +676,13 @@ PS/2 键盘的某些方面也可以配置的，例如应该使用的扫描码集
 [thin wrapper]: https://github.com/rust-osdev/x86_64/blob/5e8e218381c5205f5777cb50da3ecac5d7e3b1ab/src/instructions/mod.rs#L16-L22
 [vga spinlock]: @/second-edition/posts/03-vga-text-buffer/index.md#spinlocks
 [valine]: #valine
-
-[`ChainedPics`]: https://docs.rs/pic8259_simple/0.2.0/pic8259_simple/struct.ChainedPics.html
-[`HandleControl`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/enum.HandleControl.html
-[`IndexMut`]: https://doc.rust-lang.org/core/ops/trait.IndexMut.html
-[`InterruptDescriptorTable`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.InterruptDescriptorTable.html
-[`Keyboard`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/struct.Keyboard.html
-[`KeyEvent`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/struct.KeyEvent.html
-[`Port`]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/port/struct.Port.html
-
+[`chainedpics`]: https://docs.rs/pic8259_simple/0.2.0/pic8259_simple/struct.ChainedPics.html
+[`handlecontrol`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/enum.HandleControl.html
+[`indexmut`]: https://doc.rust-lang.org/core/ops/trait.IndexMut.html
+[`interruptdescriptortable`]: https://docs.rs/x86_64/0.12.1/x86_64/structures/idt/struct.InterruptDescriptorTable.html
+[`keyboard`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/struct.Keyboard.html
+[`keyevent`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/struct.KeyEvent.html
+[`port`]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/port/struct.Port.html
 [`add_byte`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/struct.Keyboard.html#method.add_byte
 [`hlt` instruction]: https://en.wikipedia.org/wiki/HLT_(x86_instruction)
 [`if let`]: https://doc.rust-lang.org/book/ch18-01-all-the-places-for-patterns.html#conditional-if-let-expressions
@@ -698,7 +692,5 @@ PS/2 键盘的某些方面也可以配置的，例如应该使用的扫描码集
 [`process_keyevent`]: https://docs.rs/pc-keyboard/0.5.0/pc_keyboard/struct.Keyboard.html#method.process_keyevent
 [`without_interrupts`]: https://docs.rs/x86_64/0.12.1/x86_64/instructions/interrupts/fn.without_interrupts.html
 [`writeln`]: https://doc.rust-lang.org/core/macro.writeln.html
-
 [_scancode_]: https://en.wikipedia.org/wiki/Scancode
-
 [07-hardware-interrupts]: https://github.com/sammyne/blog-os-cn/tree/master/07-hardware-interrupts
