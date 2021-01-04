@@ -194,7 +194,7 @@ REJECT     icmp --  anywhere             anywhere             icmptype 8 code 0 
 
 
 配置之后，我们 `ping` 别人的结果如下
-```
+```bash
 root@ubuntu:~# ping 192.168.44.1
 PING 192.168.44.1 (192.168.44.1) 56(84) bytes of data.
 64 bytes from 192.168.44.1: icmp_seq=1 ttl=64 time=0.336 ms
