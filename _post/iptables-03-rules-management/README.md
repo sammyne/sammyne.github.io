@@ -9,7 +9,9 @@ tags:
   - ops
 ---
 
+::: tip 温馨提示
 本文从理论到实践，系统地介绍 iptables。如果你想要从头开始了解 iptables，可以查看 [iptables 系列文章][iptables series]。
+:::
 
 [上一篇文章][02. 规则查询] 中，我们已经学会怎样使用 iptables 命令查看规则，那么这篇文章就来总结一下如何管理规则。
 

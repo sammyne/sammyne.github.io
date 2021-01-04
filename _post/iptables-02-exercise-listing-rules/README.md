@@ -9,6 +9,10 @@ tags:
   - ops
 ---
 
+::: tip 温馨提示
+本文从理论到实践，系统地介绍 iptables。如果你想要从头开始了解 iptables，可以查看 [iptables 系列文章][iptables series]。
+:::
+
 在阅读这篇文章之前，请确保你已经阅读了本系列总结 iptables 相关概念的 [上一篇文章][iptables-01-concepts]，那是阅读这篇文章的基础。
 
 如果你是一个新手，读的过程中可能会有障碍，但是在读完以后，你会豁然开朗。
@@ -179,5 +183,6 @@ Chain INPUT (policy ACCEPT 564 packets, 454850 bytes)
 
 - [iptables 详解（2）：iptables 实际操作之规则查询]
 
+[iptables series]: /tag/iptables/
 [iptables-01-concepts]: /2020/12/03/iptables-01-concepts/
 [iptables 详解（2）：iptables 实际操作之规则查询]: http://www.zsythink.net/archives/1493
