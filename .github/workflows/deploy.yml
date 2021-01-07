@@ -2,9 +2,9 @@ name: deploy
 
 on:
   push:
-    branches: ['vuepress']
+    branches: ["vuepress"]
   pull_request:
-    branches: ['vuepress']
+    branches: ["vuepress"]
 
 jobs:
   deploy:
@@ -34,5 +34,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          BRANCH: master
+          BRANCH: main
           FOLDER: .vuepress/dist
