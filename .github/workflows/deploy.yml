@@ -26,6 +26,7 @@ jobs:
           echo "yarn: $(yarn --version)"
       - name: Build the static vuepress
         run: |
+          sed -i 's!registry.npm.taobao.org!registry.yarnpkg.com!g'
           yarn &&
           yarn build
       - name: Install dependencies for JamesIves/github-pages-deploy-action@releases/v3
