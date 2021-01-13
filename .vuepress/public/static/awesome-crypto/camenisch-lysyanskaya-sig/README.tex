@@ -1,0 +1,226 @@
+%! TEX program=xelatex
+\documentclass[a4paper,10pt]{article}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{cite}
+\usepackage{ctex}
+\usepackage{datetime2}
+\usepackage{enumitem}
+\usepackage[top=1cm,bottom=2cm]{geometry}
+\usepackage[colorlinks,
+  linkcolor=blue,
+  anchorcolor=blue,
+  citecolor=blue
+]{hyperref}
+\usepackage{url}
+
+\newcommand{\bG}{\mathbb{G}}
+\newcommand{\bZ}{\mathbb{Z}}
+
+\newtheorem{definition}{\bf 定义}[section]
+
+\title{C-L（Camenisch-Lysyanskaya）签名}
+\date{\DTMdate{2021-01-12}}
+\author{Sammy Li}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\section{符号定义}
+\begin{table}[!htbp]
+  \centering
+  \caption{符号定义}
+  \begin{tabular}{|r|l|}
+    \hline
+    符号 & 说明 \\
+    \hline
+    \(\bG=\langle G\rangle\) & 椭圆曲线群，生成元/基点记为 \(G\) \\
+    \(e: \bG_1\times \bG_2\rightarrow\bG_T\) & 椭圆曲线群 \(\bG_1=\langle G_1\rangle\) 和 \(\bG_2=\langle G_2\rangle\) 到 \(\bG_T=\langle G_T\rangle\) 的双线性映射 \\
+    \(s\in_R S\) & 表示从集合 \(S\) 随机选取一个元素 \(s\) \\ 
+    \(p\) & 群 \(\bG_1\) 和 \(\bG_2\) 的阶，即元素个数 \\
+    \hline
+  \end{tabular} 
+\end{table}
+
+本文涉及的群，均以椭圆曲线群为例。
+
+\section{理论概念}
+本节参考 \href{https://blog.csdn.net/zxzxzxzx2121/article/details/82149010}{C-L签名介绍} 一文。
+
+C-L 签名即为 Camenisch-Lysyanskaya 签名~\cite{2003A}，以作者名字命名，于2001年提出。
+
+C-L 签名可用于群签名或聚合签名的场景，提高签名的匿名性，并降低签名的计算复杂度。C-L 签名也是一种适用于零知识证明的签名方案，能够对一组数据进行签名，并且能够体现这些被证明组件的关系。这样的性质恰好与零知识证明所需性质契合。
+
+介绍 C-L 签名之前，首先需要介绍双线性群的概念。
+
+设 \(\bG_1=\langle G_1\rangle\) 和 \(\bG_2=\langle G_2\rangle\) 是阶为 \(p\) 的加法循环群。双线性群是满足下列性质的一个映射 \(e: \bG_1\times \bG_2\rightarrow\bG_T\)
+
+\begin{enumerate}
+  \item 双线性性：对任意的 \(x,y\in\bZ_p\)，有 \(e(xG_1,yG_2)=(x+y)\cdot e(G_1,G_2)\)
+  \item 非退化性：\(e(G,G)\neq 1\)
+  \item 可计算性：对所有的 \(X\in\bG_1,Y\in\bG_2\)，存在有效的算法计算 \(e(X,Y)\)
+\end{enumerate}
+
+如果 \(\bG_1 = \bG_2\)，则可得一个对称群（\(\bG_1 = \bG_2 = \bG_T\)），以下交换律成立
+
+\[
+  e(xG_1,yG_2) = e(yG_1,xG_2) = xy\cdot e(G_1,G_2) = xy\cdot e(G_2,G_1)
+\]
+
+\textcolor{red}{C-L 签名也可使用这样的对称群。}
+
+\section{单组消息版 C-L 签名}
+\subsection{密钥生成}
+随机生成私钥 \(sk=(x,y,z)\)，并计算其对应公钥 \(pk=(X_1,Y_1,Z_1)\) 如下
+\begin{enumerate}
+  \item \(x\in_R\bZ_p\)，\(y\in_R\bZ_p\)，\(z\in_R\bZ_p\)
+  \item \(X_1=x G_1\)，\(Y_1=y G_1\)，\(Z_1=z G_1\)
+\end{enumerate}
+
+\subsection{签名}
+\subsubsection{输入}
+\begin{itemize}
+  \item 消息 \(M=(m,r)\)
+  \item 私钥 \(sk=(x,y,z)\)
+\end{itemize}
+
+\subsubsection{输出}
+\begin{itemize}
+  \item 签名 \(\sigma\)
+\end{itemize}
+
+\subsubsection{过程}
+\begin{enumerate}
+  \item 随机挑选 \(r'\in_R\bZ_p\)，计算 \(R_2'=r'G_2\)
+  \item 计算
+    \begin{align*}
+      Z_2 &= zR_2' \\
+      Y_2 &= yR_2' \\
+      Y_2' &= yZ_2 \\
+      C &= (x+xym+xyrz)\cdot R_2'
+    \end{align*}
+  \item 输出签名 \(\sigma=(R_2',Z_2,Y_2,Y_2',C)\)
+\end{enumerate}
+
+\subsection{验签}
+\subsubsection{输入}
+\begin{itemize}
+  \item 消息 \(M=(m,r)\)
+  \item 公钥 \(pk=(X_1,Y_1,Z_1)\)
+  \item 签名 \(\sigma=(R_2',Z_2,Y_2,Y_2',C)\)
+\end{itemize}
+
+\subsubsection{过程}
+验证以下等式是否成立
+\begin{itemize}
+  \item \(e(R_2',Z_1)=e(Z_2,G_1)\) 证明 \(Z_2\) 合法
+  \item \(e(R_2',Y_1)=e(Y_2,G_1)\) 证明 \(Y_2\) 合法
+  \item \(e(Z_2,Y_1)=e(Y_2',G_1)\) 证明 \(Y_2'\) 合法
+  \item \(e(X_1,R_2')+m\cdot e(X_1,Y_2)+r\cdot e(X_1,Y_2')=e(G_1,C)\) 证明 \(C\) 合法
+\end{itemize}
+
+成立即证明签名合法，否则签名非法。
+
+\subsubsection{证明}
+\begin{align*}
+  & e(R_2',Z_1) = e(R_2',zG_1) = e(zR_2',G_1) = e(Z_2,G_1) \\
+  & e(R_2',Y_1) = e(R_2',yG_1) = e(yR_2',G_1) = e(Y_2,G_1) \\
+  & e(Z_2,Y_1) = e(Z_2,yG_1) = e(yZ_2,G_1) = e(Y_2',G_1)   \\
+  & e(X_1,R_2')+m\cdot e(X_1,Y_2)+r\cdot e(X_1,Y_2') \\
+  &= e(X_1,R_2')+m\cdot e(X_1,yR_2')+r\cdot e(X_1,yZ_2) \\
+  &= e(X_1,R_2')+ym\cdot e(X_1,R_2')+r\cdot e(X_1,yzR_2') \\
+  &= (1+ym)\cdot e(X_1,R_2')+yzr\cdot e(X_1,R_2') \\
+  &= (1+ym+yzr)\cdot e(xG_1,R_2') \\
+  &= x\cdot(1+ym+yzr)\cdot e(G_1,R_2') \\
+  &= (x+xym+xyzr)\cdot e(G_1,R_2') \\
+  &= e(G_1,(x+xym+xyzr)\cdot R_2') \\
+  &= e(G_1,C)
+\end{align*}
+
+\section{多组消息版 C-L 签名}
+本节参考论文 \cite{2003A} 的第 3.3 节。
+
+\subsection{密钥生成}
+随机生成私钥 \(sk=(x,y,\{z_i\}_{i=1}^{\ell}) (\ell\geq 2)\)，并计算其对应公钥 \(pk=(X_1,Y_1,\{Z_i\}_{i=1}^{\ell})\) 如下
+\begin{enumerate}
+  \item \(x\in_R\bZ_p\)，\(y\in_R\bZ_p\)，\(z_i\in_R\bZ_p\)
+  \item \(X_1=x G_1\)，\(Y_1=y G_1\)，\(Z_i=z_i G_1\)
+\end{enumerate}
+
+\subsection{签名}
+\subsubsection{输入}
+\begin{itemize}
+  \item 消息 \(M=\{m_i\}_{i=1}^{\ell}\)
+  \item 私钥 \(sk=(x,y,\{z_i\}_{i=1}^{\ell})\)
+\end{itemize}
+
+\subsubsection{输出}
+\begin{itemize}
+  \item 签名 \(\sigma\)
+\end{itemize}
+
+\subsubsection{过程}
+\begin{enumerate}
+  \item 随机挑选 \(r'\in_R\bZ_p\)，计算 \(R_2'=r'G_2\)
+  \item 计算
+    \begin{align*}
+      Z_{2,i} &= z_iR_2' \\
+      Y_2 &= yR_2' \\
+      Y_{2,i}' &= yZ_{2,i} \\
+      C &= xR_2' + xym_1 R_2' + \sum_{i=2}^{\ell}xym_iz_iR_2'
+    \end{align*}
+  \item 输出签名 \(\sigma=(R_2',\{Z_{2,i}\}_{i=1}^{\ell},Y_2,\{Y_{2,i}'\}_{i=1}^{\ell},C)\)
+\end{enumerate}
+
+\subsection{验签}
+\subsubsection{输入}
+\begin{itemize}
+  \item 消息 \(M=(m,r)\)
+  \item 公钥 \(pk=(X_1,Y_1,\{Z_i\}_{i=1}^{\ell})\)
+  \item 签名 \(\sigma=(R_2',\{Z_{2,i}\}_{i=1}^{\ell},Y_2,\{Y_{2,i}'\}_{i=1}^{\ell},C)\)
+\end{itemize}
+
+\subsubsection{过程}
+验证以下等式是否成立
+\begin{itemize}
+  \item \(e(R_2',Z_{1,i})=e(G_1,Z_{2,i})\) 证明 \(Z_{2,i}\) 合法
+  \item \(e(R_2',Y_1)=e(Y_2,G_1)\) 证明 \(Y_2\) 合法
+  \item \(e(Z_{2,i},Y_1)=e(Y_{2,i}',G_1)\) 证明 \(Y_{2,i}'\) 合法
+  \item \(e(X_1,R_2')+m_1\cdot e(X_1,Y_2)+\sum_{i=2}^{\ell} m_i\cdot e(X_1,Y_{2,i}')=e(G_1,C)\) 证明 \(C\) 合法
+\end{itemize}
+
+成立即证明签名合法，否则签名非法。
+
+\subsubsection{证明}
+\begin{align*}
+  & e(R_2',Z_{1,i}) = e(R_2',z_iG_1) = e(z_iR_2',G_1) = e(Z_{2,i},G_1) \\
+  & e(R_2',Y_1) = e(R_2',yG_1) = e(yR_2',G_1) = e(Y_2,G_1) \\
+  & e(Z_{2,i},Y_1) = e(Z_{2,i},yG_1) = e(yZ_{2,i},G_1) = e(Y_{2,i}',G_1)   \\
+  & e(X_1,R_2')+m_1\cdot e(X_1,Y_2)+\sum_{i=2}^{\ell} m_i\cdot e(X_1,Y_{2,i}') \\
+  &= e(X_1,R_2')+m_1\cdot e(X_1,yR_2')+\sum_{i=2}^{\ell} m_i\cdot e(X_1,yZ_{2,i}) \\
+  &= e(X_1,R_2')+ym_1\cdot e(X_1,R_2')+\sum_{i=2}^{\ell} ym_i\cdot e(X_1,Z_{2,i}) \\
+  &= (1+ym_1)\cdot e(X_1,R_2')+\sum_{i=2}^{\ell} y m_i\cdot e(X_1,z_iR_2') \\
+  &= (1+ym_1)\cdot e(X_1,R_2')+\sum_{i=2}^{\ell} y z_i m_i\cdot e(X_1,R_2') \\
+  &= (1+ym_1+\sum_{i=2}^{\ell} y z_i m_i)\cdot e(X_1,R_2') \\
+  &= (1+ym_1+\sum_{i=2}^{\ell} y z_i m_i)\cdot e(xG_1,R_2') \\
+  &= x\cdot(1+ym_1+\sum_{i=2}^{\ell} y z_i m_i)\cdot e(G_1,R_2') \\
+  &= (x+x y m_1+\sum_{i=2}^{\ell} x y z_i m_i)\cdot e(G_1,R_2') \\
+  &= e(G_1,(x+x y m_1+\sum_{i=2}^{\ell} x y z_i m_i)\cdot R_2') \\
+  &= e(G_1,C)
+\end{align*}
+
+\phantomsection % 使得链接能正确跳转
+\begin{thebibliography}{99}
+  \addcontentsline{toc}{section}{参考文献} %向目录中添加条目，以章节的名义
+
+  \bibitem{2003A} Camenisch J., Lysyanskaya A. (2003) A Signature Scheme with Efficient Protocols. In: Cimato S., Persiano G., Galdi C. (eds) Security in Communication Networks. SCN 2002. Lecture Notes in Computer Science, vol 2576. Springer, Berlin, Heidelberg. https://doi.org/10.1007/3-540-36413-7\_20
+  \bibitem{2011Faster} Aranha, Diego F. , et al. "Faster explicit formulas for computing pairings over ordinary curves." (2011).
+  \bibitem{CL-Signatures} \href{https://asecuritysite.com/encryption/cl}{Camenisch-Lysyanskaya Signatures}
+  \bibitem{CL-Signatures-in-Go} \href{https://asecuritysite.com/encryption/go_cl}{Camenisch-Lysyanskaya Signatures in Go}
+\end{thebibliography}
+
+\end{document}
