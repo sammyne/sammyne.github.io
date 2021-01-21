@@ -1,8 +1,8 @@
 ---
 home: true
-# heroText: sammyne
-# tagline: Just play around :)
-# heroImage: null
+heroText: null
+tagline: null #Just play around :)
+# heroImage: /hero.svg
 # heroImageStyle: {
 #   maxWidth: '600px',
 #   width: '100%',
@@ -11,8 +11,13 @@ home: true
 #   background: '#fff',
 #   borderRadius: '1rem',
 # }
-#bgImage: null # this is broken when released but ok for local dev
-bgImageStyle: { height: '0px' }
+bgImage: /hero.svg # this being null is broken when released but ok for local dev
+bgImageStyle: { 
+  width: 80%,
+  height: 400px,
+  background-size: cover,
+  background-position: top center,
+}
 isShowTitleInHome: false
 actionText: Guide
 actionLink: /views/other/guide
