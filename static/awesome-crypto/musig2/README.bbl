@@ -1,0 +1,44 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{MPSW18b}
+
+\bibitem[BLL{\etalchar{+}}20]{cryptoeprint:2020:945}
+Fabrice Benhamouda, Tancrède Lepoint, Julian Loss, Michele Orrù, and Mariana
+  Raykova.
+\newblock On the (in)security of ros.
+\newblock Cryptology ePrint Archive, Report 2020/945, 2020.
+\newblock \url{https://eprint.iacr.org/2020/945}.
+
+\bibitem[DEF{\etalchar{+}}19]{2019On}
+Manu Drijvers, Kasra Edalatnejad, Bryan Ford, Eike Kiltz, and Igors Stepanovs.
+\newblock On the security of two-round multi-signatures.
+\newblock In {\em 2019 IEEE Symposium on Security and Privacy (SP)}, 2019.
+
+\bibitem[jon20]{jonasnick2020MuSig2}
+jonasnick.
+\newblock Musig2: Simple two-round schnorr multisignatures, 2020.
+
+\bibitem[MPSW18a]{cryptoeprint:2018:068:20180118:124757}
+Gregory Maxwell, Andrew Poelstra, Yannick Seurin, and Pieter Wuille.
+\newblock Simple schnorr multi-signatures with applications to bitcoin.
+\newblock Cryptology ePrint Archive, Report 2018/068, 2018.
+\newblock \url{https://eprint.iacr.org/2018/068/20180118:124757}.
+
+\bibitem[MPSW18b]{cryptoeprint:2018:068}
+Gregory Maxwell, Andrew Poelstra, Yannick Seurin, and Pieter Wuille.
+\newblock Simple schnorr multi-signatures with applications to bitcoin.
+\newblock Cryptology ePrint Archive, Report 2018/068, 2018.
+\newblock \url{https://eprint.iacr.org/2018/068}.
+
+\bibitem[NRS20]{cryptoeprint:2020:1261}
+Jonas Nick, Tim Ruffing, and Yannick Seurin.
+\newblock Musig2: Simple two-round schnorr multi-signatures.
+\newblock Cryptology ePrint Archive, Report 2020/1261, 2020.
+\newblock \url{https://eprint.iacr.org/2020/1261}.
+
+\bibitem[Wag02]{wagner2002generalized}
+David Wagner.
+\newblock A generalized birthday problem.
+\newblock In {\em Annual International Cryptology Conference}, pages 288--304.
+  Springer, 2002.
+
+\end{thebibliography}
