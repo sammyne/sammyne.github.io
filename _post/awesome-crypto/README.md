@@ -15,6 +15,7 @@ tags:
 ## 数字签名
 - [多重签名 MultiSig：Schnorr 协议与 ECDSA 协议](/static/awesome-crypto/multi-sig-schnorr-and-ecdsa-protocol/README.pdf)
 - [C-L（Camenisch-Lysyanskaya）签名](/static/awesome-crypto/camenisch-lysyanskaya-sig/README.pdf)
+- [MuSig2：简洁的 2 轮 Schnorr 多签名](/static/awesome-crypto/musig2/README.pdf)
 
 ## 数论
 - [蒙哥马利归约](/static/awesome-crypto/montgomery-reduction/README.pdf)
