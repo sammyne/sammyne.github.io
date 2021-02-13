@@ -111,9 +111,10 @@ MuSig2 方案的巧妙点在于让每个签名方 \(i\) 发送一个 nonces 列�
 
 因此, 
 \(
-  g^{s^*} = g^{r^*} + g^{c^* (a_1 x_1 + a_2 x_2)}
-          = R^* + (g^{a_1 x_1}\cdot g^{a_2 x_2})^{c^*}
-          = R^* + (^{a_1 x_1}\cdot g^{a_2 x_2})^{c^*}
+  g^{s^*} = g^{r^*} \cdot g^{c^* (a_1 x_1 + a_2 x_2)}
+          = R^* \cdot (g^{x_1 a_1}\cdot g^{x_2 a_2})^{c^*}
+          = R^* \cdot (X_1^{a_1}\cdot X_2^{a_2})^{c^*}
+          = R^* \cdot \tilde{X}^{c^*}
 \)
 。这也就意味着 \((R^*,s^*)\) 是对 \(m^*\) 的\textcolor{red}{合法但假冒}的签名。
 
@@ -141,7 +142,7 @@ MuSig2 方案的巧妙点在于让每个签名方 \(i\) 发送一个 nonces 列�
   a_i=H_{agg}(L,X_i) \quad (i\in\{1,\dots,n\}) \Rightarrow \tilde{X}=\prod_{i=1}^n X_i^{a_i} \Rightarrow c=H_{sig}(\tilde{X},R,m)
 \]
  
-如果 \(g^s=R\prod_{i=1}^n X_i^{a_i c}=R\tilde{X}\)，则签名合法。
+如果 \(g^s = R\prod_{i=1}^n X_i^{a_i c} = R(\prod_{i=1}^n X_i^{a_i})^c = R\tilde{X}^c\)，则签名合法。
 
 \subsection{与 MuSig 相比}
 \cite{cryptoeprint:2018:068} 的签名需要三轮，而 MuSig2 只需要两轮。
