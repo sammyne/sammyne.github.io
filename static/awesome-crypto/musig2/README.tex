@@ -43,59 +43,62 @@
 2019 年 Drijvers 等人~\cite{2019On} 发现了一种对旧版 MuSig ~\cite{cryptoeprint:2018:068:20180118:124757} 等两轮模式多签名的攻击方法。攻击的底层原理是解决泛化生日问题的 Wagner 算法~\cite{wagner2002generalized}。
 
 \begin{definition}[泛化生日问题]
-  给定常量 \(t\in \bZ_p\)，整数 \(k_m\) 以及一个随机预言机 \(H: \bZ_p\rightarrow \{0,1\}^n\)，通过 \(k_m\) 次查询找出满足 \(\sum_{k=1}^{k_m}H(q_k)=t\) 的集合 \(\{q_1,\dots,q_{k_m}\}\)。问题的解决复杂度，\(k_m=1\)时等价于找出哈希原像，\(k_m=2\)时等价于找出哈希碰撞，\(k_m\) 增大时，问题难度会神奇地变得更低。Wagner 等人~\cite{wagner2002generalized} 给出一个在不限定 \(k_m\) 条件下的次指数级别算法。
+  给定常量 \(t\in \bZ_p\)，整数 \(k_m\) 以及一个随机预言机 \(H: \bZ_p\rightarrow \{0,1\}^n\)，通过 \(k_m\) 次查询找出满足 \(\sum_{k=1}^{k_m}H(q_k)=t\) 的集合 \(\{q_1,\dots,q_{k_m}\}\)。问题的解决复杂度，\(k_m=1\)时等价于找出哈希原像，\(k_m=2\)时等价于找出哈希碰撞。\(k_m\) 增大时，问题难度会神奇地变得更低。Wagner 等人~\cite{wagner2002generalized} 给出一个在不限定 \(k_m\) 条件下的\textcolor{red}{次指数级别算法}。
 \end{definition}
 
-Wagner 算法的具体攻击流程如下：敌手同时开启 \(k_m\) 个签名会话，会话过程敌手扮演公钥为 \(X_2=g^{x_2}\) 的签名方，从公钥为 \(X_1=g^{x_1}\) 的诚实签名方获得共 \(k_m\) 个 nonces \(R_1^1,\dots,R_1^{k_m}\)。令 \(\tilde{X}=X_1^{a_1}X_2^{a_2}\)（其中 \(a_i=H(\langle X_1,X_2\rangle,X_i)\)~\cite{cryptoeprint:2018:068:20180118:124757}）表示聚合所得公钥。给定伪造的消息 \(m^*\)，敌手计算 \(R^*=\prod_{k=1}^{k_m} R_1^{(k)}\)，然后借助 Wagner 算法找出满足以下条件的 \(R_2^{(k)}\)
+Wagner 算法的具体攻击流程如下：敌手同时开启 \(k_m\) 个签名会话，会话过程扮演手持公钥 \(X_2=g^{x_2}\) 的签名方，从公钥为 \(X_1=g^{x_1}\) 的诚实签名方获得共 \(k_m\) 个 nonces \(R_1^1,\dots,R_1^{k_m}\)。令 \(\tilde{X}=X_1^{a_1}X_2^{a_2}\)（其中 \(a_i=H(\langle X_1,X_2\rangle,X_i)\)~\cite{cryptoeprint:2018:068:20180118:124757}）表示聚合所得公钥。给定伪造的消息 \(m^*\)，敌手计算 \(R^*=\prod_{k=1}^{k_m} R_1^{(k)}\)，然后借助 Wagner 算法~\cite{wagner2002generalized} 找出满足以下条件的 \(R_2^{(k)}\)
 
 \begin{equation}\label{fake-R2}
   \sum_{k=1}^{k_m} \underbrace{H_{sig}(\tilde{X},R_1^{(k)} R_2^{(k)},m^{(k)})}_{c^{(k)}} = \underbrace{H_{sig}(\tilde{X},R^*,m^*)}_{c^*}
 \end{equation}
 
-诚实签名方收到 \(R_2^{(k)}\) 后会反馈 \(s_1^{(k)}=r_1^{(k)}+c^{(k)}\cdot a_1x_1\)。令 \(r^*=\sum_{k=1}^{k_m}r_1^{(k)}=DL(R^*)\)，敌手借此可得
+诚实签名方收到 \(R_2^{(k)}\) 后会反馈 \(s_1^{(k)}=r_1^{(k)}+c^{(k)}\cdot a_1x_1\)。令 \(r^*=\sum_{k=1}^{k_m}r_1^{(k)} = \mathbf{DL}(R^*)\)，敌手借此可得
 \[
   s_1^* = \sum_{k=1}^{k_m} s_1^{(k)} = \sum_{k=1}^{k_m} r_1^{(k)} + \left(\sum_{k=1}^{k_m} c^{(k)}\right)\cdot a_1x_1 = r^*+c^*\cdot a_1x_1
 \]
 
 然后，敌手就可以进一步基于 \(s_1^*\) 构造 
 \[
-  s^* = s_1^* + c^*\cdot a_2x_2 = r^* + c^*\cdot (a_1x_1+a_2\cdot x_2)
+  s^* = s_1^* + c^*\cdot a_2x_2 = r^* + c^*\cdot (a_1 x_1+a_2 x_2)
 \]
 
 因此，\((R^*,s^*)\) 即为 \(m^*\) 的合法签名，其中签名哈希为 \(c^* = H_{sig}(\tilde{X},R^*,m^*)\)。
-这里伪造的消息只对 \(X_1\) 和 \(X_2\) 聚合所得公钥 \(\tilde{X}\) 合法。显然，只要是把诚实签名方的公钥 \(X_1\) 和敌手的公钥集合聚合，攻击只需稍作调整即可伪造出合法的消息。
+虽然这里伪造的消息只对 \(X_1\) 和 \(X_2\) 聚合所得公钥 \(\tilde{X}\) 合法，但是只要是把诚实签名方的公钥 \(X_1\) 和敌手的公钥集合聚合的场景，攻击只需稍作调整即可伪造出合法的消息。
 
-Wagner 算法的 \textbf{攻击复杂度} 为 \(O(k_m 2^{\log_2(p)/(1+\lfloor \log_2(k_m) \rfloor)})\)。虽然是次指数级别（非多项式级别），攻击对于常用参数和足够大的 \(k_m\) 是可操作的。例如，对于椭圆曲线常用的素数 \(p\approx 2^{256}\)，\(k_m=128\) 能够将攻击复杂度降低到约 \(2^{39}\) 次操作，普通硬件都能实施此攻击。如果敌手能够开启更多会话，Benhamouda 等人~\cite{cryptoeprint:2020:945} 改进的多项式时间级别的攻击使用 \(k_m>\log_2 p\) 就能实现 \(O(k_m\log_2 p)\) 攻击复杂度，实际操作性贼强。
+Wagner 算法的 \textbf{攻击复杂度} 为 \(O(k_m 2^{\log_2(p)/(1+\lfloor \log_2(k_m) \rfloor)})\)。虽然是次指数级别（非多项式级别），但对于常用参数和足够大的 \(k_m\) ，攻击是具有可操作性的。例如，对于椭圆曲线常用的素数 \(p\approx 2^{256}\)，\(k_m=128\) 能够将攻击复杂度降低到约 \(2^{39}\) 次操作，普通硬件都能实施此攻击。如果敌手能够开启更多会话，Benhamouda 等人~\cite{cryptoeprint:2020:945} 改进的多项式时间级别的攻击使用 \(k_m>\log_2 p\) 就能实现 \(O(k_m\log_2 p)\) 攻击复杂度，实际操作性贼强。
 
 \section{MuSig2 方案}
 
 相关论文参见~\cite{cryptoeprint:2020:1261,jonasnick2020MuSig2}。
 
 \subsection{背景}
-Drijvers~\cite{2019On} 或 Benhamouda~\cite{cryptoeprint:2020:945} 等人的攻击方式均是通过控制聚合的 nonce \(R_1^{(k)} R_2^{(k)}\)（等式~\ref{fake-R2} 的左手边）来控制签名的哈希。由于所有签名方都在第一轮交互结束时知道聚合的 nonce，不像 ~\cite{cryptoeprint:2018:068} 添加额外承诺轮的情况下防止敌手控制左手边的聚合 nonce 有点难。
+Drijvers~\cite{2019On} 或 Benhamouda~\cite{cryptoeprint:2020:945} 等人的攻击方式均是通过控制聚合的 nonce \(R_1^{(k)} R_2^{(k)}\)（等式~\eqref{fake-R2} 的左手边）来控制签名的哈希。由于所有签名方都在第一轮交互结束时知道聚合的 nonce，在不像 ~\cite{cryptoeprint:2018:068} 添加额外承诺轮的情况下防止敌手控制左手边的聚合 nonce 有点难。
 
+\subsubsection{MuSig2 概览}
 左边不好弄的话，不妨换个思路，我们允许敌手控制等式左手边，但是防止他们控制等式的右手边。
 
 MuSig2 方案的巧妙点在于让每个签名方 \(i\) 发送一个 nonces 列表 \(R_{i,1},\dots,R_{i,\nu}\quad (\nu\geq 2)\)，以它们的线性组合 \(\hat{R}_i=\prod_{j=1}^{\nu}R_{i,j}^{b_j}\) 作为自己最终的 nonce，而不是之前的单个 nonce \(R_i\)，其中 \( b_j=H_{non}(j,\tilde{X},(\prod_{i=1}^n R_{i,1},\dots,\prod_{i=1}^n R_{i,\nu}),m) \)，\(H_{non}: \{0,1\}^*\rightarrow \bZ_p\) 是一个可看做随机预言机的哈希函数。
 
 这样一来，每次敌手尝试不同的 \(R_2^{(k)}\)，系数 \(b_1^{(k)},\dots,b_{\nu}^{(k)}\) 都会随之变化，进而改变诚实签名方的 \(\hat{R}_1=\prod_{j=1}^{\nu}R_{1,j}^{b_j}\)，最终改变等式~\eqref{fake-R2} 右手边的 \(R^*=\prod_{k=1}^{k_m} \hat{R}_1^{(k)}\)。这也就确保了等式右手边不再是常量，破坏掉泛化生日问题的必要前提条件，Wagner 算法也就不再适用。
 
-关于 \(\nu=1\) 的情形不可行的具体原因分析如下（\textcolor{red}{尚未搞懂}）。
+\subsubsection{关于 \(\nu=1\) 条件下 MuSig2 的不可行性分析}
 
-既然这样，是否可以回退到单个 nonce 的情况呢（\(\nu=1\)）--只依赖系数 \(b_1\)？然而，敌手还是可以借助计算以下等式抵消这个变换的效果
+\textcolor{red}{是否可以回退到单个 nonce 的情况呢（\(\nu=1\)）-- 只依赖系数 \(b_1\)？}
+
+然而，敌手还是可以借助计算以下等式抵消这个变换的效果
 
 \begin{equation}
   \sum_{k=1}^{k_m} \underbrace{\frac{H_{sig}(\tilde{X},(R_1^{(k)})^{b_1^{(k)}}(R_2^{(k)})^{b_1^{(k)}},m^{(k)})}{b_1^{(k)}}}_{c^{(k)}} = \underbrace{H_{sig}(\tilde{X},R^*,m^*)}_{c^*} 
 \end{equation}
 
-Given
+攻击的具体实施流程如下：给定
 \begin{itemize}
-  \item the fake nonce \(R^* = \prod_{k=1}^{k_{max}} R_1^{(k)}\), w.r.t \(r^*=\sum_{k=1}^{k_{max}}r_1^{(k)}=DL(R^*)\)
-  \item the co-signature by the honest signer as \(s_1^{(k)}=r_1^{(k)}b_1^{(k)}+c^{(k)} a_1 x_1\)
+  \item 伪造的 nonce \(R^* = \prod_{k=1}^{k_{max}} R_1^{(k)}\)，其中 \(r^*=\sum_{k=1}^{k_{max}}r_1^{(k)} = \mathbf{DL}(R^*)\)
+  \item 诚实方的签名碎片 \(s_1^{(k)}=r_1^{(k)}b_1^{(k)}+c^{(k)} a_1 x_1\)
 \end{itemize}
 
-We have
-\begin{align}
+我们有
+\begin{align*}
   s_1^{(k)} &= r_1^{(k)}b_1^{(k)}+c^{(k)} a_1 x_1 \\
   \Rightarrow s_1^* &= \sum_{k=1}^{k_{max}} \frac{s_1^{(k)}}{b_1^{(k)}} \\
                     &= \sum_{k=1}^{k_{max}} \frac{r_1^{(k)}b_1^{(k)}+c^{(k)} a_1 x_1}{b_1^{(k)}} \\
@@ -104,25 +107,24 @@ We have
                     &= r^* + c^* a_1 x_1 \\
   \Rightarrow s^* &= s_1^* + c^* a_2 x_2 \\
                   &= r^* + c^* (a_1 x_1 + a_2 x_2)
-\end{align}
+\end{align*}
 
-Therefore, 
-\begin{align}
+因此, 
+\(
   g^{s^*} = g^{r^*} + g^{c^* (a_1 x_1 + a_2 x_2)}
           = R^* + (g^{a_1 x_1}\cdot g^{a_2 x_2})^{c^*}
           = R^* + (^{a_1 x_1}\cdot g^{a_2 x_2})^{c^*}
-\end{align}
+\)
+。这也就意味着 \((R^*,s^*)\) 是对 \(m^*\) 的\textcolor{red}{合法但假冒}的签名。
 
-renders \((R^*,s^*)\) a valid but forgery signature.
-
-这样就解释了 \(\nu=2\) 的必要性，我们后续会证明固定 \(b_1=1\)（随机化其余系数 \(b_2,\dots,b_{\nu}\)）是一个优化技巧，且不会损害安全性。
+这样就解释了 \(\nu\geq 2\) 的必要性。我们后续还会证明固定 \(b_1=1\)（随机化其余系数 \(b_2,\dots,b_{\nu}\)）是一个优化技巧，且不会损害安全性。
 
 \subsection{具体算法}
 \subsubsection{签名}
 \paragraph{设定参数} 给定群 \((\bG,p,g)\)，以及三个 \(\{0,1\}^*\) 到 \(\bZ_p\) 的哈希函数。
 \paragraph{生成密钥} 生成随机私钥 \(x\leftarrow_{\$} \bZ_p\)，计算相应公钥 \(X=g^x\)。
 \paragraph{生成 nonce} 令 \((x_1,X_1)\) 表示特定签名方的公私钥对。对于 \(j\in\{1,\dots,\nu\}\)，签名方生成随机数 \(r_{1,j}\leftarrow \bZ_p\)，计算 \(R_{1,j}=g^{r_{1,j}}\)，向其他所有签名方广播 \((R_{1,1},\dots,R_{1,\nu})\)。
-\paragraph{生成签名碎片} 给定消息 \(m\)，其他签名方的公钥为 \(X_2,\dots,X_n\)，令 \(L=\{X_1,\dots,X_n\}\) 表示签名过程涉及的所有公钥。对于 \(i\in\{1,\dots,n\}\)，签名方计算 \(a_i=H_{agg}(L,X_i)\)，然后计算聚合公钥 \(\tilde{X}=\prod_{i=1}^n X_i^{a_i}\)。一旦\textbf{收齐}其他签名方的 \((R_{2,1},\dots,R_{2,\nu}),\dots,(R_{n,1},\dots,R_{n,\nu})\)，计算 
+\paragraph{生成签名碎片} 给定消息 \(m\)，其他签名方的公钥为 \(X_2,\dots,X_n\)，令 \(L=\{X_1,\dots,X_n\}\) 表示签名过程涉及的所有公钥组成的 \textcolor{red}{有序} 集合。对于 \(i\in\{1,\dots,n\}\)，签名方计算 \(a_i=H_{agg}(L,X_i)\)，然后计算聚合公钥 \(\tilde{X}=\prod_{i=1}^n X_i^{a_i}\)。一旦\textbf{收齐}其他签名方的 \(\big\{(R_{j,1},\dots,R_{j,\nu})\big\}_{i=2}^n\)，计算 
 \begin{align*}
   R_j &= \prod_{i=1}^n R_{i,j}\quad (j\in\{1,\dots,\nu\}) \\
   (b_1,\dots,b_{\nu}) &=\left(1,,H_{non}(2,\tilde{X},(R_1,\dots,R_{\nu}),\dots,H_{non}(\nu,\tilde{X},(R_1,\dots,R_{\nu})\right) \\
