@@ -10,6 +10,7 @@
     "vuepress-theme-reco": "^1.6.1"
   },
   "devDependencies": {
+    "markdown-it-footnote": "^3.0.2",
     "vuepress": "^1.7.1"
   },
   "scripts": {

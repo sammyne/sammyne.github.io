@@ -85,6 +85,9 @@ module.exports = {
         codeTheme: 'tomorrow', // default theme means no highlighting
     },
     markdown: {
-        lineNumbers: true
+        lineNumbers: true,
+        extendMarkdown: md => {
+            md.use(require("markdown-it-footnote"));
+        }
     }
 }
