@@ -9,7 +9,7 @@ tags:
 - microservices
 ---
 
-[上一篇文章][prev] 介绍了 Docker 自带的 `logs` 子命令以及其 `Logging driver`。本文将会介绍一个流行的开源日志管理方案 ELK。
+[上一篇文章][prev] 介绍了 Docker 自带的 `logs` 子命令以及其 `logging driver`。本文将会介绍一个流行的开源日志管理方案 ELK。
 
 ## 关于 ELK
 ### 简介
@@ -173,7 +173,7 @@ docker run -d                                                     \
   -E output.elasticsearch.hosts=["$elkIP:9200"]
 ```
 
-> 相关的官方文档参见：[Run Filebeat on Docker]
+> 相关的官方文档参见：[Run Filebeat on Docker] 和 [Filebeat command reference]
 
 ### 验证
 
@@ -214,7 +214,9 @@ docker run -d                                                     \
 
 ![使用 Lucene 过滤包含特定子串的日志](./images/kibana-filter-using-lucene.png)
 
-这里只展示了导入 ELK 的日志信息，实际上 ELK 还有很多很丰富的玩法，例如分析聚合、炫酷 Dashboard 等等。感兴趣的划，自己动手试试吧~
+这里只展示了导入 ELK 的日志信息，实际上 ELK 还有很多很丰富的玩法，例如分析聚合、炫酷 Dashboard 等等。感兴趣的话，自己动手试试吧~
+
+日志格式可是普通的纯文本输出，也可以是 JSON 格式。
 
 ## 小结
 本文从 ELK 的基本组成入手，介绍其基本处理流程，以及从零开始搭建一个 ELK 环境，演示基于 Filebeat 收集容器日志信息的案例。当然，ELK/EFK 有很多的知识点，本文只做抛砖引玉，希望未来能够分享更多的实践总结。
@@ -223,6 +225,7 @@ docker run -d                                                     \
 - [你必须知道的容器日志 (2) 开源日志管理方案 ELK/EFK](https://www.cnblogs.com/edisonchou/p/docker_logs_study_summary_part2.html)
 
 [Elasticsearch, Logstash, Kibana (ELK) Docker image documentation]: https://elk-docker.readthedocs.io/
+[Filebeat command reference]: https://www.elastic.co/guide/en/beats/filebeat/7.10/command-line-options.html
 [Run Filebeat on Docker]: https://www.elastic.co/guide/en/beats/filebeat/7.10/running-on-docker.html
 [elastic.co]: https://www.elastic.co/cn/
 [es-common-startup-errors]: https://www.cnblogs.com/zhi-leaf/p/8484337.html
