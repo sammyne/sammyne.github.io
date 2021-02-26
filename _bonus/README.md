@@ -2,13 +2,11 @@
 title: '彩蛋'
 date: 2021-02-26
 #publish: false
-# tags and category must be set, otherwise github-page will fail to render
-categories:
-  - dev
+# tags must be set, otherwise github-page will fail to render
+#categories:
+#  - _
 tags: 
-  - dev
+  - _
 ---
 
-
-
-被你发现了
+被你发现了 :smile:
