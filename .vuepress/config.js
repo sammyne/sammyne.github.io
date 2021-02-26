@@ -7,7 +7,7 @@ module.exports = {
         ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }]
     ],
     // the effect is on only when the date field is set in frontmatter
-    permalink: '/:year/:month/:day/:slug',
+    //permalink: '/:year/:month/:day/:slug',
     plugins: {
         "@vuepress-reco/vuepress-plugin-pagation": {
             perPage: 8, // @TODO: figure why this doesn't override the default
