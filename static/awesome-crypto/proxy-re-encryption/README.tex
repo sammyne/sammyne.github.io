@@ -91,7 +91,7 @@
 \subsection{A 基于 B 的公钥生成重加密密钥并上传到 S}
 
 \begin{enumerate}
-  \item A 计算重加密密钥 \(X'=x_A'^{-1}\cdot X_B\in\bG_2\)
+  \item A 计算重加密密钥 \(X'=x_A^{-1}\cdot X_B\in\bG_2\)
   \item 将 \(X'\) 上传到 S
 \end{enumerate}
 
@@ -103,7 +103,7 @@ S 计算并保存 \(C_2'=e(X',C_2)\)
 
 \begin{enumerate}
   \item B 从 S 下载 \((C_1,C_2')\)
-  \item 计算 \(R=x_B'^{-1}\cdot C_2'\)
+  \item 计算 \(R=x_B^{-1}\cdot C_2'\)
   \item 计算 \(M'=C_1-R\)
   \item 将 \(M'\) 转化为 \(m'\)，即得消息原文 \(m=m'\)
 \end{enumerate}
@@ -114,26 +114,26 @@ S 计算并保存 \(C_2'=e(X',C_2)\)
 设\(\bG_1\)、\(\bG_2\) 和 \(\bG_T\) 都是阶为 \(p\) 的循环群，\(p\) 是素数。如果映射 \(e: \bG_1\times\bG_2\rightarrow\bG_T\) 满足以下性质：
 
 \begin{enumerate}
-  \item \textbf{双线性性}： 对于任意 \(a,b\in \bZ_p\) 和 \(X\in\bG_1, Y\in\bG_2\)，有 \(e(a\cdot X, b\cdot Y) = a\cdot b\cdot e(X, Y)\)
+  \item \textbf{双线性}： 对于任意 \(a,b\in \bZ_p\) 和 \(X\in\bG_1, Y\in\bG_2\)，有 \(e(a\cdot X, b\cdot Y) = a\cdot b\cdot e(X, Y)\)
   \item \textbf{非退化性}： 存在 \(X\in\bG_1, Y\in\bG_2\)，使得 \(e(X,Y)\neq G_T\)。这里 \(G_T\) 代表 \(\bG_T\) 群的单位元
-  \item \textbf{可计算性}： 存在有效的算法对任意的 \(X\in\bG_1, Y\in\bG_2\)，计算 \(e(X,Y)\) 的值
+  \item \textbf{可计算性}：对于任意的 \(X\in\bG_1, Y\in\bG_2\)，存在有效的算法计算 \(e(X,Y)\) 的值
 \end{enumerate}
 
 那么称 \(e\) 是一个双线性映射。
 
-双线性映射可以通过有线域上的超椭圆曲线上的 Tate 对或 Weil 对来构造。
+双线性映射可以通过有限域上超椭圆曲线的 Tate 对或 Weil 对来构造。
 
 \textbf{注}：\(e(X,Y)=e(Y,X)\)。
 
 \subsection{解密过程正确性推导}
 \begin{align*}
   M' &= C_1-R \\
-     &= r\cdot G_T + M - x_B'^{-1} \cdot C_2' \\
-     &= r\cdot G_T + M - x_B'^{-1} \cdot e(X',C_2) \\
-     &= r\cdot G_T + M - x_B'^{-1} \cdot e(x_A'^{-1}\cdot X_B,C_2) \\
-     &= r\cdot G_T + M - x_B'^{-1} \cdot e(x_A'^{-1}\cdot X_B,r\cdot X_A) \\
-     &= r\cdot G_T + M - x_B'^{-1} \cdot e(x_A'^{-1}\cdot x_B \cdot G_2,r\cdot x_A\cdot G_1) \\
-     &= r\cdot G_T + M - e(x_B'^{-1}\cdot x_B \cdot G_2,x_A'^{-1} \cdot r\cdot x_A\cdot G_1) \\
+     &= r\cdot G_T + M - x_B^{-1} \cdot C_2' \\
+     &= r\cdot G_T + M - x_B^{-1} \cdot e(X',C_2) \\
+     &= r\cdot G_T + M - x_B^{-1} \cdot e(x_A^{-1}\cdot X_B,C_2) \\
+     &= r\cdot G_T + M - x_B^{-1} \cdot e(x_A^{-1}\cdot X_B,r\cdot X_A) \\
+     &= r\cdot G_T + M - x_B^{-1} \cdot e(x_A^{-1}\cdot x_B \cdot G_2,r\cdot x_A\cdot G_1) \\
+     &= r\cdot G_T + M - e(x_B^{-1}\cdot x_B \cdot G_2,x_A^{-1} \cdot r\cdot x_A\cdot G_1) \\
      &= r\cdot G_T + M - e(G_2,r\cdot G_1) \\
      &= r\cdot G_T + M - r\cdot e(G_2,G_1) \\
      &= r\cdot G_T + M - r\cdot G_T \\
