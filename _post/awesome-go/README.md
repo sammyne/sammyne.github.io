@@ -12,6 +12,7 @@ tags:
 - [brianvoe/gofakeit](https://github.com/brianvoe/gofakeit)
 
 ## 文章
+- [golang-notes](https://github.com/cch123/golang-notes)：go 源码分析
 
 ### 操作系统
 - [Discovering and exploring mmap using Go](https://brunocalza.me/discovering-and-exploring-mmap-using-go/)
