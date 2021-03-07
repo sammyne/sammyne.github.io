@@ -2,10 +2,10 @@
 title: "[blog_os] 01. 独立的 Rust 二进制"
 date: 2020-07-09
 categories:
-- os
+  - os
 tags:
-- blog_os
-- rust
+  - blog_os
+  - rust
 ---
 
 > 原文：[A Freestanding Rust Binary](https://os.phil-opp.com/freestanding-rust-binary/)
@@ -13,22 +13,25 @@ tags:
 创建自己操作系统内核的第一步是创建一个不链接标准库的 Rust 可执行文件。 这样在没有基础操作系统的情况下即可在 [裸机][bare metal] 上运行 Rust 代码。
 
 <!-- this md link must be placed here to make it effective on the home page -->
+
 [bare metal]: https://en.wikipedia.org/wiki/Bare_machine
 
 <!-- more -->
 
-此博客在 [GitHub][github blog-os] 上公开开发。如果您有任何问题或疑问，请在此处打开一个问题。 您也可以在 [底部][valine] 发表评论。这篇文章的完整源代码可以在 [blog-os-cn/01-freestanding-rust-binary][01-freestanding-rust-binary-source-code] 找到。
+此博客已在 [GitHub][github blog-os] 开源。如果您有任何问题或疑问，请在此处打开一个问题。 您也可以在 [底部][valine] 发表评论。这篇文章的完整源代码可以在 [blog-os-cn/01-freestanding-rust-binary][01-freestanding-rust-binary-source-code] 找到。
 
 ## 介绍
+
 要编写操作系统（OS）内核，我们需要不依赖于任何操作系统功能的代码。这意味着我们不能使用线程、文件、堆内存、网络、随机数、标准输出或任何其他需要 OS 抽象或特定硬件的功能。这是因为我们正在尝试编写自己的 OS 和驱动程序。
 
-这意味着我们不能使用大多数 [Rust 标准库][Rust standard library]，但是还有很多 Rust 功能是可用的。例如，我们可以使用 [迭代器][iterators]、[闭包][closures]、[模式匹配][pattern matching]、[option] 和 [result]，[string formatting]，当然还有 [所有权系统][ownership system]。这些功能使得以一种非常有表现力的高级方式编写内核成为可能，而无需担心 [不确定的行为][undefined behavior] 或 [内存安全][memory safety]。
+这意味着我们不能使用大多数 [Rust 标准库][rust standard library]，但是还有很多 Rust 功能是可用的。例如，我们可以使用 [迭代器][iterators]、[闭包][closures]、[模式匹配][pattern matching]、[option] 和 [result]，[string formatting]，当然还有 [所有权系统][ownership system]。这些功能使得以一种非常有表现力的高级方式编写内核成为可能，而无需担心 [不确定的行为][undefined behavior] 或 [内存安全][memory safety]。
 
 为了在 Rust 中创建 OS 内核，我们需要创建一个无需底层操作系统即可运行的可执行文件。此类可执行文件通常称为“独立式”或“裸机”可执行文件。
 
 本文描述创建一个独立的 Rust 二进制文件的必要步骤，并解释需要这些步骤的原因。如果您仅对一个最小的示例感兴趣，可以 **[跳转到总结部分](#总结)**。
 
 ## 禁用标准库
+
 默认情况下，所有 Rust crate 都链接 [标准库][standard library]，该库依赖操作系统的线程、文件或网络等功能。它还依赖于 C 标准库 `libc`，该库与 OS 服务紧密交互。因为计划是编写一个操作系统，所以我们不能使用任何依赖于 OS 的库。因此，我们必须通过 [`no_std` 属性][`no_std` attribute] 禁用自动包含标准库。
 
 我们首先创建一个新的 cargo 应用项目。 最简单的方法是通过命令行：
@@ -37,7 +40,7 @@ tags:
 cargo new blog_os --bin --edition 2018
 ```
 
-我将项目命名为 `blog_os`，但是您当然可以选择自己的名字。`--bin` 标志指定我们要创建一个可执行二进制文件（而不是库），而 `--edition 2018` 标志指定 crate 使用 [2018版][2018 edition] 的 Rust。运行命令后，cargo 为我们创建以下目录结构：
+我将项目命名为 `blog_os`，但是您当然可以选择自己的名字。`--bin` 标志指定我们要创建一个可执行二进制文件（而不是库），而 `--edition 2018` 标志指定 crate 使用 [2018 版][2018 edition] 的 Rust。运行命令后，cargo 为我们创建以下目录结构：
 
 ```
 blog_os
@@ -90,7 +93,7 @@ error: `#[panic_handler]` function required, but not found
 error: language item required, but not found: `eh_personality`
 ```
 
-现在，编译器缺少 `#[panic_handler]` 函数和一个 *语言项*（*language item*）。
+现在，编译器缺少 `#[panic_handler]` 函数和一个 _语言项_（_language item_）。
 
 ## Panic 实现
 
@@ -108,11 +111,11 @@ fn panic(_info: &PanicInfo) -> ! {
 }
 ```
 
-[`PanicInfo` 参数][PanicInfo] 包含发生异常的文件和行以及可选的异常消息。该函数永远不应该返回，因此返回 [“never” 类型][`never` type] `!` 将其标记为 [发散函数（diverging function）][diverging function]。 目前，此函数还不支持太多操作，所以我们只是执行无限循环。
+[`PanicInfo` 参数][panicinfo] 包含发生异常的文件和行以及可选的异常消息。该函数永远不应该返回，因此返回 [“never” 类型][`never` type] `!` 将其标记为 [发散函数（diverging function）][diverging function]。 目前，此函数还不支持太多操作，所以我们只是执行无限循环。
 
 ## `eh_personality` 语言项
 
-语言项是编译器内部所需的特殊功能和类型。例如，[`Copy` trait] 是一种语言项，它告诉编译器哪些类型具有 [_copy 语义_][`Copy` trait]。查看其 [实现][copy impl] 可以看到它具有特殊的 `#[lang = "copy"]` 属性，将其定义为语言项。
+语言项是编译器内部所需的特殊功能和类型。例如，[`Copy` trait] 是一种语言项，它告诉编译器哪些类型具有 [_copy 语义_][`copy` trait]。查看其 [实现][copy impl] 可以看到它具有特殊的 `#[lang = "copy"]` 属性，将其定义为语言项。
 
 提供自己的语言项实现是可能的，但这只应该在逼不得已的情况下使用。原因是语言项是十分不稳定的实现细节，甚至没有类型检查（因此编译器甚至不检查函数是否具有正确的参数类型）。好在有更稳定的方法来修复上述语言项错误。
 
@@ -150,6 +153,7 @@ error: requires `start` lang_item
 我们独立式的可执行文件无法访问 Rust 运行时和 `crt0`，因此，我们需要定义自己的程序入口。由于 `start` 语言项依然需要 `crt0`，所以实现 `start` 语言项起不了什么作用。我们直接覆写 `crt0` 程序入口即可。
 
 ### 覆写程序入口
+
 添加 `#![no_main]` 属性来告诉 Rust 编译器我们不想使用常规的程序入口调用链。
 
 ```rust
@@ -176,35 +180,35 @@ pub extern "C" fn _start() -> ! {
 
 我们使用 `#[no_mangle]` 属性禁用 [命名改写（name mangling）][name mangling] 使得 Rust 编译器会如实地产出一个名为 `_start` 的函数。少了这个属性的话，编译器会生成形如 `_ZN3blog_os4_start7hb173fedf945531caE` 的晦涩符号作为分配给每个函数的唯一名字。因为下一步我们需要把入口函数的名称告诉链接器，所以这个属性是必须的。
 
-我们还必须标识函数为 `extern "C"`，告诉编译器采用此函数的 [C 语言调用形式][C calling convention]（而不是不明确的 Rust 调用形式）。将这个函数命名为 `_start` 是因为这是大部分系统默认的程序入口名称。
+我们还必须标识函数为 `extern "C"`，告诉编译器采用此函数的 [C 语言调用形式][c calling convention]（而不是不明确的 Rust 调用形式）。将这个函数命名为 `_start` 是因为这是大部分系统默认的程序入口名称。
 
 `!` 返回类型表明这个函数是发散的，即绝对不允许返回。因为程序入口不会被任何函数调用，而是由操作系统或引导加载器（bootloader）直接调用的，所以使函数发散是必须的。因此，入口点不直接返回，而应该调用操作系统的 [`exit` 系统调用][`exit` system call]。在当前场景下，独立式的二进制返回后没有其他事需要做的了，因此关闭机器是个合理选择。我们暂且借助死循环来实现这个使函数发散的要求。
 
-再次运行 `cargo build` 会触发难看的 *链接器* 错误。
+再次运行 `cargo build` 会触发难看的 _链接器_ 错误。
 
 ## 链接器错误
 
-链接器是一个将生成的代码打包成可执行文件的程序。由于可执行文件的格式因 Linux、Windows 和 macOS 而异，每个系统都有自己的链接器，这些链接器跑出的异常也是不同的。这些错误的根本原因是一样的：链接器的默认配置假定我们的程序依赖于 C 语言运行时，然后程序并没有。
+链接器是一个将生成的代码打包成可执行文件的程序。由于可执行文件的格式因 Linux、Windows 和 macOS 而异，每个系统都有自己的链接器，这些链接器跑出的异常也是不同的。这些错误的根本原因是一样的：链接器的默认配置假定我们的程序依赖于 C 语言运行时，然而程序并没有。
 
-为了解决这个错误，我们需要告诉链接器它不应该包含 C 语言运行时。我们的实现方式可以是给链接器传递特定的参数，或者是基于某个“裸机”目标构建程序。
+为了解决这个错误，我们需要告诉链接器它不应该包含 C 语言运行时。实现方式可以是给链接器传递特定的参数，或者是基于某个“裸机”目标构建程序。
 
 ### 基于某个“裸机”目标构建程序
 
 默认情况下，Rust 会尝试构建能够在我们当前系统环境运行的二进制。例如，如果我们使用的 `x86_64` 上面的 Windows，Rust 会试图基于 `x86_64` 指令集构建一个 `.exe` Windows 可执行文件。这个环境叫做我们的“主机”系统。
 
-Rust 采用一种称为 *[目标三元组（target triple）][target triple]* 的字符串描述不同的环境。我们执行命令 `rustc --version --verbose` 可以查看自己主机系统的目标三元组。
+Rust 采用一种称为 _[目标三元组（target triple）][target triple]_ 的字符串描述不同的环境。我们执行命令 `rustc --version --verbose` 可以查看自己主机系统的目标三元组。
 
 ```bash
-rustc 1.35.0-nightly (474e7a648 2019-04-07)
+rustc 1.52.0-nightly (caca2121f 2021-03-05)
 binary: rustc
-commit-hash: 474e7a6486758ea6fc761893b1a49cd9076fb0ab
-commit-date: 2019-04-07
-host: x86_64-unknown-linux-gnu
-release: 1.35.0-nightly
-LLVM version: 8.0
+commit-hash: caca2121ffe4cb47d8ea2d9469c493995f57e0b5
+commit-date: 2021-03-05
+host: x86_64-unknown-linux-musl
+release: 1.52.0-nightly
+LLVM version: 12.0.0
 ```
 
-上述输出源自一个 `x86_64` 的 Linux 系统。可见，`host` 三元组是 `x86_64-unknown-linux-gnu`，其中包含了 CPU 架构（`x86_64`）、厂商（`unknown`）、操作系统（`linux`）和 [ABI] (`gnu`)。
+上述输出源自一个 `x86_64` 的 linux 系统。可见，`host` 三元组是 `x86_64-unknown-linux-musl`，其中包含了 CPU 架构（`x86_64`）、厂商（`unknown`）、操作系统（`linux`）和 [ABI](`musl`)。
 
 基于我们的主机三元组编译，Rust 编译器和链接器假设底层有一个诸如 Linux 或 Windows 的、默认使用 C 语言运行时的操作系统，正是这点触发了链接器错误。因此，为了解决链接错误，我们可以基于没有底层操作系统的其他环境进行编译。
 
@@ -226,7 +230,7 @@ cargo build --target thumbv7em-none-eabihf
 
 ### 链接器参数
 
-除了基于某个裸机系统进行编译，给链接器传递特定参数也是能够解决链接器错误的。我们的内核不会采用这种方式，因此，可选的本节为了完整性而提供的。点击以下*“链接器参数”*显示可选的内容。
+除了基于某个裸机系统进行编译，给链接器传递特定参数也是能够解决链接器错误的。我们的内核不会采用这种方式，因此，可选的本节是为了完整性而提供的。点击以下*“链接器参数”*显示可选的内容。
 
 ::: details 链接器参数
 本节，我们讨论出现在 Linux、Windows 和 macOS 的链接器错误，并解释如何通过传入额外的参数给链接器解决他们。值得注意的是，二进制的格式和链接器因操作系统而异，因此，每种操作系统所需的实参是不同的。
@@ -258,7 +262,7 @@ cargo rustc -- -C link-arg=-nostartfiles
 
 至此，我们的 crate 就能构建为 Linux 上的一个独立式的二进制文件了。
 
-因为链接器默认会查找名为 `_start` 的函数作为入口函数，我们不需要显示地说明入口函数。
+因为链接器默认会查找名为 `_start` 的函数作为入口函数，不需要显示地说明入口函数。
 
 #### Windows
 
@@ -280,6 +284,7 @@ cargo rustc -- -C link-arg=/ENTRY:_start
 由不同的参数格式可见，Windows 的链接器和 Linux 的链接器是完全不同的程序。
 
 至此，触发的链接器错误变为：
+
 ```bash
 error: linking with `link.exe` failed: exit code: 1221
   |
@@ -288,13 +293,13 @@ error: linking with `link.exe` failed: exit code: 1221
           defined
 ```
 
-错误原因是 Windows 二进制可以使用不同的 [子系统][windows-subsystems]。对于常规程序，子系统可以通过入口函数的名字推断：如果入口名为 `main`，使用的是 `CONSOLE` 子系统；如果入口名为 `WinMain`，使用的是 `WINDOWS` 子系统。由于我们的 `_start` 函数的名称和以上均不同，因此，我们需要明确标明使用的子系统：
+错误原因是 Windows 二进制可以使用不同的 [子系统][windows-subsystems]。对于常规程序，子系统可以通过入口函数的名字推断：如果入口名为 `main`，使用的是 `CONSOLE` 子系统；如果入口名为 `WinMain`，使用的是 `WINDOWS` 子系统。由于我们的 `_start` 函数的名称和以上均不同，因此，我们需要显式标明使用的子系统：
 
 ```bash
 cargo rustc -- -C link-args="/ENTRY:_start /SUBSYSTEM:console"
 ```
 
-我们这里使用的是 `CONSOLE` 子系统，但是 `WINDOWS` 子系统也是同样适用的。除了多次使用 `-C link-arg`，我们还可以使用 `-C link-args` 的方式，其中 `link-args` 是一个空格分割的参数列表。
+这里使用的是 `CONSOLE` 子系统，但是 `WINDOWS` 子系统也是同样适用的。除了多次使用 `-C link-arg`，还可以使用 `-C link-args` 的方式，其中 `link-args` 是一个空格分割的参数列表。
 
 执行这个命令，我们的二进制应该能够在 Windows 上正常编译了。
 
@@ -448,12 +453,11 @@ cargo rustc -- -C link-args="-e __start -static -nostartfiles"
 
 [下一篇文章][next post] 会讲解把我们的独立式二进制转化为一个最小化操作系统内核的过程。内容包括创建一个自定义的目标，组合我们的二进制和引导加载器，还有学习往屏幕打印东西。
 
-[ABI]: https://en.wikipedia.org/wiki/Application_binary_interface
-[ARM]: https://en.wikipedia.org/wiki/ARM_architecture
-[C calling convention]: https://en.wikipedia.org/wiki/Calling_convention
-[PanicInfo]: https://doc.rust-lang.org/nightly/core/panic/struct.PanicInfo.html
-[Rust standard library]: https://doc.rust-lang.org/std/
-
+[abi]: https://en.wikipedia.org/wiki/Application_binary_interface
+[arm]: https://en.wikipedia.org/wiki/ARM_architecture
+[c calling convention]: https://en.wikipedia.org/wiki/Calling_convention
+[panicinfo]: https://doc.rust-lang.org/nightly/core/panic/struct.PanicInfo.html
+[rust standard library]: https://doc.rust-lang.org/std/
 [abort on panic]: https://github.com/rust-lang/rust/pull/32900
 [closures]: https://doc.rust-lang.org/book/ch13-01-closures.html
 [copy impl]: https://github.com/rust-lang/rust/blob/485397e49a02a3b7ff77c17e4a3f16c653925cb3/src/libcore/marker.rs#L296-L299
@@ -475,7 +479,7 @@ cargo rustc -- -C link-args="-e __start -static -nostartfiles"
 [panic]: https://doc.rust-lang.org/stable/book/ch09-01-unrecoverable-errors-with-panic.html
 [pattern matching]: https://doc.rust-lang.org/book/ch06-00-enums.html
 [post-01]: https://github.com/phil-opp/blog_os/tree/post-01
-[result]:https://doc.rust-lang.org/core/result/
+[result]: https://doc.rust-lang.org/core/result/
 [rt::lang_start]: https://github.com/rust-lang/rust/blob/bb4d1491466d8239a7a5fd68bd605e3276e97afb/src/libstd/rt.rs#L32-L73
 [runtime system]: https://en.wikipedia.org/wiki/Runtime_system
 [semantic version]: http://semver.org/
@@ -488,12 +492,9 @@ cargo rustc -- -C link-args="-e __start -static -nostartfiles"
 [undefined behavior]: https://www.nayuki.io/page/undefined-behavior-in-c-and-cplusplus-programs
 [valine]: #valine
 [windows-subsystems]: https://docs.microsoft.com/en-us/cpp/build/reference/entry-entry-point-symbol
-
 [01-freestanding-rust-binary-source-code]: https://github.com/sammyne/blog-os-cn/tree/master/01-freestanding-rust-binary
 [2018 edition]: https://rust-lang-nursery.github.io/edition-guide/rust-2018/index.html
-
-[`Copy` trait]: https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html
-
+[`copy` trait]: https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html
 [`exit` system call]: https://en.wikipedia.org/wiki/Exit_(system_call)
 [`never` type]: https://doc.rust-lang.org/nightly/std/primitive.never.html
 [`no_std` attribute]: https://doc.rust-lang.org/1.30.0/book/first-edition/using-rust-without-the-standard-library.html
