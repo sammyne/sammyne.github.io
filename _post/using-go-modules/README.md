@@ -2,7 +2,7 @@
 title: 使用 Go Modules
 date: 2019-11-23
 categories:
-  - programming language
+  - language
 tags:
   - golang
 ---
@@ -16,18 +16,18 @@ tags:
 - [第 3 部 - 发布 Go Modules](https://blog.golang.org/publishing-go-modules)
 - [第 4 部 - Go Modules：v2 及其未来](https://blog.golang.org/v2-go-modules)
 
-Go 1.11 和 1.12 开始纳入[对 modules 的支持](https://golang.org/doc/go1.11#modules)，这是 Go [新的依赖管理系统](https://blog.golang.org/versioning-proposal)，使得依赖版本信息明确且更加容易管理。这篇博文会介绍开始使用 modules 所需的基本操作知识。
+Go 1.11 和 1.12 开始纳入[对 modules 的支持](https://golang.org/doc/go1.11#modules)，这是 Go [新的依赖管理系统](https://blog.golang.org/versioning-proposal)，明确依赖版本信息且使之更加容易管理。这篇博文会介绍使用 modules 所需的基本操作知识。
 
-一个 module 是一个 [Go 包](https://golang.org/ref/spec#Packages)的集合，保存在一个文件树中，这个文件树的根目录有一个 `go.mod` 文件。`go.mod` 文件定义了 module 的 *module path*（用作根目录的导入路径）和**所需依赖**（其他 modules 的成功构建需要）。每个所需依赖都书写为一个 module path 和一个特定的[语义化版本](http://semver.org/)。
+一个 module 是一个 [Go 包](https://golang.org/ref/spec#Packages)的集合，保存在一个文件树中。这个文件树的根目录有一个 `go.mod` 文件。`go.mod` 文件定义了 module 的 *module path*（用作根目录的导入路径）和**所需依赖**（其他 modules 的成功构建需要）。每个所需依赖都书写为一个 module path 和一个特定的[语义化版本](http://semver.org/)。
 
 从 Go 1.11 开始，对于当前或其任何父目录具有 `go.mod` 文件且*在 $GOPATH/src 之外*的目录，go 命令默认会启用 modules。（$GOPATH/src 内部的话，出于兼容性考虑，go 命令仍会以旧的 GOPATH 模式运行，即使能够找到一个 go.mod 文件。详情参见 [go 命令文档](https://golang.org/cmd/go/#hdr-Preliminary_module_support)）。从 Go 1.13 开始，module 模式成为所有开发的默认模式。
 
-本篇博文逐步介绍使用 modules 开始 Go 代码时会遇到的一系列常用操作：
+本篇博文逐步介绍使用 modules 开发 Go 代码时会遇到的一系列常用操作：
 - 创建新 module
 - 添加依赖
 - 升级依赖
-- 添加一个不同主要版本号的依赖
-- 将依赖升级到一个新的主要版本
+- 添加一个新大版本号的依赖
+- 将依赖升级到一个新的大版本
 - 移除未被使用的依赖
 
 ## 创建新 module
@@ -149,7 +149,7 @@ ok      example.com/hello    0.020s
 $
 ```
 
-注意了：go 命令确实使得添加新依赖变得快速和容易，但是也不会没有代价的。我们的 module 现在诸如正确性、安全性和合适的证书等方面就显式地*依赖*语新的依赖。想要了解更多的话，参见 Russ Cox 的博文：[Our Software Dependency Problem](https://research.swtch.com/deps)
+注意了：go 命令确实使得添加新依赖变得快速和容易，但是也不会没有代价的。我们的 module 现在诸如正确性、安全性和合适的版权证书等方面就显式地*依赖*于新的依赖。想要了解更多的话，参见 Russ Cox 的博文：[Our Software Dependency Problem](https://research.swtch.com/deps)
 
 如上可见，添加一项直接依赖经常会引入其他间接依赖。`go list -m all` 命令会列举出当前 module 和它的所有依赖：
 
@@ -162,7 +162,7 @@ rsc.io/sampler v1.3.0
 $
 ```
 
-`go list` 的输出中，当前 module，也被称为 `main module` 总是在第一行，而后是根据 module path 排序的依赖。
+`go list` 的输出中，当前 module 也被称为 `main module` 总是在第一行，而后是根据 module path 排序的依赖。
 
 `golang.org/x/text`的版本`v0.0.0-20170915032832-14c0d48ead0c`是[伪版本](https://golang.org/cmd/go/#hdr-Pseudo_versions)的示例，是 go 命令规定的特定没打标签的 commit 的版本语法。
 
@@ -183,7 +183,7 @@ go 命令使用 `go.sum` 文件确保将来下载的这些 modules 会和第一�
 
 ## 升级依赖
 
-Go modules 基于语义化版本标签来引用特定版本。一个语义化版本由 3 部分组成：major、minor 和 patch。以 v0.1.2 为例，主要版本为 0，小版本号为 1，补丁版本号为 2.让我们演示一些小版本更新。后面小节会描述主要版本升级。
+Go modules 基于语义化版本标签来引用特定版本。一个语义化版本由 3 部分组成：major、minor 和 patch。以 v0.1.2 为例，大版本为 0，小版本号为 1，补丁版本号为 2。让我们演示一些小版本更新。后面小节会描述大版本升级。
 
 从 `go list -m all` 的输出可以看到我们使用的 `golang.org/x/text` 的没打标签的版本。让我们升级到最新的打标签的版本，并测试一切安好：
 
@@ -259,7 +259,7 @@ $
 
 注意 `go get` 的参数里面显式的 `@v1.3.1`。通常情况下，所有传给`go get`的参数都可以接受一个显式的版本号；默认值为`@latest`，指向之前描述的最新版本。
 
-## 添加一个不同主要版本号的依赖
+## 添加一个新大版本号的依赖
 
 为我们的包添加一个新函数：`func Proverb`返回一个 Go 的并发谚语，返回值由 `quote.Concurrency`（依赖 `rsc.io/quote/v3` module）提供。首先，我们需要更新 `hello.go`，添加新函数：
 
@@ -303,7 +303,7 @@ ok      example.com/hello    0.024s
 $
 ```
 
-注意了：我们的 module 现在依赖了 `rsc.io/quote` 和 `rsc.io/quote/v3`：
+注意：我们的 module 现在依赖了 `rsc.io/quote` 和 `rsc.io/quote/v3`：
 
 ```bash
 $ go list -m rsc.io/q...
@@ -312,13 +312,13 @@ rsc.io/quote/v3 v3.1.0
 $
 ```
 
-Go module 的每个不同主要版本号（v1，v2，依次类推）都会使用不同的 module path：从 v2 开始，路径必须以主要版本结尾。在上面的例子中，`rsc.io/quote`的`v3`版本不再是`rsc.io/quote`，而是以 `rsc.io/quote/v3` module 路径来标识自己。这个习惯用法被称为[语义化导入版本管理](https://research.swtch.com/vgo-import)，它赋予不兼容的包（具有不同的主要版本）不同名字。相反的是，`rsc.io/quote`的`v1.6.0`应该和`v1.5.2`后向兼容，因此，它重用了名字 `rsc.io/quote`（上一小节中，`rsc.io/sampler v1.99.99`*理应*和`rsc.io/sampler v1.3.0`后向兼容，可能原因是 bugs 和基于 module 行为的错误客户端假设）。
+Go module 的每个不同大版本号（v1，v2，依次类推）都会使用不同的 module path：从 v2 开始，路径必须以大版本结尾。在上面的例子中，`rsc.io/quote`的`v3`版本不再是`rsc.io/quote`，而是以 `rsc.io/quote/v3` module 路径来标识自己。这个习惯用法被称为[语义化导入版本管理](https://research.swtch.com/vgo-import)，它赋予不兼容的包（具有不同的大版本）不同名字。相反的是，`rsc.io/quote`的`v1.6.0`应该和`v1.5.2`后向兼容，因此，它重用了名字 `rsc.io/quote`（上一小节中，`rsc.io/sampler v1.99.99`*理应*和`rsc.io/sampler v1.3.0`后向兼容，可能原因是 bugs 和基于 module 行为的错误客户端假设）。
 
-`go`命令只允许一次构建包含特定 module 路径的至多一个版本。，也即至多一个主要版本：一个`rsc.io/quote`，一个`rsc.io/quote/v2`，一个`rsc.io/quote/v3`，依次类推。这样可以明确告诉 module 作者一个 module 路径的可能重复规则：一个程序不可能在构建时同时包含`rsc.io/quote v1.5.2`和`rsc.io/quote v1.6.0`。同时，允许一个 module 具有不同主要版本（因为他们具有不同路径）使得 module 消费者能够逐步升级主要版本号。这个例子里面，我们想要使用`rsc.io/quote/v3 v3.1.0`提供的`quote.Concurrency`，但是又没准备好移除`rsc.io/quote v1.5.2`。逐步增量迁移的能力对于大程序或代码库尤为重要。
+**`go`命令只允许一次构建包含特定 module 路径的至多一个版本**，也即至多一个大版本：一个`rsc.io/quote`，一个`rsc.io/quote/v2`，一个`rsc.io/quote/v3`，依次类推。这样可以明确告诉 module 作者一个 module 路径的可能重复规则：一个程序不可能在构建时同时包含`rsc.io/quote v1.5.2`和`rsc.io/quote v1.6.0`。同时，允许一个 module 具有不同大版本（因为他们具有不同路径）使得 module 消费者能够逐步升级大版本号。这个例子里面，我们想要使用`rsc.io/quote/v3 v3.1.0`提供的`quote.Concurrency`，但是又没准备好移除`rsc.io/quote v1.5.2`。逐步增量迁移的能力对于大程序或代码库尤为重要。
 
-## 将依赖升级到一个新的主要版本
+## 将依赖升级到一个新的大版本
 
-让我们完全从`rsc.io/quote`迁移到只使用`rsc.io/quote/v3`。由于主要版本变了，我们应该预料到一些 API 可能已被移除、重命名或者以其他不兼容的方式更改。查阅文档，我们发现`Hello`变成了`HelloV3`：
+让我们完全从`rsc.io/quote`迁移到只使用`rsc.io/quote/v3`。由于大版本变了，我们应该预料到一些 API 可能已被移除、重命名或者以其他不兼容的方式更改。查阅文档，我们发现`Hello`变成了`HelloV3`：
 
 ```bash
 $ go doc rsc.io/quote/v3
@@ -438,6 +438,6 @@ Go modules 是 Go 未来的依赖管理系统。Module 功能已经在所有支�
 - `go get`改变依赖的所需版本（或者添加新依赖）
 - `go mod tidy`移除部可用的依赖
 
-鼓励大家在本地开发时开始使用 module，添加`go.mod`和`go.sum`文件到你们的项目。如果想要提交反馈或帮助塑造 Go 未来的依赖管理系统的话，请给我们提交 [bug 报告](https://golang.org/issue/new)或[体验报告](https://golang.org/wiki/ExperienceReports)。
+鼓励大家在本地开发时把 module 用起来，添加`go.mod`和`go.sum`文件到你们的项目。如果想要提交反馈或帮助塑造 Go 未来的依赖管理系统的话，请给我们提交 [bug 报告](https://golang.org/issue/new)或[体验报告](https://golang.org/wiki/ExperienceReports)。
 
 感谢大家的反馈和优化 modules 的帮助。
