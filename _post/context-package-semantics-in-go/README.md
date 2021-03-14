@@ -3,9 +3,9 @@ title: Go 的 Context 包使用规则
 date: 2019-10-26
 categories:
 - language
+- engineering
 tags:
 - golang
-- engineering
 ---
 
 > 原文：[Context Package Semantics In Go](https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html)
