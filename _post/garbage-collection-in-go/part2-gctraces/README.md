@@ -1,10 +1,13 @@
 ---
-title: Go 的垃圾回收：第二节 -- GC 追溯
+title: '[Go GC] Go 的垃圾回收：第二节 -- GC 追溯'
 date: 2019-09-15
 categories:
-  - programming language
+- engineering
+- language
 tags: 
-  - golang
+- golang
+- compiler
+- GC
 ---
 
 

@@ -1,10 +1,13 @@
 ---
-title: Go 的垃圾回收：第三节 -- GC 的节奏控制
+title: '[Go GC] Go 的垃圾回收：第三节 -- GC 的节奏控制'
 date: 2019-09-26
 categories:
-  - programming language
+- engineering
+- language
 tags: 
-  - golang
+- golang
+- compiler
+- GC
 ---
 
 > 原文：[Garbage Collection In Go : Part III - GC Pacing](https://www.ardanlabs.com/blog/2019/07/garbage-collection-in-go-part3-gcpacing.html)
