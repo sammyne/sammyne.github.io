@@ -118,6 +118,38 @@ github=https://hub.fastgit.org/sammyne/gcc-arm/releases/download/9.2-2019.12
 
 sed -i "s!$binrel!$github!g" $buildDir/toolchain.mk
 sed -i "s!https://github.com!https://$fastgit!g" $buildDir/get_clang.sh
+
+workdir=$opteeDir/buildroot
+cd $workdir
+
+ustc="http://mirrors.ustc.edu.cn"
+
+cpan="http://cpan.metacpan.org"
+gnu="http://ftpmirror.gnu.org"
+kernel="https://cdn.kernel.org/pub"
+
+sed -i "s|$cpan|$ustc/CPAN|g" Config.in
+sed -i "s|$gnu|$ustc/gnu|g" Config.in
+sed -i "s|$kernel|$ustc/kernel.org|g" Config.in
+
+cd $workdir/package
+
+savannah="http://download.savannah.gnu.org"
+savannah2="http://download-mirror.savannah.gnu.org"
+savannahNew="http://www.mirrorservice.org/sites/download.savannah.gnu.org"
+
+savannahPkgs=$(grep savannah -rl . | grep .mk)
+
+sed -i "s|$savannah|$savannahNew|g" $savannahPkgs
+sed -i "s|$savannah2|$savannahNew|g" $savannahPkgs
+
+fastgit="hub.fastgit.org"
+depRepo="https://$fastgit/sammyne/optee-dep/releases/download/3.12.0"
+
+sed -i "s|^LIBOPENSSL_SITE =.*|LIBOPENSSL_SITE = $depRepo|g" libopenssl/libopenssl.mk
+sed -i "s|^PYTHON3_SITE =.*|PYTHON3_SITE = $depRepo|g" python3/python3.mk
+
+sed -i "s|^STRACE_SITE =.*|STRACE_SITE = https://$fastgit/strace/strace/releases/download/v5.7|g" strace/strace.mk
 ```
 
 ### 5. 配置工具链
