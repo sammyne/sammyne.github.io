@@ -10,7 +10,7 @@ tags:
 
 > 本教程是用的是 3.12.0 版本的 [optee][optee-gh]，运行环境为 QEMU 虚拟的 ARMv8 架构。
 
-前一篇文章 TODO 成功添加 CA 和 TA 之后。我们还有一些问题没解决
+[前一篇文章][prev] 成功添加 CA 和 TA 之后。我们还有一些问题没解决
 - 整个工程是如何编译出来的
 - linux 内核在什么时候被编译
 - OP-TEE OS image 是怎么编译出来的
@@ -96,3 +96,4 @@ OP-TEE 编译是从 build/Makefile （当前场景下本质是 build/qemu_v8.mk 
 [br-ext-examples]: https://github.com/OP-TEE/build/blob/3.12.0/br-ext/package/optee_examples_ext/optee_examples_ext.mk
 [br-ext-client]: https://github.com/OP-TEE/build/blob/3.12.0/br-ext/package/optee_client_ext/optee_client_ext.mk
 [optee-examples-cmakelists]: https://github.com/linaro-swg/optee_examples/blob/3.12.0/CMakeLists.txt
+[prev]: /_post/optee/03-add-ca-and-ta/
