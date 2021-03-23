@@ -24,7 +24,7 @@ ATF 将系统启动从最底层进行了完整的统一划分，将 secure monit
     - bl33 为非安全 image，例如 uboot，linux 内核等。当前该部分先加载 bootloader 的 image，再由 bootloader 来启动 linux 内核。
     - bl2 跳转到 bl31 是通过传入 bl31 的 entry point info 调用 SMC 指令，触发在 bl1 设定的 SMC 异常，从而使得 CPU 将控制权交给 bl31，并跳转到 bl31 执行。
 3. bl31 跳转到 bl32
-    - bl31 会执行 `runtime_service_init` 操作，该函数会调用注册到 EL3 所有 service 的 `init` 函数，其中有一个 service 就是为 TEE 服务的。该 service 的 `init` 函数会将 TEE OS 的初始化函数赋值给 `bl32_init` 变量。当所有的 service 执行完 `init` 后，bl31 会调用 `bl32_init` 跳转到 TEE OS 的执行。
+    - bl31 会执行 `runtime_service_init()` 函数，该函数会调用注册到 EL3 所有 service 的 `init` 函数，其中有一个 service 就是为 TEE 服务的。该 service 的 `init` 函数会将 TEE OS 的初始化函数赋值给 `bl32_init` 变量。当所有的 service 执行完 `init` 后，bl31 会调用 `bl32_init` 跳转到 TEE OS 的执行。
 4. bl31 跳转到 bl33
     - 当 TEE_OS image 启动完成之后会触发一个 ID 为 `TEESMC_OPTEED_RETURN_ENTRY_DONE` 的 SMC 调用来告知 EL3 TEE OS image 已经完成了初始化，然后将 CPU 状态恢复到 `bl31_init` 的位置继续执行。
     - bl31 通过遍历在 bl2 记录的 image 链表来找到需要执行的 bl33 的 image。然后通过获取到 bl33 image 的镜像信息，设定下一个阶段的 CPU 上下文，退出 EL3 然后进入到 bl33 image 的执行。
