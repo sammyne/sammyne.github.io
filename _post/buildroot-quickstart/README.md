@@ -8,6 +8,8 @@ tags:
 - os
 ---
 
+[buildroot][buildroot.org] 是一个简单、高效、易用的工具，能够利用交叉编译生成嵌入式 Linux 系统。
+
 本文简单介绍 buildroot 的构建流程，以便于快速入门，了解其基本使用方式。
 
 > 为了便于复现，操作环境使用了 [ubuntu 20.04] 的 docker 镜像，具体的 buildroot 版本为 [2021.02][buildroot 2021.02]。
@@ -493,5 +495,6 @@ busybox eudev grub2 hello host-acl host-attr host-autoconf host-automake host-do
 
 [buildroot-adding-packages]: https://buildroot.org/downloads/manual/manual.html#adding-packages
 [buildroot 2021.02]: https://github.com/buildroot/buildroot/tree/2021.02
+[buildroot.org]: https://buildroot.org/
 [ubuntu 20.04]: https://hub.docker.com/layers/ubuntu/library/ubuntu/20.04/images/sha256-c7b16f05260ce7a6a124cbd68cb061795840870e313de902fb6c987d0c7488c5?context=explore
 [The Buildroot user manual]: https://buildroot.org/downloads/manual/manual.html
