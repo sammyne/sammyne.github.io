@@ -10,7 +10,7 @@ tags:
 
 ATF 全称为 ARM Trusted Firmware。
 
-ATF 将系统启动从最底层进行了完整的统一划分，将 secure monitor 的功能放到了 bl31。当系统完全启动之后，CA 或者 TEE OS 触发了 SMC（Secure Monitor Call）或者其他中断之后，首先遍历注册到 bl31 的对应的 service 来选择具体的 handle，这样可以统一管理和分配系统所有的关键 SMC 或者中断操作。ATF 的 code boot 整个启动过程框图如下：
+ATF 将系统启动从最底层进行完整的统一划分，把 secure monitor 的功能放到了 bl31。系统完全启动之后，CA 或者 TEE OS 触发 SMC（Secure Monitor Call）或者其他中断时，首先遍历注册到 bl31 的对应 service 来选择具体的 handle，这样可以统一管理和分配系统所有的关键 SMC 或者中断操作。ATF 的 code boot 整个启动过程框图如下：
 
 ![](./images/boot-overview.png)
 
@@ -19,17 +19,17 @@ ATF 将系统启动从最底层进行了完整的统一划分，将 secure monit
 1. bl1 跳转到 bl2
     - bl1 加载 bl2 image 到 RAM、设定中断向量表以及完成其他 CPU 相关设定之后，`bl1_main` 函数解析出 bl2 image 的描述信息，获取入口地址，并设定下一个阶段的 CPU 上下文。完成之后，调用 `el3_exit` 函数实现 bl1 到 bl2 的跳转，进入到 bl2 阶段。
 2. bl2 跳转到 bl31
-    - bl2 将会加载 bl31、bl32、bl33 的 image 到对应权限的 RAM，并将该三个 image 的描述信息组成一个链表保存起来，以用于 bl31 启动 bl32 和 bl33。在 AACH64 中，bl31 为 EL3 runtime firmware。这个运行时的主要功能是处理 SMC 指令和中断，以 secure monitor 状态运行。
+    - bl2 将会加载 bl31、bl32、bl33 的 image 到对应权限的 RAM，并将这 3 个 image 的描述信息组成一个链表保存起来，以用于 bl31 启动 bl32 和 bl33。在 AACH64 中，bl31 为 EL3 runtime firmware。这个运行时的主要功能是处理 SMC 指令和中断，以 secure monitor 状态运行。
     - bl32 一般为 TEE OS image，例如 OP-TEE
     - bl33 为非安全 image，例如 uboot，linux 内核等。当前该部分先加载 bootloader 的 image，再由 bootloader 来启动 linux 内核。
     - bl2 跳转到 bl31 是通过传入 bl31 的 entry point info 调用 SMC 指令，触发在 bl1 设定的 SMC 异常，从而使得 CPU 将控制权交给 bl31，并跳转到 bl31 执行。
 3. bl31 跳转到 bl32
     - bl31 会执行 `runtime_service_init()` 函数，该函数会调用注册到 EL3 所有 service 的 `init` 函数，其中有一个 service 就是为 TEE 服务的。该 service 的 `init` 函数会将 TEE OS 的初始化函数赋值给 `bl32_init` 变量。当所有的 service 执行完 `init` 后，bl31 会调用 `bl32_init` 跳转到 TEE OS 的执行。
 4. bl31 跳转到 bl33
-    - 当 TEE_OS image 启动完成之后会触发一个 ID 为 `TEESMC_OPTEED_RETURN_ENTRY_DONE` 的 SMC 调用来告知 EL3 TEE OS image 已经完成了初始化，然后将 CPU 状态恢复到 `bl31_init` 的位置继续执行。
-    - bl31 通过遍历在 bl2 记录的 image 链表来找到需要执行的 bl33 的 image。然后通过获取到 bl33 image 的镜像信息，设定下一个阶段的 CPU 上下文，退出 EL3 然后进入到 bl33 image 的执行。
+    - TEE_OS image 启动完成之后，会触发一个 ID 为 `TEESMC_OPTEED_RETURN_ENTRY_DONE` 的 SMC 调用来告知 EL3 TEE OS image 已经完成了初始化，然后将 CPU 状态恢复到 `bl31_init` 的位置继续执行。
+    - bl31 通过遍历在 bl2 记录的 image 链表来找到需要执行的 bl33 image。然后通过获取到 bl33 image 的镜像信息，设定下一个阶段的 CPU 上下文，退出 EL3 然后进入到 bl33 image 的执行。
 
-ATF 是一针对 ARM 芯片给出的底层开源固件代码。固件将整个系统分成四种运行等级，分别为：EL0、EL1、EL2 和 EL3，并规定了每个安全等级运行的 image 名字。后续部分以 ARCH64 为示例，介绍冷启动模式下 ATF 的运行过程。ATF 的源代码可以从 [github][arm-trusted-firmware] 上获取。
+ATF 是一针对 ARM 芯片给出的底层开源固件代码。固件将整个系统分成四种运行等级，分别为：EL0、EL1、EL2 和 EL3，并规定了每个安全等级运行的 image 名字。后续部分以 AARCH64 为示例，介绍冷启动模式下 ATF 的运行过程。ATF 的源代码可以从 [github][arm-trusted-firmware] 上获取。
 
 ![](./images/ARMv8.png)
 
@@ -91,9 +91,9 @@ bl2 image 将会为后续 image 的加载执行相关的初始化操作，主要
 ## bl3
 
 ### bl31
-bl2 通过调用 SMC 指令跳转到 bl31 执行。bl31 最终主要的作用是建立 EL3 runtime software，在该阶段会建立各种类型的 SMC 调用注册并完成对应的 cortex 状态切换。该阶段主要执行在 monitor。
+bl2 通过调用 SMC 指令跳转到 bl31 执行。bl31 最终主要的作用是建立 EL3 runtime software，在该阶段会注册各种类型的 SMC 指令的处理函数，并完成对应的 cortex 状态切换。该阶段主要执行在 monitor。
 
-相关文件主要集中在 [bl3] 目录，查看 bl31.ld.S 文件可知 bl31 image 的入口函数是[bl31_entrypoint]。
+相关文件主要集中在 [bl31] 目录，查看 bl31.ld.S 文件可知 bl31 image 的入口函数是 [bl31_entrypoint]。
 
 ```
 |-bl31_entrypoint // bl31/aarch64/bl31_entrypoint.S#25
@@ -108,7 +108,7 @@ bl2 通过调用 SMC 指令跳转到 bl31 执行。bl31 最终主要的作用是
                   //  - call_type: 调用的 SMC 类型
                   //  - name: service 名字
                   //  - init: service 在执行之前需要被执行的初始化操作
-                  //  - handle: 当触发了 call type 的调用时的回调函数
+                  //  - handle: call type 调用的回调函数
 ```
 
 #### 以 OP-TEE 为例演示从 bl31 跳转到 OP-TEE
@@ -142,7 +142,7 @@ bl31 的 `runtime_svc_init` 函数会初始化 OP-TEE 对应的 service，通过
         |-opteed_init           // service/spd/opteed/opteed_main.c#156
           |                     // 该函数将会在 bl31 的所有 service 执行完 init 操作之后，执行存放在 bl32_init 变量的函数指针来调用。
           |                     // 该函数调用之后会进入到 OP-TEE OS 的初始化阶段。
-          |-opteed_synchronous_sp_entry // // service/spd/opteed/opteed_common.c#70
+          |-opteed_synchronous_sp_entry // service/spd/opteed/opteed_common.c#70
             |-opteed_enter_sp   // opteed_helpers.S#21
                                 // 完成跳转到 OP-TEE image 执行的操作，该函数将会保存一些列的寄存器值，设定好堆栈信息，然后通过调用
                                 // el3_eixt 函数实现跳转操作
