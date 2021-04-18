@@ -5,7 +5,7 @@ categories:
 - engineering
 - language
 tags: 
-- golang
+- go
 - compiler
 - GC 
 ---
