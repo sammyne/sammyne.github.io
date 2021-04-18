@@ -1163,7 +1163,7 @@
   dependencies:
     tslib "^2.0.3"
 
-"@vuepress-reco/core@^1.6.0":
+"@vuepress-reco/core@^1.6.2":
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/@vuepress-reco/core/-/core-1.6.2.tgz#b6dcd2f7a4b71b57f06857fe183af6ff0663c8b1"
   integrity sha512-E9YzREXSXVAGDsgY25LdtGAjHE1wNcRbHkXdfOGQPArGNOrkKyPHgjYwXIX/bHwFrhEMPQbKWr1EuYOSi61/Yw==
@@ -7380,9 +7380,9 @@ sshpk@^1.7.0:
     tweetnacl "~0.14.0"
 
 ssri@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/ssri/-/ssri-6.0.1.tgz#2a3c41b28dd45b62b63676ecb74001265ae9edd8"
-  integrity sha512-3Wge10hNcT1Kur4PDFwEieXSCMCJs/7WvSACcrMYrNp+b8kDL1/0wJch5Ni2WrtwEa2IO8OsVfeKIciKCDx/QA==
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/ssri/-/ssri-6.0.2.tgz#157939134f20464e7301ddba3e90ffa8f7728ac5"
+  integrity sha512-cepbSq/neFK7xB6A50KHN0xHDotYzq58wWCa5LeWqnPrHG8GzfEjO/4O8kpmcGW+oaxkvhEJCWgbgNk4/ZV93Q==
   dependencies:
     figgy-pudding "^3.5.1"
 
@@ -8346,13 +8346,13 @@ vuepress-plugin-smooth-scroll@^0.0.9:
   dependencies:
     smoothscroll-polyfill "^0.4.4"
 
-vuepress-theme-reco@1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/vuepress-theme-reco/-/vuepress-theme-reco-1.6.1.tgz#77b78df7af36c27ebbbcfceab916d6cb18aa2e25"
-  integrity sha512-WmeDWPg0VksyRfxcwGa/SLMEehlhTbS/mhX9HJQRJgNIDE9518GvI/henmMsc6ydvjEipdw/w4z7j9sz2aAI4Q==
+vuepress-theme-reco@1.6.6:
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/vuepress-theme-reco/-/vuepress-theme-reco-1.6.6.tgz#f286f0000b1702b9511a439469c15b0d2b1e992d"
+  integrity sha512-41jlW8bRo+aNJjYLTpFhe/naj2kXv39ySJa6N5sJE2UANubSiRCzV+VWN57I4VCRcSWRUqdy1m/Gn5PMtryWjA==
   dependencies:
     "@vue/composition-api" "^1.0.0-beta.20"
-    "@vuepress-reco/core" "^1.6.0"
+    "@vuepress-reco/core" "^1.6.2"
     "@vuepress-reco/vuepress-plugin-back-to-top" "^1.6.0"
     "@vuepress-reco/vuepress-plugin-comments" "^1.6.0"
     "@vuepress-reco/vuepress-plugin-loading-page" "^1.6.0"
@@ -8362,6 +8362,7 @@ vuepress-theme-reco@1.6.1:
     docsearch.js "2.6.3"
     md5 "2.2.1"
     vue-click-outside "1.1.0"
+    vue-demi "^0.5.3"
     vuepress-plugin-smooth-scroll "^0.0.9"
 
 vuepress@^1.8.1:
