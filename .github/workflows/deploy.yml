@@ -36,4 +36,4 @@ jobs:
         with:
           ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           BRANCH: main
-          FOLDER: .vuepress/dist
+          FOLDER: _post/.vuepress/dist
