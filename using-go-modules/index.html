@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>使用 Go Modules | sammyne</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="description" content="Just playing around :)">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    
+    <link rel="preload" href="/assets/css/0.styles.49bc6dee.css" as="style"><link rel="preload" href="/assets/js/app.6731dc6d.js" as="script"><link rel="preload" href="/assets/js/3.3f52b992.js" as="script"><link rel="preload" href="/assets/js/1.86295094.js" as="script"><link rel="preload" href="/assets/js/89.e73f74c7.js" as="script"><link rel="prefetch" href="/assets/js/10.1038f603.js"><link rel="prefetch" href="/assets/js/11.96eec3c9.js"><link rel="prefetch" href="/assets/js/12.d28f2fe1.js"><link rel="prefetch" href="/assets/js/13.42ab1ca0.js"><link rel="prefetch" href="/assets/js/14.051d7969.js"><link rel="prefetch" href="/assets/js/15.4ed924b6.js"><link rel="prefetch" href="/assets/js/16.2316213b.js"><link rel="prefetch" href="/assets/js/17.8a6b7ba1.js"><link rel="prefetch" href="/assets/js/18.79ea8cf4.js"><link rel="prefetch" href="/assets/js/19.3141bf59.js"><link rel="prefetch" href="/assets/js/20.deaa9f14.js"><link rel="prefetch" href="/assets/js/21.cbf78bb1.js"><link rel="prefetch" href="/assets/js/22.d6a5c657.js"><link rel="prefetch" href="/assets/js/23.f04a9f25.js"><link rel="prefetch" href="/assets/js/24.aa0b9a4f.js"><link rel="prefetch" href="/assets/js/25.e9b27a2a.js"><link rel="prefetch" href="/assets/js/26.6a774f88.js"><link rel="prefetch" href="/assets/js/27.ed0fc0f9.js"><link rel="prefetch" href="/assets/js/28.a397c3d7.js"><link rel="prefetch" href="/assets/js/29.bc4b043d.js"><link rel="prefetch" href="/assets/js/30.213d982d.js"><link rel="prefetch" href="/assets/js/31.017c6b4e.js"><link rel="prefetch" href="/assets/js/32.3c39cb85.js"><link rel="prefetch" href="/assets/js/33.2d74623b.js"><link rel="prefetch" href="/assets/js/34.79a608bc.js"><link rel="prefetch" href="/assets/js/35.908be713.js"><link rel="prefetch" href="/assets/js/36.9c2eb74c.js"><link rel="prefetch" href="/assets/js/37.e2cb8a6e.js"><link rel="prefetch" href="/assets/js/38.3fccd1be.js"><link rel="prefetch" href="/assets/js/39.edd23d2d.js"><link rel="prefetch" href="/assets/js/4.427febfc.js"><link rel="prefetch" href="/assets/js/40.188ea825.js"><link rel="prefetch" href="/assets/js/41.b1c0ffa7.js"><link rel="prefetch" href="/assets/js/42.91d363cd.js"><link rel="prefetch" href="/assets/js/43.aa239f52.js"><link rel="prefetch" href="/assets/js/44.2546e0e4.js"><link rel="prefetch" href="/assets/js/45.2dbb3db7.js"><link rel="prefetch" href="/assets/js/46.3064f272.js"><link rel="prefetch" href="/assets/js/47.6ab91381.js"><link rel="prefetch" href="/assets/js/48.f58019a7.js"><link rel="prefetch" href="/assets/js/49.d9d77fae.js"><link rel="prefetch" href="/assets/js/5.3ab3e749.js"><link rel="prefetch" href="/assets/js/50.cb88fead.js"><link rel="prefetch" href="/assets/js/51.5f5eee7e.js"><link rel="prefetch" href="/assets/js/52.ae4e6334.js"><link rel="prefetch" href="/assets/js/53.17db3a12.js"><link rel="prefetch" href="/assets/js/54.a44acc29.js"><link rel="prefetch" href="/assets/js/55.aeaaad9e.js"><link rel="prefetch" href="/assets/js/56.b42ebcb9.js"><link rel="prefetch" href="/assets/js/57.b9fc672e.js"><link rel="prefetch" href="/assets/js/58.aa6443bc.js"><link rel="prefetch" href="/assets/js/59.3a8b21f1.js"><link rel="prefetch" href="/assets/js/6.905f5193.js"><link rel="prefetch" href="/assets/js/60.7e1e0d62.js"><link rel="prefetch" href="/assets/js/61.2d82fc74.js"><link rel="prefetch" href="/assets/js/62.e5817de7.js"><link rel="prefetch" href="/assets/js/63.9c45d434.js"><link rel="prefetch" href="/assets/js/64.7869c4d8.js"><link rel="prefetch" href="/assets/js/65.47ff3714.js"><link rel="prefetch" href="/assets/js/66.83077b8c.js"><link rel="prefetch" href="/assets/js/67.fa18d1cd.js"><link rel="prefetch" href="/assets/js/68.debb8be6.js"><link rel="prefetch" href="/assets/js/69.1d7114ab.js"><link rel="prefetch" href="/assets/js/7.7171cbe2.js"><link rel="prefetch" href="/assets/js/70.9b795da4.js"><link rel="prefetch" href="/assets/js/71.2a904461.js"><link rel="prefetch" href="/assets/js/72.fb1ddcda.js"><link rel="prefetch" href="/assets/js/73.00835c21.js"><link rel="prefetch" href="/assets/js/74.c6fd062a.js"><link rel="prefetch" href="/assets/js/75.9a67ecba.js"><link rel="prefetch" href="/assets/js/76.160be0b9.js"><link rel="prefetch" href="/assets/js/77.eca56bef.js"><link rel="prefetch" href="/assets/js/78.5198658f.js"><link rel="prefetch" href="/assets/js/79.0055d088.js"><link rel="prefetch" href="/assets/js/8.0b3d33ad.js"><link rel="prefetch" href="/assets/js/80.2804a168.js"><link rel="prefetch" href="/assets/js/81.0c6113a4.js"><link rel="prefetch" href="/assets/js/82.2480233f.js"><link rel="prefetch" href="/assets/js/83.d4e662be.js"><link rel="prefetch" href="/assets/js/84.806f671f.js"><link rel="prefetch" href="/assets/js/85.eab149d6.js"><link rel="prefetch" href="/assets/js/86.53eaef8b.js"><link rel="prefetch" href="/assets/js/87.939a3a36.js"><link rel="prefetch" href="/assets/js/88.1d9db98a.js"><link rel="prefetch" href="/assets/js/9.4fb731d8.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.49bc6dee.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar" data-v-1156296a><div data-v-1156296a><div id="loader-wrapper" class="loading-wrapper" data-v-d48f4d20 data-v-1156296a data-v-1156296a><div class="loader-main" data-v-d48f4d20><div data-v-d48f4d20></div><div data-v-d48f4d20></div><div data-v-d48f4d20></div><div data-v-d48f4d20></div></div> <!----> <!----></div> <div class="password-shadow password-wrapper-out" style="display:none;" data-v-4e82dffc data-v-1156296a data-v-1156296a><h3 class="title" data-v-4e82dffc data-v-4e82dffc>sammyne</h3> <p class="description" data-v-4e82dffc data-v-4e82dffc>Just playing around :)</p> <label id="box" class="inputBox" data-v-4e82dffc data-v-4e82dffc><input type="password" value="" data-v-4e82dffc> <span data-v-4e82dffc>Konck! Knock!</span> <button data-v-4e82dffc>OK</button></label> <div class="footer" data-v-4e82dffc data-v-4e82dffc><span data-v-4e82dffc><i class="iconfont reco-theme" data-v-4e82dffc></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-4e82dffc>vuePress-theme-reco</a></span> <span data-v-4e82dffc><i class="iconfont reco-copyright" data-v-4e82dffc></i> <a data-v-4e82dffc><span data-v-4e82dffc>sammyne</span>
+            
+          <span data-v-4e82dffc>2020 - </span>
+          2021
+        </a></span></div></div> <div class="hide" data-v-1156296a><header class="navbar" data-v-1156296a><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/logo.svg" alt="sammyne" class="logo"> <span class="site-name">sammyne</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/dev/" class="nav-link"><i class="undefined"></i>
+  dev
+</a></li><li class="dropdown-item"><!----> <a href="/categories/crypto/" class="nav-link"><i class="undefined"></i>
+  crypto
+</a></li><li class="dropdown-item"><!----> <a href="/categories/programming/" class="nav-link"><i class="undefined"></i>
+  programming
+</a></li><li class="dropdown-item"><!----> <a href="/categories/tee/" class="nav-link"><i class="undefined"></i>
+  tee
+</a></li><li class="dropdown-item"><!----> <a href="/categories/os/" class="nav-link"><i class="undefined"></i>
+  os
+</a></li><li class="dropdown-item"><!----> <a href="/categories/engineering/" class="nav-link"><i class="undefined"></i>
+  engineering
+</a></li><li class="dropdown-item"><!----> <a href="/categories/tool/" class="nav-link"><i class="undefined"></i>
+  tool
+</a></li><li class="dropdown-item"><!----> <a href="/categories/language/" class="nav-link"><i class="undefined"></i>
+  language
+</a></li><li class="dropdown-item"><!----> <a href="/categories/decentralization/" class="nav-link"><i class="undefined"></i>
+  decentralization
+</a></li><li class="dropdown-item"><!----> <a href="/categories/architecture/" class="nav-link"><i class="undefined"></i>
+  architecture
+</a></li><li class="dropdown-item"><!----> <a href="/categories/network/" class="nav-link"><i class="undefined"></i>
+  network
+</a></li><li class="dropdown-item"><!----> <a href="/categories/software engineering/" class="nav-link"><i class="undefined"></i>
+  software engineering
+</a></li><li class="dropdown-item"><!----> <a href="/categories/notes/" class="nav-link"><i class="undefined"></i>
+  notes
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间轴
+</a></div><div class="nav-item"><a href="https://github.com/sammyne" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-1156296a></div> <aside class="sidebar" data-v-1156296a><div class="personal-info-wrapper" data-v-828910c6 data-v-1156296a><img src="/avatar.png" alt="author-avatar" class="personal-img" data-v-828910c6> <h3 class="name" data-v-828910c6>
+    sammyne
+  </h3> <div class="num" data-v-828910c6><div data-v-828910c6><h3 data-v-828910c6>79</h3> <h6 data-v-828910c6>Articles</h6></div> <div data-v-828910c6><h3 data-v-828910c6>43</h3> <h6 data-v-828910c6>Tags</h6></div></div> <ul class="social-links" data-v-828910c6></ul> <hr data-v-828910c6></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/dev/" class="nav-link"><i class="undefined"></i>
+  dev
+</a></li><li class="dropdown-item"><!----> <a href="/categories/crypto/" class="nav-link"><i class="undefined"></i>
+  crypto
+</a></li><li class="dropdown-item"><!----> <a href="/categories/programming/" class="nav-link"><i class="undefined"></i>
+  programming
+</a></li><li class="dropdown-item"><!----> <a href="/categories/tee/" class="nav-link"><i class="undefined"></i>
+  tee
+</a></li><li class="dropdown-item"><!----> <a href="/categories/os/" class="nav-link"><i class="undefined"></i>
+  os
+</a></li><li class="dropdown-item"><!----> <a href="/categories/engineering/" class="nav-link"><i class="undefined"></i>
+  engineering
+</a></li><li class="dropdown-item"><!----> <a href="/categories/tool/" class="nav-link"><i class="undefined"></i>
+  tool
+</a></li><li class="dropdown-item"><!----> <a href="/categories/language/" class="nav-link"><i class="undefined"></i>
+  language
+</a></li><li class="dropdown-item"><!----> <a href="/categories/decentralization/" class="nav-link"><i class="undefined"></i>
+  decentralization
+</a></li><li class="dropdown-item"><!----> <a href="/categories/architecture/" class="nav-link"><i class="undefined"></i>
+  architecture
+</a></li><li class="dropdown-item"><!----> <a href="/categories/network/" class="nav-link"><i class="undefined"></i>
+  network
+</a></li><li class="dropdown-item"><!----> <a href="/categories/software engineering/" class="nav-link"><i class="undefined"></i>
+  software engineering
+</a></li><li class="dropdown-item"><!----> <a href="/categories/notes/" class="nav-link"><i class="undefined"></i>
+  notes
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间轴
+</a></div><div class="nav-item"><a href="https://github.com/sammyne" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav> <!----> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-4e82dffc data-v-1156296a><h3 class="title" data-v-4e82dffc data-v-4e82dffc>使用 Go Modules</h3> <!----> <label id="box" class="inputBox" data-v-4e82dffc data-v-4e82dffc><input type="password" value="" data-v-4e82dffc> <span data-v-4e82dffc>Konck! Knock!</span> <button data-v-4e82dffc>OK</button></label> <div class="footer" data-v-4e82dffc data-v-4e82dffc><span data-v-4e82dffc><i class="iconfont reco-theme" data-v-4e82dffc></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-4e82dffc>vuePress-theme-reco</a></span> <span data-v-4e82dffc><i class="iconfont reco-copyright" data-v-4e82dffc></i> <a data-v-4e82dffc><span data-v-4e82dffc>sammyne</span>
+            
+          <span data-v-4e82dffc>2020 - </span>
+          2021
+        </a></span></div></div> <div data-v-1156296a><main class="page"><section><div class="page-title"><h1 class="title">使用 Go Modules</h1> <div data-v-1ff7123e><i class="iconfont reco-account" data-v-1ff7123e><span data-v-1ff7123e>sammyne</span></i> <i class="iconfont reco-date" data-v-1ff7123e><span data-v-1ff7123e>11/23/2019</span></i> <i class="iconfont reco-eye" data-v-1ff7123e><span id="/using-go-modules/" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-1ff7123e><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <i class="tags iconfont reco-tag" data-v-1ff7123e><span class="tag-item" data-v-1ff7123e>golang</span></i></div></div> <div class="theme-reco-content content__default"><blockquote><p>原文：<a href="https://blog.golang.org/using-go-modules" target="_blank" rel="noopener noreferrer">Using Go Modules<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>，发表于 2019-03-19。译者根据最新的 Go 1.13.4 版本进行了相应更新</p></blockquote> <h2 id="简介"><a href="#简介" class="header-anchor">#</a> 简介</h2> <p>这篇博文是以下系列的第一部分：</p> <ul><li><strong>第 1 部 - 使用 Go Modules（本篇博文）</strong></li> <li><a href="https://blog.golang.org/migrating-to-go-modules" target="_blank" rel="noopener noreferrer">第 2 部 - 迁移到 Go Modules<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://blog.golang.org/publishing-go-modules" target="_blank" rel="noopener noreferrer">第 3 部 - 发布 Go Modules<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://blog.golang.org/v2-go-modules" target="_blank" rel="noopener noreferrer">第 4 部 - Go Modules：v2 及其未来<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul> <p>Go 1.11 和 1.12 开始纳入<a href="https://golang.org/doc/go1.11#modules" target="_blank" rel="noopener noreferrer">对 modules 的支持<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>，这是 Go <a href="https://blog.golang.org/versioning-proposal" target="_blank" rel="noopener noreferrer">新的依赖管理系统<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>，明确依赖版本信息且使之更加容易管理。这篇博文会介绍使用 modules 所需的基本操作知识。</p> <p>一个 module 是一个 <a href="https://golang.org/ref/spec#Packages" target="_blank" rel="noopener noreferrer">Go 包<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>的集合，保存在一个文件树中。这个文件树的根目录有一个 <code>go.mod</code> 文件。<code>go.mod</code> 文件定义了 module 的 <em>module path</em>（用作根目录的导入路径）和<strong>所需依赖</strong>（其他 modules 的成功构建需要）。每个所需依赖都书写为一个 module path 和一个特定的<a href="http://semver.org/" target="_blank" rel="noopener noreferrer">语义化版本<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <p>从 Go 1.11 开始，对于当前或其任何父目录具有 <code>go.mod</code> 文件且<em>在 $GOPATH/src 之外</em>的目录，go 命令默认会启用 modules。（$GOPATH/src 内部的话，出于兼容性考虑，go 命令仍会以旧的 GOPATH 模式运行，即使能够找到一个 go.mod 文件。详情参见 <a href="https://golang.org/cmd/go/#hdr-Preliminary_module_support" target="_blank" rel="noopener noreferrer">go 命令文档<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>）。从 Go 1.13 开始，module 模式成为所有开发的默认模式。</p> <p>本篇博文逐步介绍使用 modules 开发 Go 代码时会遇到的一系列常用操作：</p> <ul><li>创建新 module</li> <li>添加依赖</li> <li>升级依赖</li> <li>添加一个新大版本号的依赖</li> <li>将依赖升级到一个新的大版本</li> <li>移除未被使用的依赖</li></ul> <h2 id="创建新-module"><a href="#创建新-module" class="header-anchor">#</a> 创建新 module</h2> <p>让我们创建一个新的 module 吧。</p> <p>在 $GOPATH/src 之外的某处创建一个新的空目录，cd 进入这个目录，新建一个名为 <code>hello.go</code> 的源文件：</p> <div class="language-go line-numbers-mode"><pre class="language-go"><code><span class="token keyword">package</span> hello
+
+<span class="token keyword">func</span> <span class="token function">Hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token string">&quot;Hello, world.&quot;</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p>并在 <code>hello_test.go</code> 编写一个测试：</p> <div class="language-go line-numbers-mode"><pre class="language-go"><code><span class="token keyword">package</span> hello
+
+<span class="token keyword">import</span> <span class="token string">&quot;testing&quot;</span>
+
+<span class="token keyword">func</span> <span class="token function">TestHello</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    want <span class="token operator">:=</span> <span class="token string">&quot;Hello, world.&quot;</span>
+    <span class="token keyword">if</span> got <span class="token operator">:=</span> <span class="token function">Hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> got <span class="token operator">!=</span> want <span class="token punctuation">{</span>
+        t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">&quot;Hello() = %q, want %q&quot;</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><p>到此为止，这个目录包含一个包，但不是一个 module，因为没有相应的 go.mod 文件。假设我们的工作目录为 <code>/home/gopher/hello</code>，立即执行 <code>go test</code>，我们会看到：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go <span class="token builtin class-name">test</span>
+PASS
+ok      _/home/gopher/hello    <span class="token number">0</span>.020s
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><p>最后一行总结了包的全部测试情况。由于我们既不在 $GOPATH 也不在任何 module 内，go 命令不知道当前目录的导入路径，而是基于目录名称虚构了一个假的：<code>_/home/gopher/hello</code>。</p> <p>使用 <code>go mod init</code> 命令把当前目录转变为一个 module，重新执行 <code>go test</code>：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go mod init example.com/hello
+go: creating new go.mod: module example.com/hello
+$ go <span class="token builtin class-name">test</span>
+PASS
+ok      example.com/hello    <span class="token number">0</span>.020s
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p>恭喜你！你已经编写并测试了你的第一个 module。</p> <p><code>go mod init</code> 命令创建的 <code>go.mod</code> 文件如下：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ <span class="token function">cat</span> go.mod
+module example.com/hello
+
+go <span class="token number">1.13</span>
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p><code>go.mod</code> 只会存在 module 的根目录。子目录的包导入路径由 module 路径拼接上子目录的路径。例如，如果我们新建一个子目录 <code>world</code>，我们不需要（也不想要）在那里执行 <code>go mod init</code>。这个包会被自动识别为 <code>example.com/hello</code> module 的一部分，具有导入路径 <code>example.com/hello/world</code>。</p> <h2 id="添加依赖"><a href="#添加依赖" class="header-anchor">#</a> 添加依赖</h2> <p>Go modules 的主要动机是改善使用（也即，添加依赖于）其他开发者所写代码的体验。</p> <p>让我们更新 <code>hello.go</code> 文件，导入 <code>rsc.io/quote</code>，使用它来实现 <code>Hello</code>：</p> <div class="language-go line-numbers-mode"><pre class="language-go"><code><span class="token keyword">package</span> hello
+
+<span class="token keyword">import</span> <span class="token string">&quot;rsc.io/quote&quot;</span>
+
+<span class="token keyword">func</span> <span class="token function">Hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> quote<span class="token punctuation">.</span><span class="token function">Hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><p>现在再次执行测试：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go <span class="token builtin class-name">test</span>
+go: finding rsc.io/quote v1.5.2
+go: downloading rsc.io/quote v1.5.2
+go: extracting rsc.io/quote v1.5.2
+go: finding rsc.io/sampler v1.3.0
+go: finding golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c
+go: downloading rsc.io/sampler v1.3.0
+go: extracting rsc.io/sampler v1.3.0
+go: downloading golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c
+go: extracting golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c
+PASS
+ok      example.com/hello    <span class="token number">0</span>.023s
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br></div></div><p>go 命令基于 <code>go.mod</code> 列举的依赖 module 版本确定导入的包。遇到导入 <code>go.mod</code> 所列举的所有 module 都不提供的包的情况时，go 命令会自动查找包含这个包的 module，并把其最新版本添加到 <code>go.mod</code>（此处的“最新”定义为最新的打标签的稳定（非<a href="https://semver.org/#spec-item-9" target="_blank" rel="noopener noreferrer">预发布<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>）版本，没有的话就是最新打标签的预发布版本，再没有的话就选最新没打标签的版本）。在我们的示例里，<code>go test</code> 将 <code>rsc.io/quote</code> 定向到 <code>rsc.io/quote v1.5.2</code> module。它还下载了 <code>rsc.io/quote</code> 使用的两个依赖 <code>rsc.io/sampler</code> 和 <code>golang.org/x/text</code>。<code>go.mod</code> 只会记录直接依赖：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ <span class="token function">cat</span> go.mod
+module example.com/hello
+
+go <span class="token number">1.13</span>
+
+require rsc.io/quote v1.5.2
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><p>因为 <code>go.mod</code> 已经最新且下载的 modules 会被缓存到本地（在 $GOPATH/pkg/mod），以后执行 <code>go test</code> 不会重复此项工作:</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go <span class="token builtin class-name">test</span>
+PASS
+ok      example.com/hello    <span class="token number">0</span>.020s
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><p>注意了：go 命令确实使得添加新依赖变得快速和容易，但是也不会没有代价的。我们的 module 现在诸如正确性、安全性和合适的版权证书等方面就显式地<em>依赖</em>于新的依赖。想要了解更多的话，参见 Russ Cox 的博文：<a href="https://research.swtch.com/deps" target="_blank" rel="noopener noreferrer">Our Software Dependency Problem<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p>如上可见，添加一项直接依赖经常会引入其他间接依赖。<code>go list -m all</code> 命令会列举出当前 module 和它的所有依赖：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go list -m all
+example.com/hello
+golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c
+rsc.io/quote v1.5.2
+rsc.io/sampler v1.3.0
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p><code>go list</code> 的输出中，当前 module 也被称为 <code>main module</code> 总是在第一行，而后是根据 module path 排序的依赖。</p> <p><code>golang.org/x/text</code>的版本<code>v0.0.0-20170915032832-14c0d48ead0c</code>是<a href="https://golang.org/cmd/go/#hdr-Pseudo_versions" target="_blank" rel="noopener noreferrer">伪版本<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>的示例，是 go 命令规定的特定没打标签的 commit 的版本语法。</p> <p>除了 <code>go.mod</code> 之外，go 命令还维护者一个称为 <code>go.sum</code> 的文件，包含着特定版本 module 内容的<a href="https://golang.org/cmd/go/#hdr-Pseudo_versions" target="_blank" rel="noopener noreferrer">加密哈希<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ <span class="token function">cat</span> go.sum
+golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c h1:qgOY6WgZO<span class="token punctuation">..</span>.
+golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:Nq<span class="token punctuation">..</span>.
+rsc.io/quote v1.5.2 h1:w5fcysjrx7yqtD/aO+QwRjYZOKnaM9Uh2b40tElTs3<span class="token punctuation">..</span>.
+rsc.io/quote v1.5.2/go.mod h1:LzX7hefJvL54yjefDEDHNONDjII0t9xZLPX<span class="token punctuation">..</span>.
+rsc.io/sampler v1.3.0 h1:7uVkIFmeBqHfdjD+gZwtXXI+RODJ2Wc4O7MPEh/Q<span class="token punctuation">..</span>.
+rsc.io/sampler v1.3.0/go.mod h1:T1hPZKmBbMNahiBKFy5HrXp6adAjACjK9<span class="token punctuation">..</span>.
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><p>go 命令使用 <code>go.sum</code> 文件确保将来下载的这些 modules 会和第一次下载的一致，保证我们项目依赖的 modules 不会非由于恶意、意外或其他理由发生非预期的变更。<code>go.mod</code>和<code>go.sum</code>都应该纳入版本管理系统。</p> <h2 id="升级依赖"><a href="#升级依赖" class="header-anchor">#</a> 升级依赖</h2> <p>Go modules 基于语义化版本标签来引用特定版本。一个语义化版本由 3 部分组成：major、minor 和 patch。以 v0.1.2 为例，大版本为 0，小版本号为 1，补丁版本号为 2。让我们演示一些小版本更新。后面小节会描述大版本升级。</p> <p>从 <code>go list -m all</code> 的输出可以看到我们使用的 <code>golang.org/x/text</code> 的没打标签的版本。让我们升级到最新的打标签的版本，并测试一切安好：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go get golang.org/x/text
+go: finding golang.org/x/text v0.3.0
+go: downloading golang.org/x/text v0.3.0
+go: extracting golang.org/x/text v0.3.0
+$ go <span class="token builtin class-name">test</span>
+PASS
+ok      example.com/hello    <span class="token number">0</span>.013s
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><p>哇！一切正常。再看看 <code>go list -m all</code>和<code>go.mod</code>文件：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go list -m all
+example.com/hello
+golang.org/x/text v0.3.0
+rsc.io/quote v1.5.2
+rsc.io/sampler v1.3.0
+$ <span class="token function">cat</span> go.mod
+module example.com/hello
+
+go <span class="token number">1.12</span>
+
+require <span class="token punctuation">(</span>
+    golang.org/x/text v0.3.0 // indirect
+    rsc.io/quote v1.5.2
+<span class="token punctuation">)</span>
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br></div></div><p><code>golang.org/x/text</code>包升级到了最新打标签的版本（v0.3.0）。<code>go.mod</code>文件也被更新后指向 v0.3.0。<code>indirect</code>注释注明这不是当前 module 直接使用的依赖，只是被其他 module 依赖间接使用而已。详情请查看 <code>go help modules</code>。</p> <p>现在，让我们尝试升级 <code>rsc.io/sampler</code> 的小版本。同样的方式，执行 <code>go get</code> 然后执行测试：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go get rsc.io/sampler
+go: finding rsc.io/sampler v1.99.99
+go: downloading rsc.io/sampler v1.99.99
+go: extracting rsc.io/sampler v1.99.99
+$ go <span class="token builtin class-name">test</span>
+--- FAIL: TestHello <span class="token punctuation">(</span><span class="token number">0</span>.00s<span class="token punctuation">)</span>
+    hello_test.go:8: Hello<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">&quot;99 bottles of beer on the wall, 99 bottles of beer, ...&quot;</span>, want <span class="token string">&quot;Hello, world.&quot;</span>
+FAIL
+<span class="token builtin class-name">exit</span> status <span class="token number">1</span>
+FAIL    example.com/hello    <span class="token number">0</span>.014s
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><p>噢哦！测试不通过表明 <code>rsc.io/sampler</code> 的最新版本和我们的用法不兼容。让我们查看一下这个 module 的可用打标签的版本：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go list -m -versions rsc.io/sampler
+rsc.io/sampler v1.0.0 v1.2.0 v1.2.1 v1.3.0 v1.3.1 v1.99.99
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><p>我们一直用的是 v1.3.0；显然 v1.99.99 用不上。或许我们可以用 v1.3.1 试试：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go get rsc.io/sampler@v1.3.1
+go: finding rsc.io/sampler v1.3.1
+go: downloading rsc.io/sampler v1.3.1
+go: extracting rsc.io/sampler v1.3.1
+$ go <span class="token builtin class-name">test</span>
+PASS
+ok      example.com/hello    <span class="token number">0</span>.022s
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><p>注意 <code>go get</code> 的参数里面显式的 <code>@v1.3.1</code>。通常情况下，所有传给<code>go get</code>的参数都可以接受一个显式的版本号；默认值为<code>@latest</code>，指向之前描述的最新版本。</p> <h2 id="添加一个新大版本号的依赖"><a href="#添加一个新大版本号的依赖" class="header-anchor">#</a> 添加一个新大版本号的依赖</h2> <p>为我们的包添加一个新函数：<code>func Proverb</code>返回一个 Go 的并发谚语，返回值由 <code>quote.Concurrency</code>（依赖 <code>rsc.io/quote/v3</code> module）提供。首先，我们需要更新 <code>hello.go</code>，添加新函数：</p> <div class="language-go line-numbers-mode"><pre class="language-go"><code><span class="token keyword">package</span> hello
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">&quot;rsc.io/quote&quot;</span>
+    quoteV3 <span class="token string">&quot;rsc.io/quote/v3&quot;</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">Hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> quote<span class="token punctuation">.</span><span class="token function">Hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">Proverb</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> quoteV3<span class="token punctuation">.</span><span class="token function">Concurrency</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br></div></div><p>然后再 <code>hello_test.go</code> 添加测试：</p> <div class="language-go line-numbers-mode"><pre class="language-go"><code><span class="token keyword">func</span> <span class="token function">TestProverb</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    want <span class="token operator">:=</span> <span class="token string">&quot;Concurrency is not parallelism.&quot;</span>
+    <span class="token keyword">if</span> got <span class="token operator">:=</span> <span class="token function">Proverb</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> got <span class="token operator">!=</span> want <span class="token punctuation">{</span>
+        t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">&quot;Proverb() = %q, want %q&quot;</span><span class="token punctuation">,</span> got<span class="token punctuation">,</span> want<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p>接下来测试我们的代码：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go <span class="token builtin class-name">test</span>
+go: finding rsc.io/quote/v3 v3.1.0
+go: downloading rsc.io/quote/v3 v3.1.0
+go: extracting rsc.io/quote/v3 v3.1.0
+PASS
+ok      example.com/hello    <span class="token number">0</span>.024s
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><p>注意：我们的 module 现在依赖了 <code>rsc.io/quote</code> 和 <code>rsc.io/quote/v3</code>：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go list -m rsc.io/q<span class="token punctuation">..</span>.
+rsc.io/quote v1.5.2
+rsc.io/quote/v3 v3.1.0
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><p>Go module 的每个不同大版本号（v1，v2，依次类推）都会使用不同的 module path：从 v2 开始，路径必须以大版本结尾。在上面的例子中，<code>rsc.io/quote</code>的<code>v3</code>版本不再是<code>rsc.io/quote</code>，而是以 <code>rsc.io/quote/v3</code> module 路径来标识自己。这个习惯用法被称为<a href="https://research.swtch.com/vgo-import" target="_blank" rel="noopener noreferrer">语义化导入版本管理<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>，它赋予不兼容的包（具有不同的大版本）不同名字。相反的是，<code>rsc.io/quote</code>的<code>v1.6.0</code>应该和<code>v1.5.2</code>后向兼容，因此，它重用了名字 <code>rsc.io/quote</code>（上一小节中，<code>rsc.io/sampler v1.99.99</code><em>理应</em>和<code>rsc.io/sampler v1.3.0</code>后向兼容，可能原因是 bugs 和基于 module 行为的错误客户端假设）。</p> <p><strong><code>go</code>命令只允许一次构建包含特定 module 路径的至多一个版本</strong>，也即至多一个大版本：一个<code>rsc.io/quote</code>，一个<code>rsc.io/quote/v2</code>，一个<code>rsc.io/quote/v3</code>，依次类推。这样可以明确告诉 module 作者一个 module 路径的可能重复规则：一个程序不可能在构建时同时包含<code>rsc.io/quote v1.5.2</code>和<code>rsc.io/quote v1.6.0</code>。同时，允许一个 module 具有不同大版本（因为他们具有不同路径）使得 module 消费者能够逐步升级大版本号。这个例子里面，我们想要使用<code>rsc.io/quote/v3 v3.1.0</code>提供的<code>quote.Concurrency</code>，但是又没准备好移除<code>rsc.io/quote v1.5.2</code>。逐步增量迁移的能力对于大程序或代码库尤为重要。</p> <h2 id="将依赖升级到一个新的大版本"><a href="#将依赖升级到一个新的大版本" class="header-anchor">#</a> 将依赖升级到一个新的大版本</h2> <p>让我们完全从<code>rsc.io/quote</code>迁移到只使用<code>rsc.io/quote/v3</code>。由于大版本变了，我们应该预料到一些 API 可能已被移除、重命名或者以其他不兼容的方式更改。查阅文档，我们发现<code>Hello</code>变成了<code>HelloV3</code>：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go doc rsc.io/quote/v3
+package quote // <span class="token function">import</span> <span class="token string">&quot;rsc.io/quote/v3&quot;</span>
+
+Package quote collects pithy sayings.
+
+func Concurrency<span class="token punctuation">(</span><span class="token punctuation">)</span> string
+func GlassV3<span class="token punctuation">(</span><span class="token punctuation">)</span> string
+func GoV3<span class="token punctuation">(</span><span class="token punctuation">)</span> string
+func HelloV3<span class="token punctuation">(</span><span class="token punctuation">)</span> string
+func OptV3<span class="token punctuation">(</span><span class="token punctuation">)</span> string
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><p>我们可以把<code>hello.go</code>的<code>quote.Hello()</code>为<code>quoteV3.HelloV3()</code>：</p> <div class="language-go line-numbers-mode"><pre class="language-go"><code><span class="token keyword">package</span> hello
+
+<span class="token keyword">import</span> quoteV3 <span class="token string">&quot;rsc.io/quote/v3&quot;</span>
+
+<span class="token keyword">func</span> <span class="token function">Hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> quoteV3<span class="token punctuation">.</span><span class="token function">HelloV3</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">Proverb</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> quoteV3<span class="token punctuation">.</span><span class="token function">Concurrency</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><p>到此为止，导入路径重命名就不用了，我们可以撤销重命名如下：</p> <div class="language-go line-numbers-mode"><pre class="language-go"><code><span class="token keyword">package</span> hello
+
+<span class="token keyword">import</span> <span class="token string">&quot;rsc.io/quote/v3&quot;</span>
+
+<span class="token keyword">func</span> <span class="token function">Hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> quote<span class="token punctuation">.</span><span class="token function">HelloV3</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">Proverb</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> quote<span class="token punctuation">.</span><span class="token function">Concurrency</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><p>让我们重新运行测试以确保一切正常：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go <span class="token builtin class-name">test</span>
+PASS
+ok      example.com/hello       <span class="token number">0</span>.014s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><h2 id="移除未被使用的依赖"><a href="#移除未被使用的依赖" class="header-anchor">#</a> 移除未被使用的依赖</h2> <p>我们已经移除了对<code>rsc.io/quote</code>的所有依赖，但是它依然出现在<code>go list -m all</code>和<code>go.mod</code>文件中：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go list -m all
+example.com/hello
+golang.org/x/text v0.3.0
+rsc.io/quote v1.5.2
+rsc.io/quote/v3 v3.1.0
+rsc.io/sampler v1.3.1
+$ <span class="token function">cat</span> go.mod
+module example.com/hello
+
+go <span class="token number">1.13</span>
+
+require <span class="token punctuation">(</span>
+    golang.org/x/text v0.3.0 // indirect
+    rsc.io/quote v1.5.2
+    rsc.io/quote/v3 v3.0.0
+    rsc.io/sampler v1.3.1 // indirect
+<span class="token punctuation">)</span>
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br></div></div><p>为什么？因为构建一个包时（使用<code>go build</code>或<code>go test</code>等命令），可以很容易发现缺失而需要添加的东西，但是这时并不能安全地移除某些东西。只有在检查了 module 的所有包以及这些包所有可能的 build tag 组合之后，才能移除一个依赖。一个平常的构建命令没有加载这份信息，所以它不可以安全地移除依赖。</p> <p><code>go mod tidy</code>命令清除这些没用的依赖：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ go mod tidy
+$ go list -m all
+example.com/hello
+golang.org/x/text v0.3.0
+rsc.io/quote/v3 v3.1.0
+rsc.io/sampler v1.3.1
+$ <span class="token function">cat</span> go.mod
+module example.com/hello
+
+go <span class="token number">1.12</span>
+
+require <span class="token punctuation">(</span>
+    golang.org/x/text v0.3.0 // indirect
+    rsc.io/quote/v3 v3.1.0
+    rsc.io/sampler v1.3.1 // indirect
+<span class="token punctuation">)</span>
+
+$ go <span class="token builtin class-name">test</span>
+PASS
+ok      example.com/hello    <span class="token number">0</span>.020s
+$
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br></div></div><h2 id="结论"><a href="#结论" class="header-anchor">#</a> 结论</h2> <p>Go modules 是 Go 未来的依赖管理系统。Module 功能已经在所有支持的 Go 版本（即 Go 1.11 和 Go 1.12）中可用。</p> <p>这篇博文介绍了使用 Go modules 的以下流程：</p> <ul><li><code>go mod init</code>新建一个新 module，初始化一份<code>go.mod</code>文件来描述这个 module</li> <li><code>go build</code>，<code>go test</code>和其他包构建命令根据需要向<code>go.mod</code>添加新依赖</li> <li><code>go list -m all</code>打印当前 module 的依赖</li> <li><code>go get</code>改变依赖的所需版本（或者添加新依赖）</li> <li><code>go mod tidy</code>移除部可用的依赖</li></ul> <p>鼓励大家在本地开发时把 module 用起来，添加<code>go.mod</code>和<code>go.sum</code>文件到你们的项目。如果想要提交反馈或帮助塑造 Go 未来的依赖管理系统的话，请给我们提交 <a href="https://golang.org/issue/new" target="_blank" rel="noopener noreferrer">bug 报告<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>或<a href="https://golang.org/wiki/ExperienceReports" target="_blank" rel="noopener noreferrer">体验报告<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <p>感谢大家的反馈和优化 modules 的帮助。</p></div></section> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated: </span> <span class="time">4/18/2021, 2:34:59 AM</span></div></footer> <!----> <div class="comments-wrapper"><!----></div> <ul class="side-bar sub-sidebar-wrapper" style="width:12rem;" data-v-70334359><li class="level-2" data-v-70334359><a href="/using-go-modules/#简介" class="sidebar-link reco-side-简介" data-v-70334359>简介</a></li><li class="level-2" data-v-70334359><a href="/using-go-modules/#创建新-module" class="sidebar-link reco-side-创建新-module" data-v-70334359>创建新 module</a></li><li class="level-2" data-v-70334359><a href="/using-go-modules/#添加依赖" class="sidebar-link reco-side-添加依赖" data-v-70334359>添加依赖</a></li><li class="level-2" data-v-70334359><a href="/using-go-modules/#升级依赖" class="sidebar-link reco-side-升级依赖" data-v-70334359>升级依赖</a></li><li class="level-2" data-v-70334359><a href="/using-go-modules/#添加一个新大版本号的依赖" class="sidebar-link reco-side-添加一个新大版本号的依赖" data-v-70334359>添加一个新大版本号的依赖</a></li><li class="level-2" data-v-70334359><a href="/using-go-modules/#将依赖升级到一个新的大版本" class="sidebar-link reco-side-将依赖升级到一个新的大版本" data-v-70334359>将依赖升级到一个新的大版本</a></li><li class="level-2" data-v-70334359><a href="/using-go-modules/#移除未被使用的依赖" class="sidebar-link reco-side-移除未被使用的依赖" data-v-70334359>移除未被使用的依赖</a></li><li class="level-2" data-v-70334359><a href="/using-go-modules/#结论" class="sidebar-link reco-side-结论" data-v-70334359>结论</a></li></ul></main> <!----></div></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div></div></div>
+    <script src="/assets/js/app.6731dc6d.js" defer></script><script src="/assets/js/3.3f52b992.js" defer></script><script src="/assets/js/1.86295094.js" defer></script><script src="/assets/js/89.e73f74c7.js" defer></script>
+  </body>
+</html>
