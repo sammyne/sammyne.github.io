@@ -4,7 +4,7 @@ date: 2021-03-03
 categories:
   - language
 tags: 
-  - golang
+  - go
   - assembly
 ---
 
