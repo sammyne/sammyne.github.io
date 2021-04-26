@@ -8,6 +8,9 @@ tags:
 - compiler
 ---
 
+### 架构
+- [refactoring.guru](https://refactoring.guru/design-patterns)
+
 ## 工具
 - [brianvoe/gofakeit](https://github.com/brianvoe/gofakeit)
 
