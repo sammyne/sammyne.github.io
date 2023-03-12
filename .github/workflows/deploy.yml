@@ -5,19 +5,22 @@ on:
     branches: ["vuepress"]
   pull_request:
     branches: ["vuepress"]
+    types:
+    - closed
 
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
     container:
-      image: node:lts-alpine3.12
+      image: node:18.15.0-alpine3.17
 
     steps:
       # without git>=2.18, actions/checkout@v2 would download the repository using REST,
       # which will render JamesIves/github-pages-deploy-action@releases/v3 failed
       - name: Install git>=2.18 for actions/checkout@v2 to clone the repository
         run: apk add git
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           persist-credentials: false
       - name: Node toolchains
@@ -25,14 +28,19 @@ jobs:
           echo "node: $(node --version)" &&
           echo "yarn: $(yarn --version)"
       - name: Build the static vuepress
+        env:
+          NODE_OPTIONS: "--openssl-legacy-provider"
         run: |
           sed -i 's!registry.npm.taobao.org!registry.yarnpkg.com!g' yarn.lock &&
           yarn &&
           yarn build
-      - name: Install dependencies for JamesIves/github-pages-deploy-action@releases/v3
+      - name: Install dependencies for JamesIves/github-pages-deploy-action@releases/v4
         run: apk add rsync
+      # https://github.blog/2022-04-12-git-security-vulnerability-announced/#cve-2022-24765
+      - name: Fix git CVE-2022-24765
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
       - name: Deploy github pages
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
           ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           BRANCH: main
