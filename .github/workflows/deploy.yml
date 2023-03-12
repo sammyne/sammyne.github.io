@@ -5,12 +5,9 @@ on:
     branches: ["vuepress"]
   pull_request:
     branches: ["vuepress"]
-    types:
-    - closed
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     container:
       image: node:18.15.0-alpine3.17
